@@ -4,18 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Category extends Model
 {
-
-	protected $table = 'users';
+	protected $table = 'category';
 
     protected $primaryKey = 'id';
 
 	protected $fillable = [
-		'name',
-		'email',
-        'ip',
-		'active',
-		'token'
+		'name'
 	];
 }

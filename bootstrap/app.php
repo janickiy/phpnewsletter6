@@ -45,6 +45,16 @@ $container['mailer'] = function($container) {
 	return new Nette\Mail\SmtpMailer($container['settings']['mailer']);
 };
 
+// Register Blade View helper
+$container['view'] = function ($container) {
+    return new \Slim\Views\Blade(
+        $container['settings']['renderer']['blade_template_path'],
+        $container['settings']['renderer']['blade_cache_path']
+    );
+};
+
+
+
 $container['view'] = function ($container) {
 	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/views/', [
 		'cache' => false,

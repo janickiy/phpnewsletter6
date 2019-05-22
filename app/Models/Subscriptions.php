@@ -4,18 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Subscriptions extends Model
 {
 
-	protected $table = 'users';
+	protected $table = 'subscriptions';
 
     protected $primaryKey = 'id';
 
+    public $timestamps = false;
+
 	protected $fillable = [
-		'name',
-		'email',
-        'ip',
-		'active',
-		'token'
+		'userId',
+        'categoryId'
 	];
 }

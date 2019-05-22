@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Templates extends Model
 {
 
-	protected $table = 'users';
+	protected $table = 'templates';
 
     protected $primaryKey = 'id';
 
 	protected $fillable = [
 		'name',
-		'email',
-        'ip',
-		'active',
-		'token'
+        'body',
+        'prior',
+        'pos',
+        'categoryId'
 	];
 }

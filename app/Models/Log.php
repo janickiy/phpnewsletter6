@@ -4,18 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Log extends Model
 {
-
-	protected $table = 'users';
+	protected $table = 'log';
 
     protected $primaryKey = 'id';
 
 	protected $fillable = [
-		'name',
-		'email',
-        'ip',
-		'active',
-		'token'
+		'userId',
+        'template',
+        'sendStatusId',
+        'time'
 	];
 }
