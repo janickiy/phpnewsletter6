@@ -1,13 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<meta charset="UTF-8">
-	<title>SlimBorn</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-	<link rel="stylesheet" href="{{ base_url() }}/assets/css/app.css">
+	<meta charset="utf-8">
+	<title>Панель управления </title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+	<!-- #CSS Links -->
+	<!-- Basic Styles -->
+
+
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+
+
+
+	<!-- SmartAdmin Styles : Caution! DO NOT change the order -->
+
+	<link rel="stylesheet" href="css/smartadmin-production-plugins.min.css">
+
+	<link rel="stylesheet" href="css/smartadmin-production.min.css">
+
+	<link rel="stylesheet" href="css/smartadmin-skins.min.css">
+
+	<link rel="stylesheet" href="css/smartadmin-rtl.min.css">
+
+	<link rel="stylesheet" href="/js/plugin/daterangepicker/daterangepicker.css">
+
+
+
+
+	<!-- We recommend you use "your_style.css" to override SmartAdmin
+             specific styles this will also ensure you retrain your customization with each SmartAdmin update.
+        <link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
+
+
+	<link rel="stylesheet" href="/js/plugin/sweetalert/sweetalert.css">
+
+
+	<link rel="stylesheet" href="/js/plugin/jquery-treeview-master/jquery.treeview.css">
+
+
+
+
+
+	<!-- #GOOGLE FONT -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
+
+	<script type="text/javascript">
+        var SITE_URL = "/";
+	</script>
 
 </head>
-<body>
+
+
+
+
+<!-- #HEADER -->
+<header id="header">
+	<div id="logo-group">
+
+		<!-- PLACE YOUR LOGO HERE -->
+		<span id="logo"> <img src="img/logo.png" alt="SmartAdmin"> </span>
+		<!-- END LOGO PLACEHOLDER -->
+
+		<!-- Note: The activity badge color changes when clicked and resets the number to 0
+             Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
+
+	</div>
+	<!-- END AJAX-DROPDOWN -->
+	</div>
+
+	</div>
+	<!-- end projects dropdown -->
+
+	<!-- #TOGGLE LAYOUT BUTTONS -->
+	<!-- pulled right: nav area -->
+	<div class="pull-right">
+
+		<!-- collapse menu button -->
+		<div id="hide-menu" class="btn-header pull-right">
+            <span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i
+							class="fa fa-reorder"></i></a> </span>
+		</div>
+		<!-- end collapse menu -->
+
+		<!-- logout button -->
+		<div id="logout" class="btn-header transparent pull-right">
+            <span> <a href="/logout" title="Sign Out" data-action="userLogout"
+					  data-logout-msg="Вы можете улучшить свою безопасность после выхода из системы, закрыв этот открытый браузер"><i
+							class="fa fa-sign-out"></i></a> </span>
+		</div>
+		<!-- end logout button -->
+
+		<!-- fullscreen button -->
+		<div id="fullscreen" class="btn-header transparent pull-right">
+            <span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen"><i
+							class="fa fa-arrows-alt"></i></a> </span>
+		</div>
+		<!-- end fullscreen button -->
+
+	</div>
+	<!-- end pulled right: nav area -->
+
+</header>
+<!-- END HEADER -->
+
+<!-- #NAVIGATION -->
+<!-- Left panel : Navigation area -->
+<!-- Note: This width of the aside area can be adjusted through LESS variables -->
+<aside id="left-panel">
+
+	<!-- User info -->
+	<div class="login-info">
+		<span> <!-- User image size is adjusted inside CSS, it should stay as it -->
+
+
+
+		</span>
+	</div>
+	<!-- end user info -->
+
+	<nav>
+		<!--
+        NOTE: Notice the gaps after each icon usage <i></i>..
+        Please note that these links work a bit different than
+        traditional href="" links. See documentation for details.
+        -->
+
+		<ul>
+
+
+
+		</ul>
+	</nav>
+
+	<span class="minifyme" data-action="minifyMenu"><i class="fa fa-arrow-circle-left hit"></i></span>
+
+</aside>
+<!-- END NAVIGATION -->
+
+<!-- MAIN PANEL -->
+<div id="main" role="main">
+
+	<!-- RIBBON -->
+	<div id="ribbon">
+
+		<!-- You can also add more buttons to the
+        ribbon for further usability
+
+        Example below:
+
+        <span class="ribbon-button-alignment pull-right">
+        <span id="search" class="btn btn-ribbon hidden-xs" data-title="search"><i class="fa-grid"></i> Change Grid</span>
+        <span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa-plus"></i> Add</span>
+        <span id="search" class="btn btn-ribbon" data-title="search"><i class="fa-search"></i> <span class="hidden-mobile">Search</span></span>
+        </span> -->
+
+	</div>
+	<!-- END RIBBON -->
+
+
+
+
 	{% include 'templates/partials/navigation.twig' %}
 	<div class="container">
 		{% include 'templates/partials/flash.twig' %}
@@ -17,9 +176,158 @@
 
 	</div>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+</div>
+<!-- END MAIN PANEL -->
 
-	
+<!-- PAGE FOOTER -->
+<div class="page-footer">
+	<div class="row">
+		<div class="col-xs-12 col-sm-6">
+
+		</div>
+
+	</div>
+</div>
+<!-- END PAGE FOOTER -->
+
+
+<!--================================================== -->
+
+
+<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
+<script data-pace-options='{ "restartOnRequestAfter": true }' src="js/plugin/pace/pace.min.js"></script>
+
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    if (!window.jQuery) {
+        document.write('<script src="{!! asset('js/libs/jquery-3.2.1.min.js') !!}"><\/script>');
+    }
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    if (!window.jQuery.ui) {
+        document.write('<script src="{!! asset('js/libs/jquery-ui.min.js') !!}"><\/script>');
+    }
+</script>
+
+<!-- IMPORTANT: APP CONFIG -->
+
+<script src="js/app.config.js"></script>
+
+
+<!-- JS TOUCH : include this plugin for mobile drag / drop touch events-->
+
+
+<script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
+
+
+<!-- BOOTSTRAP JS -->
+<script src="js/bootstrap/bootstrap.min.js"></script>
+
+<!-- CUSTOM NOTIFICATION -->
+<script src="js/notification/SmartNotification.min.js"></script>
+
+<!-- JARVIS WIDGETS -->
+<script src="js/smartwidgets/jarvis.widget.min.js"></script>
+
+
+
+<!-- EASY PIE CHARTS -->
+
+<script src="js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+
+
+
+
+
+<script src="js/plugin/sparkline/jquery.sparkline.min.js"></script>
+
+<script src="js/plugin/jquery-validate/jquery.validate.min.js"></script>
+
+<script src="js/plugin/masked-input/jquery.maskedinput.min.js"></script>
+
+
+
+
+<!-- JQUERY SELECT2 INPUT -->
+
+
+<script src="js/plugin/select2/select2.min.js"></script>
+
+
+
+<!-- JQUERY UI + Bootstrap Slider -->
+<script src="js/plugin/bootstrap-slider/bootstrap-slider.min.js"></script>
+
+
+
+
+<!-- browser msie issue fix -->
+
+
+
+<script src="js/plugin/msie-fix/jquery.mb.browser.min.js"></script>
+
+
+<!-- FastClick: For mobile devices -->
+
+
+<script src="js/plugin/fastclick/fastclick.min.js"></script>
+
+
+<!--[if IE 8]>
+
+<h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
+
+<![endif]-->
+
+<!-- MAIN APP JS FILE -->
+<script src="js/app.min.js"></script>
+
+
+
+<!-- ENHANCEMENT PLUGINS : NOT A REQUIREMENT -->
+<!-- Voice command : plugin -->
+
+
+<script src="js/speech/voicecommand.min.js"></script>
+
+
+
+<!-- SmartChat UI : plugin -->
+
+<script src="js/smart-chat-ui/smart.chat.ui.min.js"></script>
+
+<script src="js/smart-chat-ui/smart.chat.manager.min.js"></script>
+
+<script src="js/plugin/datatables/jquery.dataTables.min.js"></script>
+
+
+<script src="js/plugin/datatables/dataTables.colVis.min.js"></script>
+
+<script src="js/plugin/datatables/dataTables.tableTools.min.js"></script>
+
+<script src="js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+
+<script src="js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+
+<script src="js/plugin/daterangepicker/moment.min.js"></script>
+
+<script src="js/plugin/daterangepicker/daterangepicker.js"></script>
+
+
+<script src="js/plugin/sweetalert/sweetalert-dev.js"></script>
+
+<script src="js/plugin/jquery-treeview-master/jquery.treeview.js"></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+
 </body>
+
 </html>
+
+

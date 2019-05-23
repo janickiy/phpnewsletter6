@@ -20,7 +20,7 @@ class Admin extends Model
 
     public function setPasswordAttribute($value)
     {
-        $this->attributes['value'] = password_hash($value,PASSWORD_DEFAULT);
+        $this->attributes['password'] = password_hash($value,PASSWORD_DEFAULT);
         /*
         $this->update([
             'password' => password_hash($password,PASSWORD_DEFAULT)

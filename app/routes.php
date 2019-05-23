@@ -6,6 +6,8 @@ use App\Middleware\PermissionMiddleware;
 $app->get('/','HomeController:index')->setName('home');
 
 $app->get('/403','HomeController:p403')->setName('403');
+$app->get('/temlates','TemlatesController:list');
+
 
 $app->group('',function () {
 
@@ -26,6 +28,12 @@ $app->group('',function () use ($container)  {
     $this->get('/auth/password/change2','PasswordController:getChangePassword')->setName('auth.password.change');
 
 	$this->post('/auth/password/change','PasswordController:postChangePassword');
+
+
+
+
+
+
 })->add(new AuthMiddleware($container));
 
 

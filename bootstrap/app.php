@@ -87,6 +87,14 @@ $container['AuthController'] = function($container) {
 	return new \App\Controllers\Auth\AuthController($container);
 };
 
+$container['TemlatesController'] = function($container) {
+    return new \App\Controllers\Auth\TemlatesController($container);
+};
+
+
+
+
+
 $container['PasswordController'] = function($container) {
 	return new \App\Controllers\Auth\PasswordController($container);
 };

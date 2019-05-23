@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Auth;
 
-use App\Models\User;
+use App\Models\Admin;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 use Nette\Mail\Message;
@@ -28,7 +28,7 @@ class AuthController extends Controller
 	public function postSignIn($request,$response)
 	{
 		$auth = $this->auth->attempt(
-			$request->getParam('email'),
+			$request->getParam('login'),
 			$request->getParam('password')
 		);
 
@@ -49,7 +49,7 @@ class AuthController extends Controller
 	{
 
 		$validation = $this->validator->validate($request,[
-			'email' => v::noWhitespace()->notEmpty()->email()->emailAvailable(),
+			'login' => v::notEmpty()->alpha(),
 			'name' => v::notEmpty()->alpha(),
 			'password' => v::noWhitespace()->notEmpty(),
 		]);
@@ -60,22 +60,14 @@ class AuthController extends Controller
 
 		$activCode = md5('yourSalt' . date('Ymdhis'));
 		
-		$user = User::create([
-			'email' => $request->getParam('email'),
+		$user = Admin::create([
+			'login' => $request->getParam('login'),
 			'name' => $request->getParam('name'),
-			'password' => password_hash($request->getParam('password'),PASSWORD_DEFAULT),
-			'activ_code' => $activCode
+            'description' => $request->getParam('description'),
+			'password' => $request->getParam('password'),
 		]);
 		
-		$mail = new Message;
-		$mail->setFrom('your@email.com')
-			->addTo($request->getParam('email'))
-			->setSubject('Plaease confirm your email')
-			->setHTMLBody("Hello, to confirm this Email click this URL: <br />
-			<a target='_blank' href='" . $this->container->settings['baseUrl'] . "auth/confirm?code=" . $activCode ."'>
-			" . $this->container->settings['baseUrl'] . "/auth/confirm?code=" . $activCode . "</a>");
-		
-		$this->mailer->send($mail);
+
 
 		$this->flash->addMessage('info','Please confirm your email. We send a Email with activate Code.');
 
