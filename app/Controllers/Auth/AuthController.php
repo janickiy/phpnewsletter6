@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Auth;
 
-use App\Models\Admin;
+use App\Models\Users;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 use Nette\Mail\Message;
@@ -60,7 +60,7 @@ class AuthController extends Controller
 
 		$activCode = md5('yourSalt' . date('Ymdhis'));
 		
-		$user = Admin::create([
+		$user = Users::create([
 			'login' => $request->getParam('login'),
 			'name' => $request->getParam('name'),
             'description' => $request->getParam('description'),
