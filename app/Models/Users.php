@@ -8,8 +8,6 @@ class Users extends Model
 {
 	protected $table = 'users';
 
-    public $login;
-
     protected $primaryKey = 'id';
 
 	protected $fillable = [

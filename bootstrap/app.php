@@ -88,11 +88,28 @@ $container['AuthController'] = function($container) {
 };
 
 $container['TemlatesController'] = function($container) {
-    return new \App\Controllers\Auth\TemlatesController($container);
+    return new \App\Controllers\Dashboard\TemplateController($container);
 };
 
+$container['SubscribersController'] = function($container) {
+    return new \App\Controllers\Dashboard\SubscribersController($container);
+};
 
+$container['CategoryController'] = function($container) {
+    return new \App\Controllers\Dashboard\CategoryController($container);
+};
 
+$container['UsersController'] = function($container) {
+    return new \App\Controllers\Dashboard\UsersController($container);
+};
+
+$container['LogController'] = function($container) {
+    return new \App\Controllers\Dashboard\LogController($container);
+};
+
+$container['SettingsController'] = function($container) {
+    return new \App\Controllers\Dashboard\SettingsController($container);
+};
 
 
 $container['PasswordController'] = function($container) {
@@ -102,8 +119,6 @@ $container['PasswordController'] = function($container) {
 $container['csrf'] = function($container) {
 	return new \Slim\Csrf\Guard;
 };
-
-
 
 $app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
 $app->add(new \App\Middleware\OldInputMiddleware($container));

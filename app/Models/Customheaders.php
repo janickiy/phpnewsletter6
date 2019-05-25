@@ -4,18 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Customheaders extends Model
 {
 
-	protected $table = '';
+	protected $table = 'сustomheaders';
 
     protected $primaryKey = 'id';
 
 	protected $fillable = [
 		'name',
-		'email',
-        'ip',
-		'active',
-		'token'
+        'value'
 	];
 }

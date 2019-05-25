@@ -17,4 +17,5 @@ class Subscriptions extends Model
 		'userId',
         'categoryId'
 	];
+
 }

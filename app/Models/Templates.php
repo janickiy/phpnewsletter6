@@ -18,4 +18,9 @@ class Templates extends Model
         'pos',
         'categoryId'
 	];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class,'id','categoryId');
+    }
 }
