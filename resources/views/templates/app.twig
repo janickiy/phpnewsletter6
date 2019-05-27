@@ -1,64 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
 	<meta charset="utf-8">
-	<title>Панель управления </title>
+	<title> SmartAdmin </title>
 	<meta name="description" content="">
 	<meta name="author" content="">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-
 	<!-- #CSS Links -->
 	<!-- Basic Styles -->
-
-
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-
-	<link rel="stylesheet" href="css/font-awesome.min.css">
-
-
+	<link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="css/font-awesome.min.css">
 
 	<!-- SmartAdmin Styles : Caution! DO NOT change the order -->
-
-	<link rel="stylesheet" href="css/smartadmin-production-plugins.min.css">
-
-	<link rel="stylesheet" href="css/smartadmin-production.min.css">
-
-	<link rel="stylesheet" href="css/smartadmin-skins.min.css">
-
-	<link rel="stylesheet" href="css/smartadmin-rtl.min.css">
-
-	<link rel="stylesheet" href="/js/plugin/daterangepicker/daterangepicker.css">
-
-
-
+	<link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-skins.min.css">
 
 	<!-- We recommend you use "your_style.css" to override SmartAdmin
-             specific styles this will also ensure you retrain your customization with each SmartAdmin update.
-        <link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
+         specific styles this will also ensure you retrain your customization with each SmartAdmin update.
+    <link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
 
-
-	<link rel="stylesheet" href="/js/plugin/sweetalert/sweetalert.css">
-
-
-	<link rel="stylesheet" href="/js/plugin/jquery-treeview-master/jquery.treeview.css">
-
-
-
-
+	<!-- #FAVICONS -->
+	<link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
 
 	<!-- #GOOGLE FONT -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
 
-	<script type="text/javascript">
-        var SITE_URL = "/";
-	</script>
+	<!-- #APP SCREEN / ICONS -->
+	<!-- Specifying a Webpage Icon for Web Clip
+         Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
+	<link rel="apple-touch-icon" href="img/splash/sptouch-icon-iphone.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="img/splash/touch-icon-ipad.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="img/splash/touch-icon-iphone-retina.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="img/splash/touch-icon-ipad-retina.png">
+
+	<!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+	<!-- Startup image for web apps -->
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+	<link rel="apple-touch-startup-image" href="img/splash/iphone.png" media="screen and (max-device-width: 320px)">
 
 </head>
 
+<!--
 
+TABLE OF CONTENTS.
 
+Use search to find needed section.
+
+===================================================================
+
+|  01. #CSS Links                |  all CSS links and file paths  |
+|  02. #FAVICONS                 |  Favicon links and file paths  |
+|  03. #GOOGLE FONT              |  Google font link              |
+|  04. #APP SCREEN / ICONS       |  app icons, screen backdrops   |
+|  05. #BODY                     |  body tag                      |
+|  06. #HEADER                   |  header tag                    |
+|  07. #PROJECTS                 |  project lists                 |
+|  08. #TOGGLE LAYOUT BUTTONS    |  layout buttons and actions    |
+|  09. #MOBILE                   |  mobile view dropdown          |
+|  10. #SEARCH                   |  search field                  |
+|  11. #NAVIGATION               |  left panel & navigation       |
+|  12. #MAIN PANEL               |  main panel                    |
+|  13. #MAIN CONTENT             |  content holder                |
+|  14. #PAGE FOOTER              |  page footer                   |
+|  15. #SHORTCUT AREA            |  dropdown shortcuts area       |
+|  16. #PLUGINS                  |  all scripts and plugins       |
+
+===================================================================
+
+-->
+
+<!-- #BODY -->
+<!-- Possible Classes
+
+    * 'smart-style-{SKIN#}'
+    * 'smart-rtl'         - Switch theme mode to RTL
+    * 'menu-on-top'       - Switch to top navigation (no DOM change required)
+    * 'no-menu'			  - Hides the menu completely
+    * 'hidden-menu'       - Hides the main menu but still accessable by hovering over left edge
+    * 'fixed-header'      - Fixes the header
+    * 'fixed-navigation'  - Fixes the main menu
+    * 'fixed-ribbon'      - Fixes breadcrumb
+    * 'fixed-page-footer' - Fixes footer
+    * 'container'         - boxed layout mode (non-responsive: will not work with fixed-navigation & fixed-ribbon)
+-->
+<body class="">
 
 <!-- #HEADER -->
 <header id="header">
@@ -66,17 +98,9 @@
 
 		<!-- PLACE YOUR LOGO HERE -->
 		<span id="logo"> <img src="img/logo.png" alt="SmartAdmin"> </span>
-		<!-- END LOGO PLACEHOLDER -->
-
-		<!-- Note: The activity badge color changes when clicked and resets the number to 0
-             Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
 
 	</div>
-	<!-- END AJAX-DROPDOWN -->
-	</div>
 
-	</div>
-	<!-- end projects dropdown -->
 
 	<!-- #TOGGLE LAYOUT BUTTONS -->
 	<!-- pulled right: nav area -->
@@ -84,25 +108,77 @@
 
 		<!-- collapse menu button -->
 		<div id="hide-menu" class="btn-header pull-right">
-            <span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i
-							class="fa fa-reorder"></i></a> </span>
+			<span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>
 		</div>
 		<!-- end collapse menu -->
 
+		<!-- #MOBILE -->
+		<!-- Top menu profile link : this shows only when top menu is active -->
+		<ul id="mobile-profile-img" class="header-dropdown-list hidden-xs padding-5">
+			<li class="">
+				<a href="#" class="dropdown-toggle no-margin userdropdown" data-toggle="dropdown">
+					<img src="img/avatars/sunny.png" alt="John Doe" class="online" />
+				</a>
+				<ul class="dropdown-menu pull-right">
+					<li>
+						<a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0"><i class="fa fa-cog"></i> Setting</a>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a href="#ajax/profile.html" class="padding-10 padding-top-0 padding-bottom-0"> <i class="fa fa-user"></i> <u>P</u>rofile</a>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="toggleShortcut"><i class="fa fa-arrow-down"></i> <u>S</u>hortcut</a>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="launchFullscreen"><i class="fa fa-arrows-alt"></i> Full <u>S</u>creen</a>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a href="login.html" class="padding-10 padding-top-5 padding-bottom-5" data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i> <strong><u>L</u>ogout</strong></a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+
 		<!-- logout button -->
 		<div id="logout" class="btn-header transparent pull-right">
-            <span> <a href="/logout" title="Sign Out" data-action="userLogout"
-					  data-logout-msg="Вы можете улучшить свою безопасность после выхода из системы, закрыв этот открытый браузер"><i
-							class="fa fa-sign-out"></i></a> </span>
+			<span> <a href="login.html" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"><i class="fa fa-sign-out"></i></a> </span>
 		</div>
 		<!-- end logout button -->
 
+		<!-- search mobile button (this is hidden till mobile view port) -->
+		<div id="search-mobile" class="btn-header transparent pull-right">
+			<span> <a href="javascript:void(0)" title="Search"><i class="fa fa-search"></i></a> </span>
+		</div>
+		<!-- end search mobile button -->
+
+
 		<!-- fullscreen button -->
 		<div id="fullscreen" class="btn-header transparent pull-right">
-            <span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen"><i
-							class="fa fa-arrows-alt"></i></a> </span>
+			<span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen"><i class="fa fa-arrows-alt"></i></a> </span>
 		</div>
 		<!-- end fullscreen button -->
+
+		<!-- multiple lang dropdown : find all flags in the flags page -->
+		<ul class="header-dropdown-list hidden-xs">
+			<li>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="img/blank.gif" class="flag flag-en" alt="United States"> <span> US</span> <i class="fa fa-angle-down"></i> </a>
+				<ul class="dropdown-menu pull-right">
+					<li class="active">
+						<a href="javascript:void(0);"><img src="img/blank.gif" class="flag flag-en" alt="United States"> English</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);"><img src="img/blank.gif" class="flag flag-ru" alt="Russia"> Русский язык</a>
+
+					</li>
+
+				</ul>
+			</li>
+		</ul>
+		<!-- end multiple lang -->
 
 	</div>
 	<!-- end pulled right: nav area -->
@@ -112,19 +188,28 @@
 
 <!-- #NAVIGATION -->
 <!-- Left panel : Navigation area -->
-<!-- Note: This width of the aside area can be adjusted through LESS variables -->
+<!-- Note: This width of the aside area can be adjusted through LESS/SASS variables -->
 <aside id="left-panel">
 
 	<!-- User info -->
 	<div class="login-info">
-		<span> <!-- User image size is adjusted inside CSS, it should stay as it -->
+				<span> <!-- User image size is adjusted inside CSS, it should stay as is -->
+
+						<span>
+							john.doe
+						</span>
 
 
-
-		</span>
+				</span>
 	</div>
 	<!-- end user info -->
 
+	<!-- NAVIGATION : This navigation is also responsive
+
+    To make this navigation dynamic please make sure to link the node
+    (the reference to the nav > ul) after page load. Or the navigation
+    will not initialize.
+    -->
 	<nav>
 		<!--
         NOTE: Notice the gaps after each icon usage <i></i>..
@@ -133,201 +218,148 @@
         -->
 
 		<ul>
+			<li {{ is_current_path('admin.main') ? ' class="active"' : '' }}>
+				<a href="{{ path_for('admin.main') }}" title="Шаблоны"><i class="fa fa-lg fa-fw fa-envelop"></i> <span class="menu-item-parent">Шаблоны</span></a>
+			</li>
 
+			<li {{ is_current_path('admin.template.create') ? ' class="active"' : '' }}>
+				<a href="{{ path_for('admin.template.create') }}" title="Создать шаблон"><i class="fa fa-lg fa-fw fa-plus"></i> <span class="menu-item-parent">Создать шаблон</span></a>
+			</li>
 
+			<li {{ is_current_path('admin.subscribers.index') ? ' class="active"' : '' }}>
+				<a href="{{ path_for('admin.subscribers.index') }}" title="Подписчики"><i class="fa fa-lg fa-fw fa-subscribers"></i> <span class="menu-item-parent">Подписчики</span></a>
+			</li>
+
+			<li {{ is_current_path('admin.category.index') ? ' class="active"' : '' }}>
+				<a href="{{ path_for('admin.category.index') }}" title="Категория подписчиков"><i class="fa fa-lg fa-fw fa-list"></i> <span class="menu-item-parent">Категория подписчиков</span></a>
+			</li>
+
+			<li class="">
+				<a href="#">
+					<i class="fa fa-fw fa-area-chart"></i> <span class="menu-item-parent">Логи</span>
+				</a>
+
+				<ul class="treeview-menu">
+					<li {{ is_current_path('admin.log.index') ? ' class="active"' : ''}}>
+					<a href="{{ path_for('admin.log.index') }}">
+						<i class="fa fa-fw fa-list"></i> <span class="menu-item-parent">Журнал рассылки</span>
+					</a>
+					</li>
+					<li {{ is_current_path('admin.log.index') ? ' class="active"' : ''}}>
+						<a href="{{ path_for('admin.log.index') }}">
+							<i class="fa fa-fw fa-list"></i> <span class="menu-item-parent">Статистика переходов по ссылкам</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li {{ is_current_path('admin.settings.index') ? ' class="active"' : '' }}>
+				<a href="{{ path_for('admin.settings.index') }}" title="Настройки"><i class="fa fa-lg fa-fw fa-list"></i> <span class="menu-item-parent">Настройки</span></a>
+			</li>
+
+			<li {{ is_current_path('admin.users.index') ? ' class="active"' : '' }}>
+				<a href="{{ path_for('admin.users.index') }}" title="Пользователи"><i class="fa fa-lg fa-fw fa-key"></i> <span class="menu-item-parent">Пользователи</span></a>
+			</li>
 
 		</ul>
 	</nav>
 
-	<span class="minifyme" data-action="minifyMenu"><i class="fa fa-arrow-circle-left hit"></i></span>
+	<span class="minifyme" data-action="minifyMenu"> <i class="fa fa-arrow-circle-left hit"></i> </span>
 
 </aside>
 <!-- END NAVIGATION -->
 
-<!-- MAIN PANEL -->
+<!-- #MAIN PANEL -->
 <div id="main" role="main">
 
 	<!-- RIBBON -->
 	<div id="ribbon">
 
-		<!-- You can also add more buttons to the
-        ribbon for further usability
+		<!-- breadcrumb -->
+		<ol class="breadcrumb">
+			<li>Home</li>
+			<li>Blank</li>
+		</ol>
+		<!-- end breadcrumb -->
 
-        Example below:
-
-        <span class="ribbon-button-alignment pull-right">
-        <span id="search" class="btn btn-ribbon hidden-xs" data-title="search"><i class="fa-grid"></i> Change Grid</span>
-        <span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa-plus"></i> Add</span>
-        <span id="search" class="btn btn-ribbon" data-title="search"><i class="fa-search"></i> <span class="hidden-mobile">Search</span></span>
-        </span> -->
 
 	</div>
 	<!-- END RIBBON -->
 
+	<!-- #MAIN CONTENT -->
 
 
+	<!-- col -->
+	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+		<h1 class="page-title txt-color-blueDark">
 
-	{% include 'templates/partials/navigation.twig' %}
-	<div class="container">
-		{% include 'templates/partials/flash.twig' %}
-		{% block content %}
-		    
-		{% endblock %}
-
+			<!-- PAGE HEADER -->
+			<i class="fa-fw fa fa-home"></i>
+			Page Header
+			<span>>
+							Subtitle
+						</span>
+		</h1>
 	</div>
+	<!-- end col -->
+
+
+	<!-- end row -->
+
+	<!-- END #MAIN CONTENT -->
 
 </div>
-<!-- END MAIN PANEL -->
+<!-- END #MAIN PANEL -->
 
-<!-- PAGE FOOTER -->
+<!-- #PAGE FOOTER -->
 <div class="page-footer">
 	<div class="row">
 		<div class="col-xs-12 col-sm-6">
-
+			<span class="txt-color-white">SmartAdmin 1.9.x <span class="hidden-xs"> - Web Application Framework</span> © 2017-2019</span>
 		</div>
-
 	</div>
+	<!-- end row -->
 </div>
-<!-- END PAGE FOOTER -->
+<!-- END FOOTER -->
+
 
 
 <!--================================================== -->
 
+<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)
+<script data-pace-options='{ "restartOnRequestAfter": true }' src="js/plugin/pace/pace.min.js"></script>-->
 
-<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
-<script data-pace-options='{ "restartOnRequestAfter": true }' src="js/plugin/pace/pace.min.js"></script>
 
+<!-- #PLUGINS -->
 <!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
     if (!window.jQuery) {
-        document.write('<script src="{!! asset('js/libs/jquery-3.2.1.min.js') !!}"><\/script>');
+        document.write('<script src="js/libs/jquery-3.2.1.min.js"><\/script>');
     }
 </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script>
     if (!window.jQuery.ui) {
-        document.write('<script src="{!! asset('js/libs/jquery-ui.min.js') !!}"><\/script>');
+        document.write('<script src="js/libs/jquery-ui.min.js"><\/script>');
     }
 </script>
 
 <!-- IMPORTANT: APP CONFIG -->
-
 <script src="js/app.config.js"></script>
-
-
-<!-- JS TOUCH : include this plugin for mobile drag / drop touch events-->
-
-
-<script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
-
 
 <!-- BOOTSTRAP JS -->
 <script src="js/bootstrap/bootstrap.min.js"></script>
 
-<!-- CUSTOM NOTIFICATION -->
-<script src="js/notification/SmartNotification.min.js"></script>
-
-<!-- JARVIS WIDGETS -->
-<script src="js/smartwidgets/jarvis.widget.min.js"></script>
-
-
-
-<!-- EASY PIE CHARTS -->
-
-<script src="js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
-
-
-
-
-
-<script src="js/plugin/sparkline/jquery.sparkline.min.js"></script>
-
-<script src="js/plugin/jquery-validate/jquery.validate.min.js"></script>
-
-<script src="js/plugin/masked-input/jquery.maskedinput.min.js"></script>
-
-
-
-
-<!-- JQUERY SELECT2 INPUT -->
-
-
-<script src="js/plugin/select2/select2.min.js"></script>
-
-
-
-<!-- JQUERY UI + Bootstrap Slider -->
-<script src="js/plugin/bootstrap-slider/bootstrap-slider.min.js"></script>
-
-
-
-
-<!-- browser msie issue fix -->
-
-
-
-<script src="js/plugin/msie-fix/jquery.mb.browser.min.js"></script>
-
-
-<!-- FastClick: For mobile devices -->
-
-
-<script src="js/plugin/fastclick/fastclick.min.js"></script>
-
-
 <!--[if IE 8]>
-
 <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
-
 <![endif]-->
 
 <!-- MAIN APP JS FILE -->
 <script src="js/app.min.js"></script>
 
 
-
-<!-- ENHANCEMENT PLUGINS : NOT A REQUIREMENT -->
-<!-- Voice command : plugin -->
-
-
-<script src="js/speech/voicecommand.min.js"></script>
-
-
-
-<!-- SmartChat UI : plugin -->
-
-<script src="js/smart-chat-ui/smart.chat.ui.min.js"></script>
-
-<script src="js/smart-chat-ui/smart.chat.manager.min.js"></script>
-
-<script src="js/plugin/datatables/jquery.dataTables.min.js"></script>
-
-
-<script src="js/plugin/datatables/dataTables.colVis.min.js"></script>
-
-<script src="js/plugin/datatables/dataTables.tableTools.min.js"></script>
-
-<script src="js/plugin/datatables/dataTables.bootstrap.min.js"></script>
-
-<script src="js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
-
-<script src="js/plugin/daterangepicker/moment.min.js"></script>
-
-<script src="js/plugin/daterangepicker/daterangepicker.js"></script>
-
-
-<script src="js/plugin/sweetalert/sweetalert-dev.js"></script>
-
-<script src="js/plugin/jquery-treeview-master/jquery.treeview.js"></script>
-
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
-
 </body>
 
 </html>
-
-

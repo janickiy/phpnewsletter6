@@ -45,15 +45,6 @@ $container['mailer'] = function($container) {
 	return new Nette\Mail\SmtpMailer($container['settings']['mailer']);
 };
 
-// Register Blade View helper
-$container['view'] = function ($container) {
-    return new \Slim\Views\Blade(
-        $container['settings']['renderer']['blade_template_path'],
-        $container['settings']['renderer']['blade_cache_path']
-    );
-};
-
-
 
 $container['view'] = function ($container) {
 	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/views/', [
@@ -69,6 +60,9 @@ $container['view'] = function ($container) {
 		'check' => $container->auth->check(),
 		'user' => $container->auth->user()
 	]);
+
+
+
 
 	$view->getEnvironment()->addGlobal('flash',$container->flash);
 
@@ -87,8 +81,8 @@ $container['AuthController'] = function($container) {
 	return new \App\Controllers\Auth\AuthController($container);
 };
 
-$container['TemlatesController'] = function($container) {
-    return new \App\Controllers\Dashboard\TemplateController($container);
+$container['TemplateController'] = function($container) {
+    return new App\Controllers\Dashboard\TemplateController($container);
 };
 
 $container['SubscribersController'] = function($container) {
