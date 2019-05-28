@@ -14,10 +14,15 @@ class AuthController extends Controller
         return $this->view->render($response,'403.twig');
     }
 
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
 	public function getSignOut($request,$response)
 	{
 		$this->auth->logout();
-		return $response->withRedirect($this->router->pathFor('home'));
+		return $response->withRedirect($this->router->pathFor('auth.signin'));
 	}
 
 	public function getSignIn($request,$response)
@@ -34,10 +39,11 @@ class AuthController extends Controller
 
 		if (!$auth) {
 			$this->flash->addMessage('error','Could not sign you in with those details');
-			return $response->withRedirect($this->router->pathFor('auth.signin'));
+
+			return $response->withRedirect($this->router->pathFor('admin.main'));
 		}
 
-		return $response->withRedirect($this->router->pathFor('home'));
+		return $response->withRedirect($this->router->pathFor('admin.main'));
 	}
 
 	public function getSignUp($request,$response)
