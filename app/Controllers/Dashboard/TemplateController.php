@@ -13,9 +13,9 @@ class TemplateController extends Controller
        return $this->view->render($response,'dashboard/template/index.twig');
    }
 
-   public function create()
+   public function create($request,$response)
    {
-
+       return $this->view->render($response,'dashboard/template/create_edit.twig');
    }
 
    public function store()
