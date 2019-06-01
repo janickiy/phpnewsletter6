@@ -1,49 +1,55 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html>
 <head>
     <meta charset="utf-8">
-    <title> SmartAdmin </title>
+    <title>Админка</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+
+
     <!-- #CSS Links -->
     <!-- Basic Styles -->
+
+
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/bootstrap.min.css">
+
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/font-awesome.min.css">
 
     <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
+
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/smartadmin-production-plugins.min.css">
+
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/smartadmin-production.min.css">
+
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/smartadmin-skins.min.css">
+
+
+    <!-- SmartAdmin RTL Support -->
+
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/smartadmin-rtl.min.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/js/plugin/daterangepicker/daterangepicker.css">
 
     <!-- We recommend you use "your_style.css" to override SmartAdmin
          specific styles this will also ensure you retrain your customization with each SmartAdmin update.
     <link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
 
-    <!-- #FAVICONS -->
-    <link rel="shortcut icon" href="{{ base_url() }}/img/favicon/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="{{ base_url() }}/img/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/js/plugin/sweetalert/sweetalert.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/js/plugin/jquery-treeview-master/jquery.treeview.css"
+
+
 
     <!-- #GOOGLE FONT -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
 
-    <!-- #APP SCREEN / ICONS -->
-    <!-- Specifying a Webpage Icon for Web Clip
-         Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
-    <link rel="apple-touch-icon" href="{{ base_url() }}/img/splash/sptouch-icon-iphone.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ base_url() }}/img/splash/touch-icon-ipad.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="{{ base_url() }}/img/splash/touch-icon-iphone-retina.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="{{ base_url() }}/img/splash/touch-icon-ipad-retina.png">
 
-    <!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-    <!-- Startup image for web apps -->
-    <link rel="apple-touch-startup-image" href="{{ base_url() }}/img/splash/ipad-landscape.png"  media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
-    <link rel="apple-touch-startup-image" href="{{ base_url() }}/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
-    <link rel="apple-touch-startup-image" href="{{ base_url() }}/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+    <script type="text/javascript">
+        var SITE_URL = "{{ base_url() }}/";
+    </script>
 
 </head>
 
@@ -181,25 +187,19 @@ Use search to find needed section.
 
 <!-- #NAVIGATION -->
 <!-- Left panel : Navigation area -->
-<!-- Note: This width of the aside area can be adjusted through LESS/SASS variables -->
+<!-- Note: This width of the aside area can be adjusted through LESS variables -->
 <aside id="left-panel">
 
     <!-- User info -->
     <div class="login-info">
-		<span> <!-- User image size is adjusted inside CSS, it should stay as is -->
-			<span>
-				{{ auth.user.name }}
-			</span>
+		<span> <!-- User image size is adjusted inside CSS, it should stay as it -->
+
+            {{ auth.user.name }}
+
 		</span>
     </div>
     <!-- end user info -->
 
-    <!-- NAVIGATION : This navigation is also responsive
-
-    To make this navigation dynamic please make sure to link the node
-    (the reference to the nav > ul) after page load. Or the navigation
-    will not initialize.
-    -->
     <nav>
         <!--
         NOTE: Notice the gaps after each icon usage <i></i>..
@@ -208,6 +208,7 @@ Use search to find needed section.
         -->
 
         <ul>
+
             <li {{ is_current_path('admin.main') ? ' class="active"' : '' }}>
                 <a href="{{ path_for('admin.main') }}" title="Шаблоны">
                     <i class="fa fa-fw fa-envelope"></i> <span class="menu-item-parent">Шаблоны</span>
@@ -266,68 +267,71 @@ Use search to find needed section.
         </ul>
     </nav>
 
-    <span class="minifyme" data-action="minifyMenu"> <i class="fa fa-arrow-circle-left hit"></i> </span>
+    <span class="minifyme" data-action="minifyMenu"><i class="fa fa-arrow-circle-left hit"></i></span>
 
 </aside>
 <!-- END NAVIGATION -->
 
-<!-- #MAIN PANEL -->
+<!-- MAIN PANEL -->
 <div id="main" role="main">
 
     <!-- RIBBON -->
     <div id="ribbon">
 
-        <!-- breadcrumb -->
-        <ol class="breadcrumb">
-            <li>Home</li>
-        </ol>
-        <!-- end breadcrumb -->
 
+        <!-- RIBBON -->
+        <div id="ribbon">
+
+            <!-- breadcrumb -->
+            <ol class="breadcrumb">
+                <li>Home</li>
+            </ol>
+            <!-- end breadcrumb -->
+
+
+        </div>
+        <!-- END RIBBON -->
+
+        <!-- You can also add more buttons to the
+        ribbon for further usability
+
+        Example below:
+
+        <span class="ribbon-button-alignment pull-right">
+        <span id="search" class="btn btn-ribbon hidden-xs" data-title="search"><i class="fa-grid"></i> Change Grid</span>
+        <span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa-plus"></i> Add</span>
+        <span id="search" class="btn btn-ribbon" data-title="search"><i class="fa-search"></i> <span class="hidden-mobile">Search</span></span>
+        </span> -->
 
     </div>
     <!-- END RIBBON -->
+    {% include 'templates/partials/flash.twig' %}
 
-    <!-- #MAIN CONTENT -->
-
-
-    <!-- col -->
-    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-        <h1 class="page-title txt-color-blueDark">
-
-            <!-- PAGE HEADER -->
-
-            Page Header
-            <span>>
-							Subtitle
-						</span>
-        </h1>
-
-        {% include 'templates/partials/flash.twig' %}
+    <!-- MAIN CONTENT -->
+    <div id="content">
         {% block content %}
+
+
 
         {% endblock %}
 
+
     </div>
-    <!-- end col -->
-
-
-    <!-- end row -->
-
-    <!-- END #MAIN CONTENT -->
+    <!-- END MAIN CONTENT -->
 
 </div>
-<!-- END #MAIN PANEL -->
+<!-- END MAIN PANEL -->
 
-<!-- #PAGE FOOTER -->
+<!-- PAGE FOOTER -->
 <div class="page-footer">
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <span class="txt-color-white">© 2006-{{ dateTime | date('Y') }} <a href="http:://janicky.com">PHP Newsletter</a>, Яницкий Александр</span>
         </div>
+
     </div>
-    <!-- end row -->
 </div>
-<!-- END FOOTER -->
+<!-- END PAGE FOOTER -->
 
 
 <!--================================================== -->

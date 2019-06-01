@@ -13,12 +13,98 @@
 
                     <p>*-обязательные поля</p>
 
+                    <form id="tmplForm" enctype="multipart/form-data" action="{{ template is defined ? path_for('admin.template.edit') : path_for('admin.template.create') }}" method="{{ template is defined ? 'put' : 'post' }}" class="form-horizontal">
+                        {% if template %}<input type="hidden" name="id" value="{{ template.id }}">{% endif %}
+                        <div class="box-body">
+
+                            <div class="form-group">
+                                <label for="name" class="col-sm-3 control-label">Название*</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" placeholder="Название" name="name" value="{{ template is defined ? template.name : '' }}" type="text" id="tmplName">
+                                    {% if errors.name %}
+                                        <span class="text-danger">{{ errors.name | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="body" class="col-sm-3 control-label">Шаблон*</label>
+                                <div class="col-sm-6">
+                                    <textarea class="form-control" rows="5" id="tmplBody" name="body">{{ template is defined ? template.body : '' }}</textarea>
+                                    {% if errors.body %}
+                                        <span class="text-danger">{{ errors.body | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if attachList %}
+                            <div class="form-group">
+                                <label for="name" class="col-sm-3 control-label">Вложения</label>
+                                <div class="col-sm-6">
+                                    <div class="controls inline">
+                                        {% for f in attachList %}
+                                            <span id="attach_{{ f.id }}">{{ f.file }}
+                                                <a href="#" data-num="{{ f.id }}" class="remove_attach"  title="удалить"> X </a>&nbsp;&nbsp;
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="form-group">
+                                <label for="attachfile[]" class="col-sm-3 control-label">Присоединить файлы</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control input-file-field" name="attachfile[]" type="file" id="tmplAttachfile" multiple="true">
+                                    {% if errors.attachfile %}
+                                        <span class="text-danger">{{ errors.attachfile | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="categoryId" class="col-sm-3 control-label">Категория подписчиков</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" id="tmplCategory" name="categoryId">
+                                        <option>Выберите</option>
+                                        {% for o in options %}
+                                            <option value="{{ o.id }}">{{ o.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if errors.categoryId %}
+                                        <span class="text-danger">{{ errors.categoryId | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Важность</label>
+                                <div class="col-sm-6">
 
 
-                    <form action="{{ template is defined ? path_for('admin.template.edit') : path_for('admin.template.create') }}"  method="{{ template is defined ? 'put' : 'post' }}" class="form-horizontal">
+                                    <div class="inline">
+                                        <label class="radio">
+                                            <input type="radio" name="radio-inline" checked="checked">
+                                            <i></i>Alexandra
+                                        </label>
 
+                                        <label class="radio">
+                                            <input type="radio" name="radio-inline" checked="checked">
+                                            <i></i>Alexandra
+                                        </label>
+
+                                        <label class="radio">
+                                            <input type="radio" name="radio-inline" checked="checked">
+                                            <i></i>Alexandra
+                                        </label>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
                     </form>
-
 
 
                 </div>
