@@ -16,8 +16,8 @@ class TemplateController extends Controller
    public function create($request,$response)
    {
 
-$template['id'] = 3;
-       return $this->view->render($response,'dashboard/template/create_edit.twig',compact('template'));
+
+       return $this->view->render($response,'dashboard/template/create_edit.twig');
    }
 
    public function store()
