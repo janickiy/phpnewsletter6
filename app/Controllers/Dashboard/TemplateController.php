@@ -6,6 +6,8 @@ use App\Models\Templates;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 use App\Models\Category;
+use Slim\Http\UploadedFile;
+
 
 class TemplateController extends Controller
 {
@@ -44,12 +46,21 @@ class TemplateController extends Controller
            return $response->withRedirect($this->router->pathFor('admin.template.create'));
        }
 
-       $template = Templates::create([
-           'name' => $request->getParam('name'),
-           'body' => $request->getParam('body'),
-           'prior' => $request->getParam('prior'),
-           'categoryId' => $request->getParam('categoryId'),
-       ]);
+       Templates::create($request->getParsedBody());
+
+      // var_dump($this->upload_directory);
+  // exit;
+
+       $directory = $this->upload_directory;
+       $uploadedFiles = $request->getUploadedFiles();
+
+       // handle single input with multiple file uploads
+       foreach ($uploadedFiles['attachfile'] as $uploadedFile) {
+           if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
+               $filename = $this->moveUploadedFile($directory, $uploadedFile);
+             //  $response->write('uploaded ' . $filename . '<br/>');
+           }
+       }
 
        $this->flash->addMessage('info','Данные успешно добавлены');
 
@@ -82,6 +93,17 @@ class TemplateController extends Controller
    {
 
    }
+
+    public function moveUploadedFile($directory, UploadedFile $uploadedFile)
+    {
+        $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+        $basename = bin2hex(random_bytes(8));
+        $filename = sprintf('%s.%0.8s', $basename, $extension);
+
+        $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
+
+        return $filename;
+    }
 
 	
 }

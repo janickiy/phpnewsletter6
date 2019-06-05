@@ -11,7 +11,7 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm" enctype="multipart/form-data" action="{{ template is defined ? path_for('admin.template.edit') : path_for('admin.template.create') }}" method="{{ template is defined ? 'put' : 'post' }}" class="smart-form">
+                    <form id="tmplForm" enctype="multipart/form-data" action="{{ template is defined ? path_for('admin.template.update') : path_for('admin.template.store') }}" method="{{ template is defined ? 'put' : 'post' }}" class="smart-form">
 
                         {% if template %}<input type="hidden" name="id" value="{{ template.id }}">{% endif %}
 
@@ -97,6 +97,9 @@
                                 Назад
                             </button>
                         </footer>
+
+                        {{ csrf.field | raw }}
+
                     </form>
 
                 </div>

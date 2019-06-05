@@ -61,13 +61,12 @@ $container['view'] = function ($container) {
 		'user' => $container->auth->user()
 	]);
 
-
-
-
 	$view->getEnvironment()->addGlobal('flash',$container->flash);
 
 	return $view;
 };
+
+$container['upload_directory'] = __DIR__ . '/../attach';
 
 $container['validator'] = function ($container) {
 	return new App\Validation\Validator;
