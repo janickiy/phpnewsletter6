@@ -12,6 +12,7 @@
         }
     ],
     "require": {
+        "php": ">=7.0.0",
         "slim/slim": "^3.1",
         "slim/twig-view": "^2.1",
         "rubellum/slim-blade-view": "^0.1.1",
@@ -22,7 +23,9 @@
         "vlucas/phpdotenv": "^2.4",
         "phpunit/phpunit": "^4.8",
         "nette/mail": "^2.4",
-        "robmorgan/phinx": "v0.8.0"
+        "robmorgan/phinx": "v0.8.0",
+        "awurth/slim-validation": "^3.1",
+        "gealtec/datatables-slim": "^1.0"
     },
     "autoload": {
     	"psr-4": {

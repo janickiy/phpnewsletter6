@@ -2,17 +2,14 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Админка</title>
+    <title>Панель управления | {{ title is defined ? title : '' }}</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-
-
     <!-- #CSS Links -->
     <!-- Basic Styles -->
-
 
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/bootstrap.min.css">
 
@@ -41,11 +38,12 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/js/plugin/jquery-treeview-master/jquery.treeview.css"
 
-
-
     <!-- #GOOGLE FONT -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
 
+    {% block css %}
+
+    {% endblock %}
 
     <script type="text/javascript">
         var SITE_URL = "{{ base_url() }}/";
@@ -304,17 +302,17 @@ Use search to find needed section.
         </span> -->
 
     </div>
-    <!-- END RIBBON -->
-    {% include 'templates/partials/flash.twig' %}
 
     <!-- MAIN CONTENT -->
     <div id="content">
+
+        {% if title is defined %} <h2>{{ title }}</h2> {% endif %}
+
+        {% include 'templates/partials/flash.twig' %}
+
         {% block content %}
 
-
-
         {% endblock %}
-
 
     </div>
     <!-- END MAIN CONTENT -->
@@ -369,6 +367,9 @@ Use search to find needed section.
 <!-- MAIN APP JS FILE -->
 <script src="{{ base_url() }}/js/app.min.js"></script>
 
+{% block js %}
+
+{% endblock %}
 
 </body>
 

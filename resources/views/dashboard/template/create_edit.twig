@@ -20,23 +20,26 @@
                         </header>
 
                         <fieldset>
+
                             <section>
-                                <label for="name" lass="label">Название*</label>
+                                <label for="name" class="label">Название*</label>
                                 <label class="input">
-                                    <input type="text" maxlength="10" placeholder="Название" name="name" value="{{ template is defined ? template.name : '' }}" type="text" id="tmplName">
+                                    <input type="text" maxlength="10" placeholder="Название" name="name" value="{{ template is defined ? template.name : '' }}" type="text" id="name">
                                 </label>
+
                                 {% if errors.name %}
                                     <span class="text-danger">{{ errors.name | first }}</span>
                                 {% endif %}
+
                             </section>
 
                             <section>
                                 <label for="body" class="label">Шаблон*</label>
                                 <label class="textarea textarea-resizable">
-                                    <textarea rows="3" class="custom-scroll" placeholder="Название" name="body" value="{{ template is defined ? template.name : '' }}" type="text" id="tmplName">{{ template is defined ? template.body : '' }}</textarea>
+                                    <textarea rows="3" class="custom-scroll" placeholder="Название" name="body" value="{{ template is defined ? template.name : '' }}" type="text" id="body">{{ template is defined ? template.body : '' }}</textarea>
                                 </label>
                                 {% if errors.body %}
-                                    <span class="text-danger">{{ errors.body | first }}</span>jjj
+                                    <span class="text-danger">{{ errors.body | first }}</span>
                                 {% endif %}
 
                             <div class="note">
@@ -50,14 +53,14 @@
 
                                 </div>
                                 {% if errors.attachfile %}
-                                    <span class="text-danger">{{ errors.attachfile | first }}</span>jjj
+                                    <span class="text-danger">{{ errors.attachfile | first }}</span>
                                 {% endif %}
                             </section>
 
                             <section>
                                 <label for="categoryId" class="label">Категория подписчиков*</label>
                                 <label class="select">
-                                    <select id="tmplCategory" name="categoryId">
+                                    <select id="category" name="categoryId">
                                         <option>Выберите</option>
                                         {% for o in category %}
                                             <option value="{{ o.id }}" {{ templat.categoryId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
@@ -65,7 +68,7 @@
                                     </select> <i></i>
                                 </label>
                                 {% if errors.categoryId %}
-                                    <span class="text-danger">{{ errors.categoryId | first }}</span>jjj
+                                    <span class="text-danger">{{ errors.categoryId | first }}</span>
                                 {% endif %}
                             </section>
 
@@ -106,5 +109,23 @@
             </div>
         </div>
     </div>
+
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="{{ base_url() }}/js/plugin/ckeditor/ckeditor.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            CKEDITOR.replace('body', {height: '380px', startupFocus: true});
+
+        });
+
+    </script>
 
 {% endblock %}

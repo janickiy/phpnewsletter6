@@ -69,8 +69,12 @@ $container['view'] = function ($container) {
 $container['upload_directory'] = __DIR__ . '/../attach';
 
 $container['validator'] = function ($container) {
-	return new App\Validation\Validator;
+	//return new App\Validation\Validator;
+
+    return new Awurth\SlimValidation\Validator();
 };
+
+
 
 $container['HomeController'] = function($container) {
 	return new \App\Controllers\HomeController($container);
@@ -104,6 +108,9 @@ $container['SettingsController'] = function($container) {
     return new \App\Controllers\Dashboard\SettingsController($container);
 };
 
+$container['DataTableController'] = function($container) {
+    return new \App\Controllers\Dashboard\DataTableController($container);
+};
 
 $container['PasswordController'] = function($container) {
 	return new \App\Controllers\Auth\PasswordController($container);
