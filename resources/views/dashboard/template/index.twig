@@ -99,13 +99,12 @@
             columns: [
             {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},
-
-            {data: "actions", name: 'actions', orderable: false, searchable: false}
+            {data: "created_at", name: 'actions', orderable: false, searchable: false}
         ],
     });
 
         $('#itemList').on('click', 'a.deleteRow', function () {
-            console.log(31321,'dqwdq')
+
             var btn = this;
             var rowid = $(this).attr('id');
             swal({

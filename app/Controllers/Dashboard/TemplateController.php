@@ -64,7 +64,7 @@ class TemplateController extends Controller
            }
        }
 
-       $this->flash->addMessage('info','Данные успешно добавлены');
+       $this->flash->addMessage('success','Данные успешно добавлены');
 
        return $response->withRedirect($this->router->pathFor('admin.main'));
    }

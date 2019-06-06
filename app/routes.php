@@ -81,7 +81,7 @@ $app->group('', function () use ($container) {
     });
 
     $this->group('/datatable', function () use ($container) {
-        $this->any('/templates', 'DataTableController:getTemplates')->setName('admin.datatable.templates');
+        $this->get('/templates', 'DataTableController:getTemplates')->setName('admin.datatable.templates');
     });
 
 })->add(new AuthMiddleware($container));
