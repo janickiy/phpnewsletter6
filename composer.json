@@ -3,12 +3,11 @@
     "description": "Slim Framework 3 skeleton application has authentication.",
     "type": "project",
     "keywords": ["slim", "slim 3", "skeleton", "authentication"],
-    "homepage": "https://github.com/HavenShen/slim-born",
     "license": "MIT",
     "authors": [
         {
-            "name": "HavenShen",
-            "email": "havenshen@gmail.com"
+            "name": "Alexander Yanitsky",
+            "email": "janiciy@mail.ru"
         }
     ],
     "require": {
@@ -24,8 +23,7 @@
         "phpunit/phpunit": "^4.8",
         "nette/mail": "^2.4",
         "robmorgan/phinx": "v0.8.0",
-        "awurth/slim-validation": "^3.1",
-        "gealtec/datatables-slim": "^1.0"
+        "awurth/slim-validation": "^3.1"
     },
     "autoload": {
     	"psr-4": {

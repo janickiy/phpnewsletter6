@@ -7,7 +7,8 @@ use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 use App\Models\Category;
 use Slim\Http\UploadedFile;
-
+use Psr\Http\Message\RequestInterface as Resquest;
+use Psr\Http\Message\ResponseInterface as Response;
 
 class TemplateController extends Controller
 {

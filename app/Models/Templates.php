@@ -19,8 +19,5 @@ class Templates extends Model
         'categoryId'
 	];
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class,'id','categoryId');
-    }
+
 }

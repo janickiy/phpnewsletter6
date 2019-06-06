@@ -5,6 +5,8 @@ namespace App\Controllers\Dashboard;
 use App\Models\Category;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
+use Psr\Http\Message\RequestInterface as Resquest;
+use Psr\Http\Message\ResponseInterface as Response;
 
 class CategoryController extends Controller
 {
@@ -18,7 +20,7 @@ class CategoryController extends Controller
      * @param $response
      * @return mixed
      */
-   public function create($request,$response)
+   public function create(Resquest $request, Response $response)
    {
        $title = "Добавление категории";
 
@@ -30,7 +32,7 @@ class CategoryController extends Controller
      * @param $response
      * @return mixed
      */
-   public function store($request,$response)
+   public function store(Resquest $request, Response $response)
    {
        $validation = $this->validator->validate($request,[
            'name' => ['rules' => v::stringType()->length(1, 255)->notEmpty(),'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов','notEmpty' => 'Это поле обязательно для заполнения']],

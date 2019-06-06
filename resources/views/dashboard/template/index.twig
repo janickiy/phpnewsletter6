@@ -19,6 +19,8 @@
                                 <th data-hide="phone">Заказ</th>
                                 <th data-hide="phone">Дата и время заказа</th>
                                 <th data-hide="phone">Пользователь</th>
+                                <th data-hide="phone">Дата и время заказа</th>
+                                <th data-hide="phone">Пользователь</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -99,6 +101,8 @@
             columns: [
             {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},
+            {data: 'body', name: 'body'},
+            {data: 'prior', name: 'prior',searchable: false},
             {data: "created_at", name: 'actions', orderable: false, searchable: false}
         ],
     });

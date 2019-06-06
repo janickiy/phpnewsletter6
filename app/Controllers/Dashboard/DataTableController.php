@@ -2,58 +2,40 @@
 
 namespace App\Controllers\Dashboard;
 
-use App\Models\{Log,Templates};
 use App\Controllers\Controller;
-use Gealtec\Datatables\Datatables;
+use App\Helper\Ssp;
+use Psr\Http\Message\RequestInterface as Resquest;
+use Psr\Http\Message\ResponseInterface as Response;
 
 class DataTableController extends Controller
 {
-    public function getTemplates($request,$response)
+    private function getDetails()
     {
-        //$row = Templates::get();
-
-
-
-        $draw = isset($_POST["draw"]) ? $_POST["draw"] : 1;
-        $order = isset($_POST['order']['0']['column']) && $_POST['order']['0']['column'] == 0 ? 'name' : 'body';
-        $dir = isset($_POST['order']['0']['dir']) && $_POST['order']['0']['dir'] == "asc" ? "asc" : "desc";
-
-
-        $start = isset($_POST['start']) ?? $_POST['start'];
-        $length = isset($_POST['length']) ?? $_POST['length'];
-
-        $user = new Templates();
-        $todos = Templates::count();
-        $recordsFiltered = $todos;
-        if (isset($_POST["search"]["value"]) && $_POST["search"]["value"]) {
-            $users = $user
-                ->select('name', 'body')
-                ->where('name', 'like', $_POST["search"]["value"] . '%')
-                ->orWhere('body', 'like', $_POST["search"]["value"] . '%')
-               // ->offset($start)
-               // ->take($length)
-               ->orderBy($order, $dir)
-                ->get();
-
-            $recordsFiltered = $users->count();
-        } else {
-            $users = $user
-                ->select('name', 'body')
-              //  ->offset($start)
-               // ->take($length)
-                ->orderBy($order, $dir)
-                ->get();
-        }
-
-        $output = array(
-            "draw"                    =>     intval($draw),
-            "recordsTotal"          =>      intval($todos),
-            "recordsFiltered"     =>    intval($recordsFiltered),
-            "data"                    =>    $users
-        );
-
-        header("Content-type: application/json");
-        echo json_encode($output);
+        return ['user' => getenv('DB_USERNAME'), 'pass' => getenv('DB_PASSWORD'), 'db' => getenv('DB_DATABASE'), 'host' => getenv('DB_HOST'), 'charset' => getenv('DB_CHARSET')];
     }
+
+    /**
+     * @param Resquest $request
+     * @param Response $response
+     */
+    public function getTemplates(Resquest $request, Response $response)
+    {
+        $table = 'templates';
+        $primaryKey = 'id';
+
+        $columns = [
+            ['db' => 'id', 'dt' => 'id'],
+            ['db' => 'name', 'dt' => 'name'],
+            ['db' => 'body', 'dt' => 'body'],
+            ['db' => 'prior', 'dt' => 'prior'],
+            ['db' => 'categoryId', 'dt' => 'categoryId'],
+            ['db' => 'created_at', 'dt' => 'created_at'],
+            ['db' => 'updated_at', 'dt' => 'updated_at'],
+        ];
+
+        header('Content-Type: application/json');
+        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+    }
+
 
 }
