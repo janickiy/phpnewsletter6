@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Dashboard;
 
+use App\Models\Category;
 use App\Controllers\Controller;
 use App\Helper\Ssp;
 use Psr\Http\Message\RequestInterface as Resquest;
@@ -20,21 +21,54 @@ class DataTableController extends Controller
      */
     public function getTemplates(Resquest $request, Response $response)
     {
-        $table = 'templates';
-        $primaryKey = 'id';
+        global
+        $pdoHost, $pdoUser,
+        $pdoPass, $pdoDatabase;
 
-        $columns = [
-            ['db' => 'id', 'dt' => 'id'],
-            ['db' => 'name', 'dt' => 'name'],
-            ['db' => 'body', 'dt' => 'body'],
-            ['db' => 'prior', 'dt' => 'prior'],
-            ['db' => 'categoryId', 'dt' => 'categoryId'],
-            ['db' => 'created_at', 'dt' => 'created_at'],
-            ['db' => 'updated_at', 'dt' => 'updated_at'],
+
+
+
+        $options = [
+            'table' => 'templates',
+            'alias' => 't',
+            'primaryKey' => 'id',
+            'columns' => [
+                [ 'db' => 'id',       'dt' => 'id' ],
+                [
+                    'db' => 'categoryId',
+                    'dt' => 'category',
+                    'join' => [
+                        'table' => 'category',
+                        'on' => 'id',
+                        'select' => 'name',
+                        'alias' => 'c',
+                        'as' => 'category'
+                    ]
+                ],
+
+                [
+                    'db' => 'name',
+                    'dt' => 'name',
+
+                ],
+                [
+                    'db' => 'body',
+                    'dt' => 'body',
+
+                ],
+                [ 'db' => 'prior', 'dt' => 'prior' ],
+                [ 'db' => 'created_at', 'dt' => 'created_at' ]
+            ]
         ];
 
+
+
+
+
+
+
         header('Content-Type: application/json');
-        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+        echo json_encode(Ssp::process($request->getParams(), $this->getDetails(), $options));
     }
 
 

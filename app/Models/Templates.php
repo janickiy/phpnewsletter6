@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 
 class Templates extends Model
@@ -18,6 +19,11 @@ class Templates extends Model
         'pos',
         'categoryId'
 	];
+
+    public function category()
+    {
+        return $this->hasOne(Category::class, 'categoryId');
+    }
 
 
 }

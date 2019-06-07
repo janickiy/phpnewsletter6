@@ -16,11 +16,12 @@
                         <table id="itemList" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>
                             <tr>
-                                <th data-hide="phone">Заказ</th>
-                                <th data-hide="phone">Дата и время заказа</th>
-                                <th data-hide="phone">Пользователь</th>
-                                <th data-hide="phone">Дата и время заказа</th>
-                                <th data-hide="phone">Пользователь</th>
+                                <th data-hide="phone">ID</th>
+                                <th data-hide="phone">Название</th>
+                                <th data-hide="phone">Категория</th>
+                                <th data-hide="phone">Приоритет</th>
+                                <th data-hide="phone">Дата</th>
+                                <th data-hide="phone">Действие</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -101,9 +102,10 @@
             columns: [
             {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},
-            {data: 'body', name: 'body'},
-            {data: 'prior', name: 'prior',searchable: false},
-            {data: "created_at", name: 'actions', orderable: false, searchable: false}
+            {data: 'category', name: 'category'},
+            {data: 'prior', name: 'prior', searchable: false},
+            {data: 'created_at', name: 'created_at'},
+
         ],
     });
 

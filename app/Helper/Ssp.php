@@ -15,482 +15,538 @@ namespace App\Helper;
  * side processing requirements of DataTables.
  *
  * @license MIT - http://datatables.net/license_mit
+ * @editedby (SilverX) Chris R. McLeod
+ *
  */
-use PDOException;
+
 use PDO;
 
 class Ssp {
-	/**
-	 * Create the data output array for the DataTables rows
-	 *
-	 *  @param  array $columns Column information array
-	 *  @param  array $data    Data from the SQL get
-	 *  @return array          Formatted data in a row based format
-	 */
-	static function data_output($columns, $data) {
-		$out = array();
+    /**
+     * Create the data output array for the DataTables rows
+     *
+     *  @param  array $columns Column information array
+     *  @param  array $data    Data from the SQL get
+     *  @return array          Formatted data in a row based format
+     */
+    private static function data_output ( $options, $data ) {
+        $out = array();
+        $columns = $options['columns'];
+        for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+            $row = array();
+            for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+                $column = $columns[$j];
+                // Is there a formatter?
+                if ( isset( $column['formatter'] ) ) {
+                    $row[ $column['dt'] ] = $column['formatter']( $data[$i][ self::column_name_out($column) ], $data[$i] );
+                }
+                else {
+                    $row[ $column['dt'] ] = $data[$i][ self::column_name_out($column) ];
+                }
+            }
+            $out[] = $row;
+        }
+        return $out;
+    }
 
-		for ($i = 0, $ien = count($data); $i < $ien; $i++) {
-			$row = array();
+    /**
+     * Perform the SQL queries needed for an server-side processing requested,
+     * utilising the helper functions of this class, limit(), order() and
+     * filter() among others. The returned array is ready to be encoded as JSON
+     * in response to an SSP request, or can be modified if needed before
+     * sending back to the client.
+     *
+     *  @param  array $request Data sent to server by DataTables
+     *  @param  array|PDO $conn PDO connection resource or connection parameters array
+     *  @param  string $table SQL table to query
+     *  @param  string $primaryKey Primary key of the table
+     *  @param  array $columns Column information array
+     *  @return array          Server-side processing response array
+     */
+    static function process ( $request, $conn, $options ) {
+        $bindings = array();
+        $db = self::db( $conn );
 
-			for ($j = 0, $jen = count($columns); $j < $jen; $j++) {
-				$column = $columns[$j];
+        if (!isset($options['alias']))
+            $options['alias'] = $options['table'][0];
 
-				// Is there a formatter?
-				if (isset($column['formatter'])) {
-					$row[$column['dt']] = $column['formatter']($data[$i][$column['db']], $data[$i]);
-				} else {
-					$row[$column['dt']] = $data[$i][$columns[$j]['db']];
-				}
-			}
+        // Build the SQL query string from the request
+        $limitSql = self::limit( $request );
+        $orderSql = self::order( $request, $options );
+        $whereSql = self::filter( $request, $options, $bindings );
+        $joinSql  = self::table_join( $options );
 
-			$out[] = $row;
-		}
+        $whereAllSql = '';
 
-		return $out;
-	}
+        if (isset($options['whereResult'])) {
+            $optWhere = self::where_options( $options['whereResult'], $options['alias'], $bindings );
 
-	/**
-	 * Database connection
-	 *
-	 * Obtain an PHP PDO connection from a connection details array
-	 *
-	 *  @param  array $conn SQL connection details. The array should have
-	 *    the following properties
-	 *     * host - host name
-	 *     * db   - database name
-	 *     * user - user name
-	 *     * pass - user password
-	 *  @return resource PDO connection
-	 */
-	static function db($conn) {
-		if (is_array($conn)) {
-			return self::sql_connect($conn);
-		}
+            $whereSql = $whereSql ?
+                $whereSql .' AND '.$optWhere :
+                'WHERE '.$optWhere;
+        }
 
-		return $conn;
-	}
+        if (isset($options['where'])) {
+            $optWhere = self::where_options( $options['where'], $options['alias'], $bindings );
 
-	/**
-	 * Paging
-	 *
-	 * Construct the LIMIT clause for server-side processing SQL query
-	 *
-	 *  @param  array $request Data sent to server by DataTables
-	 *  @param  array $columns Column information array
-	 *  @return string SQL limit clause
-	 */
-	static function limit($request, $columns) {
-		$limit = '';
+            $whereSql = $whereSql ?
+                $whereSql .' AND '.$optWhere :
+                'WHERE '.$optWhere;
 
-		if (isset($request['start']) && $request['length'] != -1) {
-			$limit = "LIMIT " . intval($request['start']) . ", " . intval($request['length']);
-		}
+            $whereAllSql = 'WHERE '.$optWhere;
+        }
 
-		return $limit;
-	}
+        $query = "SELECT ".implode(", ", self::column_names( $options ))." 
+			FROM `{$options['table']}` {$options['alias']}
+			$joinSql
+			$whereSql
+			$orderSql
+			$limitSql";
 
-	/**
-	 * Ordering
-	 *
-	 * Construct the ORDER BY clause for server-side processing SQL query
-	 *
-	 *  @param  array $request Data sent to server by DataTables
-	 *  @param  array $columns Column information array
-	 *  @return string SQL order by clause
-	 */
-	static function order($request, $columns) {
-		$order = '';
+        // Main query to actually get the data
+        $data = self::sql_exec( $db, $bindings, $query);
 
-		if (isset($request['order']) && count($request['order'])) {
-			$orderBy = array();
-			$dtColumns = self::pluck($columns, 'dt');
+        // Data set length after filtering
+        $resFilterLength = self::sql_exec( $db, $bindings,
+            "SELECT COUNT({$options['alias']}.`{$options['primaryKey']}`)
+			 FROM `{$options['table']}` {$options['alias']}
+			 $joinSql
+			 $whereSql"
+        );
+        $recordsFiltered = $resFilterLength[0][0];
 
-			for ($i = 0, $ien = count($request['order']); $i < $ien; $i++) {
-				// Convert the column index into the column data property
-				$columnIdx = intval($request['order'][$i]['column']);
-				$requestColumn = $request['columns'][$columnIdx];
+        // Total data set length
+        $resTotalLength = self::sql_exec( $db, $bindings,
+            "SELECT COUNT({$options['alias']}.`{$options['primaryKey']}`)
+			 FROM `{$options['table']}` {$options['alias']}
+			 $joinSql
+			 $whereAllSql"
+        );
+        $recordsTotal = $resTotalLength[0][0];
 
-				$columnIdx = array_search($requestColumn['data'], $dtColumns);
-				$column = $columns[$columnIdx];
+        /*
+         * Output
+         */
+        return array(
+            "draw"            => isset ( $request['draw'] ) ? intval( $request['draw'] ) : 0,
+            "recordsTotal"    => intval( $recordsTotal ),
+            "recordsFiltered" => intval( $recordsFiltered ),
+            "data"            => self::data_output( $options, $data )
+        );
+    }
 
-				if ($requestColumn['orderable'] == 'true') {
-					$dir = $request['order'][$i]['dir'] === 'asc' ?
-					'ASC' :
-					'DESC';
+    /**
+     * Database connection
+     *
+     * Obtain an PHP PDO connection from a connection details array
+     *
+     *  @param  array $conn SQL connection details. The array should have
+     *    the following properties
+     *     * host - host name
+     *     * db   - database name
+     *     * user - user name
+     *     * pass - user password
+     *  @return resource PDO connection
+     */
+    private static function db ( $conn ) {
+        if ( is_array( $conn ) ) {
+            return self::sql_connect( $conn );
+        }
 
-					$orderBy[] = '`' . $column['db'] . '` ' . $dir;
-				}
-			}
+        return $conn;
+    }
 
-			$order = 'ORDER BY ' . implode(', ', $orderBy);
-		}
 
-		return $order;
-	}
+    /**
+     * Paging
+     *
+     * Construct the LIMIT clause for server-side processing SQL query
+     *
+     *  @param  array $request Data sent to server by DataTables
+     *  @param  array $columns Column information array
+     *  @return string SQL limit clause
+     */
+    private static function limit ( $request ) {
+        $limit = '';
 
-	/**
-	 * Searching / Filtering
-	 *
-	 * Construct the WHERE clause for server-side processing SQL query.
-	 *
-	 * NOTE this does not match the built-in DataTables filtering which does it
-	 * word by word on any field. It's possible to do here performance on large
-	 * databases would be very poor
-	 *
-	 *  @param  array $request Data sent to server by DataTables
-	 *  @param  array $columns Column information array
-	 *  @param  array $bindings Array of values for PDO bindings, used in the
-	 *    sql_exec() function
-	 *  @return string SQL where clause
-	 */
-	static function filter($request, $columns, &$bindings) {
-		$globalSearch = array();
-		$columnSearch = array();
-		$dtColumns = self::pluck($columns, 'dt');
+        if ( isset($request['start']) && $request['length'] != -1 ) {
+            $limit = "LIMIT ".intval($request['start']).", ".intval($request['length']);
+        }
 
-		if (isset($request['search']) && $request['search']['value'] != '') {
-			$str = $request['search']['value'];
+        return $limit;
+    }
 
-			for ($i = 0, $ien = count($request['columns']); $i < $ien; $i++) {
-				$requestColumn = $request['columns'][$i];
-				$columnIdx = array_search($requestColumn['data'], $dtColumns);
-				$column = $columns[$columnIdx];
 
-				if ($requestColumn['searchable'] == 'true') {
-					$binding = self::bind($bindings, '%' . $str . '%', PDO::PARAM_STR);
-					$globalSearch[] = "`" . $column['db'] . "` LIKE " . $binding;
-				}
-			}
-		}
+    /**
+     * Ordering
+     *
+     * Construct the ORDER BY clause for server-side processing SQL query
+     *
+     *  @param  array $request Data sent to server by DataTables
+     *  @param  array $columns Column information array
+     *  @return string SQL order by clause
+     */
+    private static function order ( $request, $options ) {
+        $order = '';
+        $columns = $options['columns'];
 
-		// Individual column filtering
-		if (isset($request['columns'])) {
-			for ($i = 0, $ien = count($request['columns']); $i < $ien; $i++) {
-				$requestColumn = $request['columns'][$i];
-				$columnIdx = array_search($requestColumn['data'], $dtColumns);
-				$column = $columns[$columnIdx];
+        if ( isset($request['order']) && count($request['order']) ) {
+            $orderBy = array();
+            $dtColumns = self::pluck( $columns, 'dt' );
 
-				$str = $requestColumn['search']['value'];
+            for ( $i=0, $ien=count($request['order']) ; $i<$ien ; $i++ ) {
+                // Convert the column index into the column data property
+                $columnIdx = intval($request['order'][$i]['column']);
+                $requestColumn = $request['columns'][$columnIdx];
 
-				if ($requestColumn['searchable'] == 'true' &&
-					$str != '') {
-					$binding = self::bind($bindings, '%' . $str . '%', PDO::PARAM_STR);
-					$columnSearch[] = "`" . $column['db'] . "` LIKE " . $binding;
-				}
-			}
-		}
+                $columnIdx = array_search( $requestColumn['data'], $dtColumns );
+                $column = $columns[ $columnIdx ];
 
-		// Combine the filters into a single string
-		$where = '';
+                if ( $requestColumn['orderable'] == 'true' ) {
+                    $dir = $request['order'][$i]['dir'] === 'asc' ?
+                        'ASC' :
+                        'DESC';
 
-		if (count($globalSearch)) {
-			$where = '(' . implode(' OR ', $globalSearch) . ')';
-		}
+                    $orderBy[] = self::column_name_ref($column, $options['alias']).' '.$dir;
+                }
+            }
 
-		if (count($columnSearch)) {
-			$where = $where === '' ?
-			implode(' AND ', $columnSearch) :
-			$where . ' AND ' . implode(' AND ', $columnSearch);
-		}
+            $order = 'ORDER BY '.implode(', ', $orderBy);
+        }
 
-		if ($where !== '') {
-			$where = 'WHERE ' . $where;
-		}
+        return $order;
+    }
 
-		return $where;
-	}
 
-	/**
-	 * Perform the SQL queries needed for an server-side processing requested,
-	 * utilising the helper functions of this class, limit(), order() and
-	 * filter() among others. The returned array is ready to be encoded as JSON
-	 * in response to an SSP request, or can be modified if needed before
-	 * sending back to the client.
-	 *
-	 *  @param  array $request Data sent to server by DataTables
-	 *  @param  array|PDO $conn PDO connection resource or connection parameters array
-	 *  @param  string $table SQL table to query
-	 *  @param  string $primaryKey Primary key of the table
-	 *  @param  array $columns Column information array
-	 *  @return array          Server-side processing response array
-	 */
-	static function simple($request, $conn, $table, $primaryKey, $columns) {
-		$bindings = array();
-		$db = self::db($conn);
+    /**
+     * Searching / Filtering
+     *
+     * Construct the WHERE clause for server-side processing SQL query.
+     *
+     * NOTE this does not match the built-in DataTables filtering which does it
+     * word by word on any field. It's possible to do here performance on large
+     * databases would be very poor
+     *
+     *  @param  array $request Data sent to server by DataTables
+     *  @param  array $columns Column information array
+     *  @param  array $bindings Array of values for PDO bindings, used in the
+     *    sql_exec() function
+     *  @return string SQL where clause
+     */
+    private static function filter ( $request, $options, &$bindings ) {
+        $globalSearch = array();
+        $columnSearch = array();
 
-		// Build the SQL query string from the request
-		$limit = self::limit($request, $columns);
-		$order = self::order($request, $columns);
-		$where = self::filter($request, $columns, $bindings);
+        $columns = $options['columns'];
+        $dtColumns = self::pluck( $columns, 'dt' );
 
-		// Main query to actually get the data
-		$data = self::sql_exec($db, $bindings,
-			"SELECT `" . implode("`, `", self::pluck($columns, 'db')) . "`
-			 FROM `$table`
-			 $where
-			 $order
-			 $limit"
-		);
+        if ( isset($request['search']) && $request['search']['value'] != '' ) {
+            $str = $request['search']['value'];
 
-		// Data set length after filtering
-		$resFilterLength = self::sql_exec($db, $bindings,
-			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`
-			 $where"
-		);
-		$recordsFiltered = $resFilterLength[0][0];
+            for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
+                $requestColumn = $request['columns'][$i];
+                $columnIdx = array_search( $requestColumn['data'], $dtColumns );
+                $column = $columns[ $columnIdx ];
 
-		// Total data set length
-		$resTotalLength = self::sql_exec($db,
-			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`"
-		);
-		$recordsTotal = $resTotalLength[0][0];
+                if ( $requestColumn['searchable'] == 'true' ) {
+                    $binding = self::bind( $bindings, '%'.$str.'%', PDO::PARAM_STR );
+                    $globalSearch[] = self::column_name_ref($column, $options['alias'])." LIKE ".$binding;
+                }
+            }
+        }
 
-		/*
-			 * Output
-		*/
-		return array(
-			"draw" => isset($request['draw']) ?
-			intval($request['draw']) :
-			0,
-			"recordsTotal" => intval($recordsTotal),
-			"recordsFiltered" => intval($recordsFiltered),
-			"data" => self::data_output($columns, $data),
-		);
-	}
+        // Individual column filtering
+        if ( isset( $request['columns'] ) ) {
+            for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
+                $requestColumn = $request['columns'][$i];
+                $columnIdx = array_search( $requestColumn['data'], $dtColumns );
+                $column = $columns[ $columnIdx ];
 
-	/**
-	 * The difference between this method and the `simple` one, is that you can
-	 * apply additional `where` conditions to the SQL queries. These can be in
-	 * one of two forms:
-	 *
-	 * * 'Result condition' - This is applied to the result set, but not the
-	 *   overall paging information query - i.e. it will not effect the number
-	 *   of records that a user sees they can have access to. This should be
-	 *   used when you want apply a filtering condition that the user has sent.
-	 * * 'All condition' - This is applied to all queries that are made and
-	 *   reduces the number of records that the user can access. This should be
-	 *   used in conditions where you don't want the user to ever have access to
-	 *   particular records (for example, restricting by a login id).
-	 *
-	 *  @param  array $request Data sent to server by DataTables
-	 *  @param  array|PDO $conn PDO connection resource or connection parameters array
-	 *  @param  string $table SQL table to query
-	 *  @param  string $primaryKey Primary key of the table
-	 *  @param  array $columns Column information array
-	 *  @param  string $whereResult WHERE condition to apply to the result set
-	 *  @param  string $whereAll WHERE condition to apply to all queries
-	 *  @return array          Server-side processing response array
-	 */
-	static function complex($request, $conn, $table, $primaryKey, $columns, $whereResult = null, $whereAll = null) {
-		$bindings = array();
-		$db = self::db($conn);
-		$localWhereResult = array();
-		$localWhereAll = array();
-		$whereAllSql = '';
+                $str = $requestColumn['search']['value'];
 
-		// Build the SQL query string from the request
-		$limit = self::limit($request, $columns);
-		$order = self::order($request, $columns);
-		$where = self::filter($request, $columns, $bindings);
+                if ( $requestColumn['searchable'] == 'true' &&
+                    $str != '' ) {
+                    $binding = self::bind( $bindings, '%'.$str.'%', PDO::PARAM_STR );
+                    $columnSearch[] = self::column_name_ref($column, $options['alias'])." LIKE ".$binding;
+                }
+            }
+        }
 
-		$whereResult = self::_flatten($whereResult);
-		$whereAll = self::_flatten($whereAll);
+        // Combine the filters into a single string
+        $where = '';
 
-		if ($whereResult) {
-			$where = $where ?
-			$where . ' AND ' . $whereResult :
-			'WHERE ' . $whereResult;
-		}
+        if ( count( $globalSearch ) ) {
+            $where = '('.implode(' OR ', $globalSearch).')';
+        }
 
-		if ($whereAll) {
-			$where = $where ?
-			$where . ' AND ' . $whereAll :
-			'WHERE ' . $whereAll;
+        if ( count( $columnSearch ) ) {
+            $where = $where === '' ?
+                implode(' AND ', $columnSearch) :
+                $where .' AND '. implode(' AND ', $columnSearch);
+        }
 
-			$whereAllSql = 'WHERE ' . $whereAll;
-		}
+        if ( $where !== '' ) {
+            $where = 'WHERE '.$where;
+        }
 
-		// Main query to actually get the data
-		$data = self::sql_exec($db, $bindings,
-			"SELECT `" . implode("`, `", self::pluck($columns, 'db')) . "`
-			 FROM `$table`
-			 $where
-			 $order
-			 $limit"
-		);
+        return $where;
+    }
 
-		// Data set length after filtering
-		$resFilterLength = self::sql_exec($db, $bindings,
-			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`
-			 $where"
-		);
-		$recordsFiltered = $resFilterLength[0][0];
+    /**
+     * Retrieves additional WHERE parameters from the supplied DataTable options.
+     * Used to globally filter results by fields not supplied by a DataTable request.
+     *	@param  array  $where_opts  The options to build the clause from. Two types exist, "where" and "whereResult".
+     *	@param  string $tableAlias  The alias of the table in 'FROM' statement.
+     *	@return string              WHERE clause SQL to use in select query.
+     */
+    private static function where_options ( $where_opts, $tableAlias, &$bindings ) {
+        $wheres = [];
+        foreach($where_opts as $i => $where) {
+            $alias = isset($where['alias']) ? $where['alias'] : $tableAlias;
+            $binding = self::bind($bindings, $where['value']);
 
-		// Total data set length
-		$resTotalLength = self::sql_exec($db, $bindings,
-			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table` " .
-			$whereAllSql
-		);
-		$recordsTotal = $resTotalLength[0][0];
+            $wheres[] = "$alias.`{$where['db']}` {$where['op']} $binding";
+        }
 
-		/*
-			 * Output
-		*/
-		return array(
-			"draw" => isset($request['draw']) ?
-			intval($request['draw']) :
-			0,
-			"recordsTotal" => intval($recordsTotal),
-			"recordsFiltered" => intval($recordsFiltered),
-			"data" => self::data_output($columns, $data),
-		);
-	}
+        return implode(', AND ', $wheres);
+    }
 
-	/**
-	 * Connect to the database
-	 *
-	 * @param  array $sql_details SQL server connection details array, with the
-	 *   properties:
-	 *     * host - host name
-	 *     * db   - database name
-	 *     * user - user name
-	 *     * pass - user password
-	 * @return resource Database connection handle
-	 */
-	static function sql_connect($sql_details) {
-		try {
-			$db = @new PDO(
-				"mysql:host={$sql_details['host']};dbname={$sql_details['db']}",
-				$sql_details['user'],
-				$sql_details['pass'],
-    				array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'" ?? $sql_details['charset'])
-			);
-		} catch (PDOException $e) {
-			self::fatal(
-				"An error occurred while connecting to the database. " .
-				"The error reported by the server was: " . $e->getMessage()
-			);
-		}
+    /**
+     * Retrieves a column name as it would appear in a select statement.
+     * This includes any "as" parameters applied to the column.
+     *	@param  array  $options     The column to retrieve information from.
+     *	@param  string $tableAlias  The alias of the table in 'FROM' statement.
+     *	@return string              JOIN statement(s) SQL to use in select query.
+     */
+    private static function table_join( $options ) {
+        $joins = [];
+        $columns = $options['columns'];
+        for ($i = 0; $i < count($columns); $i++) {
+            $col = $columns[$i];
+            if (isset($col['join'])) {
+                $join = $col['join'];
+                $table = $join['table'];
+                $alias = isset($join['alias']) ? $join['alias'] : $table[0];
+                $joins[$alias] = "JOIN `$table` $alias ON ($alias.`{$join['on']}` = {$options['alias']}.`{$col['db']}`)";
+            }
+        }
+        return implode(' ', $joins);
+    }
 
-		return $db;
-	}
+    /**
+     * Retrieves a list of column names as they would appear in a select statement.
+     * This includes any "as" parameters applied to the column.
+     *	@param  array $options Array of DataTable options to retrieve information from.
+     *	@return array          List of column name strings to use in SQL select query.
+     */
+    private static function column_names ( $options ) {
+        $names = [];
+        $columns = $options['columns'];
+        for ($i = 0; $i < count($columns); $i++) {
+            $names[] = self::column_name($columns[$i], $options['alias']);
+        }
+        return $names;
+    }
 
-	/**
-	 * Execute an SQL query on the database
-	 *
-	 * @param  resource $db  Database handler
-	 * @param  array    $bindings Array of PDO binding values from bind() to be
-	 *   used for safely escaping strings. Note that this can be given as the
-	 *   SQL query string if no bindings are required.
-	 * @param  string   $sql SQL query to execute.
-	 * @return array         Result from the query (all rows)
-	 */
-	static function sql_exec($db, $bindings, $sql = null) {
-		// Argument shifting
-		if ($sql === null) {
-			$sql = $bindings;
-		}
+    /**
+     * Retrieves a column name as it would appear in a select statement.
+     * This includes any "as" parameters applied to the column.
+     *	@param  array  $column      The column to retrieve information from.
+     *	@param  string $tableAlias  The alias of the table in 'FROM' statement.
+     *	@return string              Column name string to use in SQL select query.
+     */
+    private static function column_name ( $column, $tableAlias ) {
+        if (isset($column['join'])) {
+            $join = $column['join'];
+            $join['alias'] = isset($join['alias']) ? $join['alias'] : $join['table'][0];
+            return "{$join['alias']}.`{$join['select']}`".(isset($join['as']) ? " AS '{$join['as']}'" : '');
+        }
+        return "$tableAlias.`{$column['db']}`".(isset($column['as']) ? " AS '{$column['as']}'" : '');
+    }
 
-		$stmt = $db->prepare($sql);
-		//echo $sql;
+    /**
+     * Retrieves a column name as it would appear in a clause (WHERE, GROUP BY, ORDER BY).
+     * This is typically the column's original name unless joined with an alias or using "as".
+     *	@param  array  $column      The column to retrieve information from.
+     *	@param  string $tableAlias  The alias of the table in 'FROM' statement.
+     *	@return string              Column name string to use in SQL clause.
+     */
+    private static function column_name_ref ( $column, $tableAlias ) {
+        if (isset($column['join'])) {
+            $join = $column['join'];
+            $join['alias'] = isset($join['alias']) ? $join['alias'] : $join['table'][0];
+            return isset($join['as']) ? "`{$join['as']}`" : "{$join['alias']}.`{$join['select']}`";
+        }
+        return isset($column['as']) ? "`{$column['as']}`" : "$tableAlias.`{$column['db']}`";
+    }
 
-		// Bind parameters
-		if (is_array($bindings)) {
-			for ($i = 0, $ien = count($bindings); $i < $ien; $i++) {
-				$binding = $bindings[$i];
-				$stmt->bindValue($binding['key'], $binding['val'], $binding['type']);
-			}
-		}
+    /**
+     * Retrieves a column name as it would appear in the final resultset.
+     * Results have the alias' removed and will refer to it's "as", if any.
+     *	@param  array  $column  The column to retrieve information from.
+     *	@return string          Column name string that will appear in the results.
+     */
+    private static function column_name_out ( $column ) {
+        if (isset($column['join'])) {
+            $join = $column['join'];
+            return isset($join['as']) ? $join['as'] : $join['select'];
+        }
+        return isset($column['as']) ? $column['as'] : $column['db'];
+    }
 
-		// Execute
-		try {
-			$stmt->execute();
-		} catch (PDOException $e) {
-			self::fatal("An SQL error occurred: " . $e->getMessage());
-		}
+    /**
+     * Connect to the database
+     *
+     * @param  array $sql_details SQL server connection details array, with the
+     *   properties:
+     *     * host - host name
+     *     * db   - database name
+     *     * user - user name
+     *     * pass - user password
+     * @return resource Database connection handle
+     */
+    private static function sql_connect ( $sql_details )
+    {
+        try {
+            $db = @new PDO(
+                "mysql:host={$sql_details['host']};dbname={$sql_details['db']}",
+                $sql_details['user'],
+                $sql_details['pass'],
+                array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'" ?? $sql_details['charset'])
+            );
+        }
+        catch (PDOException $e) {
+            self::fatal(
+                "An error occurred while connecting to the database. ".
+                "The error reported by the server was: ".$e->getMessage()
+            );
+        }
 
-		// Return all
-		return $stmt->fetchAll(PDO::FETCH_BOTH);
-	}
+        return $db;
+    }
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-		 * Internal methods
-	*/
 
-	/**
-	 * Throw a fatal error.
-	 *
-	 * This writes out an error message in a JSON string which DataTables will
-	 * see and show to the user in the browser.
-	 *
-	 * @param  string $msg Message to send to the client
-	 */
-	static function fatal($msg) {
-		echo json_encode(array(
-			"error" => $msg,
-		));
+    /**
+     * Execute an SQL query on the database
+     *
+     * @param  resource $db  Database handler
+     * @param  array    $bindings Array of PDO binding values from bind() to be
+     *   used for safely escaping strings. Note that this can be given as the
+     *   SQL query string if no bindings are required.
+     * @param  string   $sql SQL query to execute.
+     * @return array         Result from the query (all rows)
+     */
+    private static function sql_exec ( $db, $bindings, $sql=null )
+    {
+        // Argument shifting
+        if ( $sql === null ) {
+            $sql = $bindings;
+        }
 
-		exit(0);
-	}
+        $stmt = $db->prepare( $sql );
+        //echo $sql;
 
-	/**
-	 * Create a PDO binding key which can be used for escaping variables safely
-	 * when executing a query with sql_exec()
-	 *
-	 * @param  array &$a    Array of bindings
-	 * @param  *      $val  Value to bind
-	 * @param  int    $type PDO field type
-	 * @return string       Bound key to be used in the SQL where this parameter
-	 *   would be used.
-	 */
-	static function bind(&$a, $val, $type) {
-		$key = ':binding_' . count($a);
+        // Bind parameters
+        if ( is_array( $bindings ) ) {
+            for ( $i=0, $ien=count($bindings) ; $i<$ien ; $i++ ) {
+                $binding = $bindings[$i];
+                $stmt->bindValue( $binding['key'], $binding['val'], $binding['type'] );
+            }
+        }
 
-		$a[] = array(
-			'key' => $key,
-			'val' => $val,
-			'type' => $type,
-		);
+        // Execute
+        try {
+            $stmt->execute();
+        }
+        catch (PDOException $e) {
+            self::fatal( "An SQL error occurred: ".$e->getMessage() );
+        }
 
-		return $key;
-	}
+        // Return all
+        return $stmt->fetchAll( PDO::FETCH_BOTH );
+    }
 
-	/**
-	 * Pull a particular property from each assoc. array in a numeric array,
-	 * returning and array of the property values from each item.
-	 *
-	 *  @param  array  $a    Array to get data from
-	 *  @param  string $prop Property to read
-	 *  @return array        Array of property values
-	 */
-	static function pluck($a, $prop) {
-		$out = array();
 
-		for ($i = 0, $len = count($a); $i < $len; $i++) {
-			$out[] = $a[$i][$prop];
-		}
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Internal methods
+     */
 
-		return $out;
-	}
+    /**
+     * Throw a fatal error.
+     *
+     * This writes out an error message in a JSON string which DataTables will
+     * see and show to the user in the browser.
+     *
+     * @param  string $msg Message to send to the client
+     */
+    private static function fatal ( $msg )
+    {
+        echo json_encode( array(
+            "error" => $msg
+        ) );
 
-	/**
-	 * Return a string from an array or a string
-	 *
-	 * @param  array|string $a Array to join
-	 * @param  string $join Glue for the concatenation
-	 * @return string Joined string
-	 */
-	static function _flatten($a, $join = ' AND ') {
-		if (!$a) {
-			return '';
-		} else if ($a && is_array($a)) {
-			return implode($join, $a);
-		}
-		return $a;
-	}
+        exit(0);
+    }
+
+    /**
+     * Create a PDO binding key which can be used for escaping variables safely
+     * when executing a query with sql_exec()
+     *
+     * @param  array &$a    Array of bindings
+     * @param  *      $val  Value to bind
+     * @param  int    $type PDO field type
+     * @return string       Bound key to be used in the SQL where this parameter
+     *   would be used.
+     */
+    private static function bind ( &$a, $val, $type = NULL )
+    {
+        $key = ':binding_'.count( $a );
+
+        $a[] = array(
+            'key' => $key,
+            'val' => $val,
+            'type' => isset($type) ? $type : (is_numeric($val) ? PDO::PARAM_INT : PDO::PARAM_STR)
+        );
+
+        return $key;
+    }
+
+
+    /**
+     * Pull a particular property from each assoc. array in a numeric array,
+     * returning and array of the property values from each item.
+     *
+     *  @param  array  $a    Array to get data from
+     *  @param  string $prop Property to read
+     *  @return array        Array of property values
+     */
+    private static function pluck ( $a, $prop )
+    {
+        $out = array();
+
+        for ( $i=0, $len=count($a) ; $i<$len ; $i++ ) {
+            $out[] = $a[$i][$prop];
+        }
+
+        return $out;
+    }
+
+
+    /**
+     * Return a string from an array or a string
+     *
+     * @param  array|string $a Array to join
+     * @param  string $join Glue for the concatenation
+     * @return string Joined string
+     */
+    private static function _flatten ( $a, $join = ' AND ' )
+    {
+        if ( ! $a ) {
+            return '';
+        }
+        else if ( $a && is_array($a) ) {
+            return implode( $join, $a );
+        }
+        return $a;
+    }
 }
