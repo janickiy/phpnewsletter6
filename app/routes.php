@@ -4,7 +4,7 @@ use App\Middleware\GuestMiddleware;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\PermissionMiddleware;
 
-$app->get('/403', 'HomeController:p403')->setName('403');
+$app->get('/403', 'IndexController:p403')->setName('403');
 $app->get('/temlates', 'TemlatesController:list');
 
 $app->group('', function () {

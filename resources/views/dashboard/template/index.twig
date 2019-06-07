@@ -17,9 +17,9 @@
                             <thead>
                             <tr>
                                 <th data-hide="phone">ID</th>
-                                <th data-hide="phone">Название</th>
+                                <th data-hide="phone">Шаблон</th>
                                 <th data-hide="phone">Категория</th>
-                                <th data-hide="phone">Приоритет</th>
+                                <th data-hide="phone">Важность</th>
                                 <th data-hide="phone">Дата</th>
                                 <th data-hide="phone">Действие</th>
                             </tr>
@@ -105,7 +105,7 @@
             {data: 'category', name: 'category'},
             {data: 'prior', name: 'prior', searchable: false},
             {data: 'created_at', name: 'created_at'},
-
+            {data: 'action', name: 'action', orderable: false, searchable: false}
         ],
     });
 

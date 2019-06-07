@@ -2,11 +2,10 @@
 
 namespace App\Controllers\Dashboard;
 
-use App\Models\Category;
 use App\Controllers\Controller;
 use App\Helper\Ssp;
-use Psr\Http\Message\RequestInterface as Resquest;
-use Psr\Http\Message\ResponseInterface as Response;
+use App\Helper\StringHelpers;
+use App\Models\Templates;
 
 class DataTableController extends Controller
 {
@@ -16,60 +15,37 @@ class DataTableController extends Controller
     }
 
     /**
-     * @param Resquest $request
-     * @param Response $response
+     * @param $request
+     * @param $response
      */
-    public function getTemplates(Resquest $request, Response $response)
+    public function getTemplates($request,$response)
     {
-        global
-        $pdoHost, $pdoUser,
-        $pdoPass, $pdoDatabase;
+        $table = 'templates';
+        $primaryKey = 'id';
+        $joinQuery = "FROM templates t LEFT JOIN category c ON t.categoryId=c.id";
 
-
-
-
-        $options = [
-            'table' => 'templates',
-            'alias' => 't',
-            'primaryKey' => 'id',
-            'columns' => [
-                [ 'db' => 'id',       'dt' => 'id' ],
-                [
-                    'db' => 'categoryId',
-                    'dt' => 'category',
-                    'join' => [
-                        'table' => 'category',
-                        'on' => 'id',
-                        'select' => 'name',
-                        'alias' => 'c',
-                        'as' => 'category'
-                    ]
-                ],
-
-                [
-                    'db' => 'name',
-                    'dt' => 'name',
-
-                ],
-                [
-                    'db' => 'body',
-                    'dt' => 'body',
-
-                ],
-                [ 'db' => 'prior', 'dt' => 'prior' ],
-                [ 'db' => 'created_at', 'dt' => 'created_at' ]
-            ]
+        $columns = [
+            ['db' => 't.id',  'dt' => 'id', 'field' => 'id'],
+            ['db' => 'c.name', 'dt' => 'category', 'field' => 'category', 'as' => 'category'],
+            ['db' => 't.name', 'dt' => 'name', 'formatter' => function( $d, $row ) {
+                $row['body'] =  preg_replace('/(<.*?>)|(&.*?;)/', '', $row['body']);
+                return $d . '<br><br>' . StringHelpers::shortText($row['body'],500);
+            }, 'field' => 'name'],
+            ['db' => 't.body', 'dt' => 'body', 'field' => 'body'],
+            ['db' => 't.prior', 'dt' => 'prior',  'formatter' => function( $d, $row ) {
+                return Templates::getPrior($d);
+            }, 'field' => 'prior'],
+            ['db' => 't.created_at', 'dt' => 'created_at', 'field' => 'created_at'],
+            ['db' => 't.id', 'dt' => 'action', 'formatter' => function( $d, $row ) {
+                $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.template.edit',['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
+                $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
+                return $editBtn . $deleteBtn; },
+                'field' => 'action', 'as' => 'action'
+            ],
         ];
 
-
-
-
-
-
-
         header('Content-Type: application/json');
-        echo json_encode(Ssp::process($request->getParams(), $this->getDetails(), $options));
+
+        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns,$joinQuery));
     }
-
-
 }

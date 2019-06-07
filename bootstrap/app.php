@@ -22,7 +22,6 @@ $app = new \Slim\App([
 		],
 		'baseUrl' => getenv('BASE_URL')
 	],
-
 ]);
 
 require_once __DIR__ . '/database.php';
@@ -44,7 +43,6 @@ $container['flash'] = function($container) {
 $container['mailer'] = function($container) {
 	return new Nette\Mail\SmtpMailer($container['settings']['mailer']);
 };
-
 
 $container['view'] = function ($container) {
 	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/views/', [
@@ -75,9 +73,8 @@ $container['validator'] = function ($container) {
 };
 
 
-
-$container['HomeController'] = function($container) {
-	return new \App\Controllers\HomeController($container);
+$container['IndexController'] = function($container) {
+	return new \App\Controllers\IndexController($container);
 };
 
 $container['AuthController'] = function($container) {

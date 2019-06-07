@@ -42,19 +42,20 @@
                                     <span class="text-danger">{{ errors.body | first }}</span>
                                 {% endif %}
 
-                            <div class="note">
-                                <strong>Персонализация:</strong> %NAME% - имя подписчика, %EMAIL% - E-mail адрес, %UNSUB% - ссылка для удаления рассылки, %SERVER_NAME% - адрес сайта, %REFERRAL:http://my_website.com/% - ссылка для статистика переходов по ссылкам
-                            </div>
+                                <div class="note">
+                                    <strong>Персонализация:</strong> %NAME% - имя подписчика, %EMAIL% - E-mail адрес, %UNSUB% - ссылка для удаления рассылки, %SERVER_NAME% - адрес сайта, %REFERRAL:http://my_website.com/% - ссылка для статистика переходов по ссылкам
+                                </div>
                             </section>
                             <section>
                                 <label for="attachfile[]" class="label">Присоединить файлы</label>
                                 <div class="input input-file">
                                     <span class="button"><input type="file" name="attachfile[]" multiple="true"  id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
-
                                 </div>
+
                                 {% if errors.attachfile %}
                                     <span class="text-danger">{{ errors.attachfile | first }}</span>
                                 {% endif %}
+
                             </section>
 
                             <section>
