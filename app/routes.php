@@ -4,7 +4,13 @@ use App\Middleware\GuestMiddleware;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\PermissionMiddleware;
 
-$app->get('/403', 'IndexController:p403')->setName('403');
+$app->get('/400', 'ErrosController:error400')->setName('400');
+$app->get('/401', 'ErrosController:error401')->setName('401');
+$app->get('/403', 'ErrosController:error403')->setName('403');
+$app->get('/404', 'ErrosController:error404')->setName('404');
+$app->get('/500', 'ErrosController:error500')->setName('500');
+
+
 $app->get('/temlates', 'TemlatesController:list');
 
 $app->group('', function () {
@@ -34,6 +40,7 @@ $app->group('', function () use ($container) {
         $this->get('/edit/{id:[0-9]+}', 'TemplateController:edit')->setName('admin.template.edit');
         $this->put('/update', 'TemplateController:update')->setName('admin.template.update');
         $this->delete('/destroy/{id:[0-9]+}', 'TemplateController:destroy')->setName('admin.template.destroy');
+        $this->get('/remove_attach/{id:[0-9]+}', 'TemplateController:removeAttach')->setName('admin.template.edit');
     });
 
     $this->group('/subscribers', function () use ($container) {
@@ -82,6 +89,11 @@ $app->group('', function () use ($container) {
 
     $this->group('/datatable', function () use ($container) {
         $this->get('/templates', 'DataTableController:getTemplates')->setName('admin.datatable.templates');
+
+        $this->get('/category', 'DataTableController:getCategory')->setName('admin.datatable.category');
+
+
+
     });
 
 })->add(new AuthMiddleware($container));

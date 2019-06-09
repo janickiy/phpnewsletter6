@@ -73,8 +73,8 @@ $container['validator'] = function ($container) {
 };
 
 
-$container['IndexController'] = function($container) {
-	return new \App\Controllers\IndexController($container);
+$container['ErrosController'] = function($container) {
+	return new \App\Controllers\ErrosController($container);
 };
 
 $container['AuthController'] = function($container) {
@@ -114,6 +114,7 @@ $container['PasswordController'] = function($container) {
 };
 
 $container['csrf'] = function($container) {
+
 	return new \Slim\Csrf\Guard;
 };
 

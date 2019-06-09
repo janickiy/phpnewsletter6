@@ -13,7 +13,9 @@ class TemplateController extends Controller
 {
     public function index($request, $response)
     {
-        return $this->view->render($response, 'dashboard/template/index.twig');
+        $title = "Шаблоны";
+
+        return $this->view->render($response, 'dashboard/template/index.twig', compact('title'));
     }
 
     /**
@@ -49,7 +51,7 @@ class TemplateController extends Controller
 
             $_SESSION['errors'] = $validation->getErrors();
 
-            return $response->withRedirect($this->router->pathFor('admin.template.create', array('errors' => ['name' => 12])));
+            return $response->withRedirect($this->router->pathFor('admin.template.create'));
         }
 
         $id = Templates::create($request->getParsedBody())->id;
@@ -100,6 +102,7 @@ class TemplateController extends Controller
      * @param $request
      * @param $response
      * @return mixed
+     * @throws \Exception
      */
     public function update($request, $response)
     {
@@ -115,7 +118,24 @@ class TemplateController extends Controller
         if (!$validation->isValid()) {
             $_SESSION['errors'] = $validation->getErrors();
 
-            return $response->withRedirect($this->router->pathFor('admin.template.create', array('errors' => ['name' => 12])));
+            return $response->withRedirect($this->router->pathFor('admin.template.edit',['id' => $request->getParam('id')]));
+        }
+
+        $directory = $this->upload_directory;
+        $uploadedFiles = $request->getUploadedFiles();
+
+        // handle single input with multiple file uploads
+        foreach ($uploadedFiles['attachfile'] as $uploadedFile) {
+            if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
+                $filename = $this->moveUploadedFile($directory, $uploadedFile);
+
+                $attach = [
+                    'name' => $filename,
+                    'templateId' => $request->getParam('id')
+                ];
+
+                Attach::create($attach);
+            }
         }
 
         $data['name'] = $request->getParam('name');
@@ -131,11 +151,45 @@ class TemplateController extends Controller
     }
 
     /**
+     * @param $request
+     * @param $response
      * @param $id
      */
-    public function destroy($id)
+    public function destroy($request, $response, $id)
     {
         Templates::where('id', $id)->delete();
+
+        $attach = Attach::where('templateId',$id);
+
+        if ($attach) {
+            $directory = $this->upload_directory;
+            foreach ($attach->get() as $f) {
+                if (file_exists($directory . '/' . $f->name)) unlink($directory . '/' . $f->name);
+            }
+
+            $attach->delete();
+        }
+    }
+
+    /**
+     * @param $request
+     * @param $response
+     * @param $id
+     * @return mixed
+     */
+    public function removeAttach($request, $response, $id)
+    {
+        $directory = $this->upload_directory;
+        $attach = Attach::where('id', $id);
+        $f = $attach->first();
+
+        if ($f && file_exists($directory . '/' . $f->name)) {
+            unlink($directory . '/' . $f->name);
+        }
+
+        $attach->delete();
+
+        return $response->withRedirect($this->router->pathFor('admin.template.edit',['id' => $request->getParam('id')]));
     }
 
     /**
@@ -155,8 +209,4 @@ class TemplateController extends Controller
         return $filename;
     }
 
-    public function addAttach()
-    {
-
-    }
 }

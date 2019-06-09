@@ -11,6 +11,11 @@
     <!-- #CSS Links -->
     <!-- Basic Styles -->
 
+    <!-- CSRF Token -->
+    <meta name="csrf_name" content="{{ csrf.attribute.name | raw }}">
+
+    <meta name="csrf_value" content="{{ csrf.attribute.value | raw }}">
+
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/bootstrap.min.css">
 
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/font-awesome.min.css">
@@ -210,12 +215,6 @@ Use search to find needed section.
             <li {{ is_current_path('admin.main') ? ' class="active"' : '' }}>
                 <a href="{{ path_for('admin.main') }}" title="Шаблоны">
                     <i class="fa fa-fw fa-envelope"></i> <span class="menu-item-parent">Шаблоны</span>
-                </a>
-            </li>
-
-            <li {{ is_current_path('admin.template.create') ? ' class="active"' : '' }}>
-                <a href="{{ path_for('admin.template.create') }}" title="Создать шаблон">
-                    <i class="fa fa-fw fa-plus"></i> <span class="menu-item-parent">Создать шаблон</span>
                 </a>
             </li>
 
