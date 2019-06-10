@@ -101,4 +101,31 @@ class DataTableController extends Controller
     {
 
     }
+
+    /**
+     * @param $request
+     * @param $response
+     */
+    public function getSettings($request, $response)
+    {
+        $table = 'settings';
+        $primaryKey = 'id';
+
+        $columns = [
+            ['db' => 'name', 'dt' => 'name', 'field' => 'name'],
+            ['db' => 'description', 'dt' => 'description', 'field' => 'description'],
+            ['db' => 'value', 'dt' => 'value', 'field' => 'value'],
+            ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
+                $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.settings.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
+                $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
+                return $editBtn . $deleteBtn;
+            },
+                'field' => 'action', 'as' => 'action'
+            ],
+        ];
+
+        header('Content-Type: application/json');
+
+        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+    }
 }

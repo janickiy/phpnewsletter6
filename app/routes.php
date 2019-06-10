@@ -38,7 +38,7 @@ $app->group('', function () use ($container) {
         $this->get('/create', 'TemplateController:create')->setName('admin.template.create');
         $this->post('/store', 'TemplateController:store')->setName('admin.template.store');
         $this->get('/edit/{id:[0-9]+}', 'TemplateController:edit')->setName('admin.template.edit');
-        $this->put('/update', 'TemplateController:update')->setName('admin.template.update');
+        $this->map(['GET', 'POST'],'/update', 'TemplateController:update')->setName('admin.template.update');
         $this->delete('/destroy/{id:[0-9]+}', 'TemplateController:destroy')->setName('admin.template.destroy');
         $this->get('/remove_attach/{id:[0-9]+}', 'TemplateController:removeAttach')->setName('admin.template.edit');
     });
@@ -59,7 +59,7 @@ $app->group('', function () use ($container) {
         $this->get('/create', 'CategoryController:create')->setName('admin.category.create');
         $this->post('/store', 'CategoryController:store')->setName('admin.category.store');
         $this->get('/edit/{id:[0-9]+}', 'CategoryController:edit')->setName('admin.category.edit');
-        $this->put('/update', 'CategoryController:update')->setName('admin.category.update');
+        $this->map(['GET', 'POST'],'/update', 'CategoryController:update')->setName('admin.category.update');
         $this->delete('/destroy/{id:[0-9]+}', 'CategoryController:destroy')->setName('admin.category.destroy');
     });
 
@@ -68,7 +68,7 @@ $app->group('', function () use ($container) {
         $this->get('/create', 'UsersController:create')->setName('admin.users.create');
         $this->post('/store', 'UsersController:store')->setName('admin.users.store');
         $this->get('/edit/{id:[0-9]+}', 'UsersController:edit')->setName('admin.users.edit');
-        $this->put('/update', 'UsersController:update')->setName('admin.users.update');
+        $this->map(['GET', 'POST'],'/update', 'UsersController:update')->setName('admin.users.update');
         $this->delete('/destroy/{id:[0-9]+}', 'UsersController:destroy')->setName('admin.users.destroy');
     });
 
@@ -90,8 +90,10 @@ $app->group('', function () use ($container) {
     $this->group('/datatable', function () use ($container) {
         $this->get('/templates', 'DataTableController:getTemplates')->setName('admin.datatable.templates');
         $this->get('/category', 'DataTableController:getCategory')->setName('admin.datatable.category');
-
         $this->get('/subscribers', 'DataTableController:getSubscribers')->setName('admin.datatable.subscribers');
+
+        $this->get('/settings', 'DataTableController:getSettings')->setName('admin.datatable.settings');
+
 
     });
 

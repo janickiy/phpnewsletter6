@@ -11,7 +11,11 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm" enctype="multipart/form-data" action="{{ category is defined ? path_for('admin.category.update') : path_for('admin.category.store') }}" method="{{ category is defined ? 'put' : 'post' }}" class="smart-form">
+                    <form  action="{{ category is defined ? path_for('admin.category.update') : path_for('admin.category.store') }}" method="{{ category is defined ? 'PUT' : 'POST' }}" class="smart-form">
+
+                        <input type="hidden" name="_METHOD" value="PUT"/>
+
+                        {{ csrf.field | raw }}
 
                         {% if category %}<input type="hidden" name="id" value="{{ category.id }}">{% endif %}
 
@@ -36,15 +40,15 @@
                         </fieldset>
 
                         <footer>
-                            <button type="submit" class="btn btn-primary">
-                                Отправить
-                            </button>
+
+                            <input class="btn btn-primary" type="submit" value="Отправить">
+
                             <button type="button" class="btn btn-default" onclick="window.history.back();">
                                 Назад
                             </button>
                         </footer>
 
-                        {{ csrf.field | raw }}
+
 
                     </form>
 

@@ -40,7 +40,7 @@ class SubscribersController extends Controller
    public function store($request,$response)
    {
        $validation = $this->validator->validate($request,[
-           'name' => ['rules' => v::stringType()->length(1, 255)->notEmpty(),'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов','notEmpty' => 'Это поле обязательно для заполнения']],
+           'name' => ['rules' => v::stringType()->notEmpty()->length(1, 255),'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов','notEmpty' => 'Это поле обязательно для заполнения']],
            'email' => ['rules' => v::email()->notEmpty(),'messages' => ['email' => 'Адрес электроной почты указан не верно','notEmpty' => 'Это поле обязательно для заполнения']],
        ]);
 
@@ -54,7 +54,7 @@ class SubscribersController extends Controller
        Subscribers::create($request->getParsedBody());
 
        if (isset($_SESSION['post'])) unset($_SESSION['post']);
-       $this->flash->addMessage('info','Данные успешно добавлены');
+       $this->flash->addMessage('success','Данные успешно добавлены');
 
        return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
    }
@@ -83,7 +83,7 @@ class SubscribersController extends Controller
    public function update($request, $response)
    {
        $validation = $this->validator->validate($request,[
-           'name' => ['rules' => v::stringType()->length(1, 255)->notEmpty(),'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов','notEmpty' => 'Это поле обязательно для заполнения']],
+           'name' => ['rules' => v::stringType()->notEmpty()->length(1, 255),'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов','notEmpty' => 'Это поле обязательно для заполнения']],
            'email' => ['rules' => v::email()->notEmpty(),'messages' => ['email' => 'Адрес электроной почты указан не верно','notEmpty' => 'Это поле обязательно для заполнения']],
        ]);
 

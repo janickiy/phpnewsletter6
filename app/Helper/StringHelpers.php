@@ -49,4 +49,20 @@ class StringHelpers
 
         return substr($str, 0, $chars + $pos) . (isset($srttmpend) ? $srttmpend : '');
     }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    public static function getSetting($key = '')
+    {
+        $setting = \App\Models\Settings::where('name', $key)->first();
+
+        if ($setting) {
+            return $setting->value;
+        } else {
+            return '';
+        }
+    }
+
 }

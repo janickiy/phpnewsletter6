@@ -11,7 +11,7 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm" enctype="multipart/form-data" action="{{ subscriber is defined ? path_for('admin.subscriber.update') : path_for('admin.subscriber.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
+                    <form id="tmplForm"  action="{{ subscriber is defined ? path_for('admin.subscriber.update') : path_for('admin.subscriber.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
 
                         {% if subscriber %}<input type="hidden" name="id" value="{{ subscriber.id }}">{% endif %}
 
@@ -33,7 +33,6 @@
 
                             </section>
 
-
                             <section>
                                 <label for="name" class="label">Email*</label>
                                 <label class="input">
@@ -46,20 +45,16 @@
 
                             </section>
 
-
-
-
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    Добавить
+                                </button>
+                                <button type="button" class="btn btn-default" onclick="window.history.back();">
+                                    Назад
+                                </button>
+                            </footer>
 
                         </fieldset>
-
-                        <footer>
-                            <button type="submit" class="btn btn-primary">
-                                Добавить
-                            </button>
-                            <button type="button" class="btn btn-default" onclick="window.history.back();">
-                                Назад
-                            </button>
-                        </footer>
 
                         {{ csrf.field | raw }}
 

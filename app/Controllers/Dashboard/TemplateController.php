@@ -41,7 +41,7 @@ class TemplateController extends Controller
     public function store($request, $response)
     {
         $validation = $this->validator->validate($request, [
-            'name' => ['rules' => v::stringType()->length(1, 255)->notEmpty(), 'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
+            'name' => ['rules' => v::stringType()->notEmpty()->length(1, 255), 'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
             'body' => ['rules' => v::stringType()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
             'prior' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
             'categoryId' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Не указана категория подписчиков', 'numeric' => 'Категория подписчиков указана не верно']],
@@ -111,7 +111,7 @@ class TemplateController extends Controller
         if (!is_numeric($request->getParam('id'))) return $this->view->render($response, 'errors/500.twig');
 
         $validation = $this->validator->validate($request, [
-            'name' => ['rules' => v::stringType()->length(1, 255)->notEmpty(), 'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
+            'name' => ['rules' => v::stringType()->notEmpty()->length(1, 255), 'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
             'body' => ['rules' => v::stringType()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
             'prior' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
             'categoryId' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Не указана категория подписчиков', 'numeric' => 'Категория подписчиков указана не верно']],

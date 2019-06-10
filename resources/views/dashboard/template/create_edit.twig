@@ -13,6 +13,8 @@
 
                     <form id="tmplForm" enctype="multipart/form-data" action="{{ template is defined ? path_for('admin.template.update') : path_for('admin.template.store') }}" method="{{ template is defined ? 'put' : 'post' }}" class="smart-form">
 
+                        {{ csrf.field | raw }}
+
                         {% if template %}<input type="hidden" name="id" value="{{ template.id }}">{% endif %}
 
                         <header>
@@ -24,7 +26,7 @@
                             <section>
                                 <label for="name" class="label">Название*</label>
                                 <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ template is defined ? template.name  : _session.post.name }}" id="name">
+                                    <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ template is defined ? template.name  : old.name }}" id="name">
                                 </label>
 
                                 {% if errors.name %}
@@ -36,7 +38,7 @@
                             <section>
                                 <label for="body" class="label">Шаблон*</label>
                                 <label class="textarea textarea-resizable">
-                                    <textarea rows="3" class="custom-scroll" placeholder="Название" name="body" value="{{ template is defined ? template.name : _session.post.body }}" type="text" id="body">{{ template is defined ? template.body : '' }}</textarea>
+                                    <textarea rows="3" class="custom-scroll" placeholder="Название" name="body"  id="body">{{ template is defined ? template.body : old.body }}</textarea>
                                 </label>
                                 {% if errors.body %}
                                     <span class="text-danger">{{ errors.body | first }}</span>
@@ -46,6 +48,7 @@
                                     <strong>Персонализация:</strong> %NAME% - имя подписчика, %EMAIL% - E-mail адрес, %UNSUB% - ссылка для удаления рассылки, %SERVER_NAME% - адрес сайта, %REFERRAL:http://my_website.com/% - ссылка для статистика переходов по ссылкам
                                 </div>
                             </section>
+
                             <section>
                                 <label for="attachfile[]" class="label">Присоединить файлы</label>
                                 <div class="input input-file">
@@ -77,7 +80,7 @@
                                 <label for="prior" class="label">Важность</label>
                                 <div class="inline-group">
                                     <label class="radio">
-                                        <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or _session.post.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
+                                        <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or old.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
                                         <i></i>Нормальнаяa</label>
                                     <label class="radio">
                                         <input type="radio" name="prior" value="2" {{ template is defined and (templat.prior == 2 or _session.post.prior == 2) ? 'checked="checked"' : '' }}>
@@ -89,20 +92,20 @@
                                 {% if errors.prior %}
                                     <span class="text-danger">{{ errors.prior | first }}</span>jjj
                                 {% endif %}
+
+
                             </section>
 
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    Добавить
+                                </button>
+                                <button type="button" class="btn btn-default" onclick="window.history.back();">
+                                    Назад
+                                </button>
+                            </footer>
+
                         </fieldset>
-
-                        <footer>
-                            <button type="submit" class="btn btn-primary">
-                                Добавить
-                            </button>
-                            <button type="button" class="btn btn-default" onclick="window.history.back();">
-                                Назад
-                            </button>
-                        </footer>
-
-                        {{ csrf.field | raw }}
 
                     </form>
 
