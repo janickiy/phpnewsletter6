@@ -14,7 +14,7 @@ class Subscriptions extends Model
     public $timestamps = false;
 
 	protected $fillable = [
-		'userId',
+		'subscriberId',
         'categoryId'
 	];
 

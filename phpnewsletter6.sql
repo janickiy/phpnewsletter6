@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 25 2019 г., 15:34
+-- Время создания: Июн 10 2019 г., 03:22
 -- Версия сервера: 10.1.36-MariaDB
 -- Версия PHP: 7.2.10
 
@@ -25,26 +25,16 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `admin`
+-- Структура таблицы `attach`
 --
 
-CREATE TABLE `admin` (
+CREATE TABLE `attach` (
   `id` int(11) NOT NULL,
-  `login` varchar(100) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` text,
-  `password` varchar(255) NOT NULL,
-  `role` varchar(20) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
+  `name` int(11) NOT NULL,
+  `templateId` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `admin`
---
-
-INSERT INTO `admin` (`id`, `login`, `name`, `description`, `password`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin', NULL, '$2y$10$NpKNuO9SYpN7EIN1DS.oP.lzx1JKcnWMZT8/QzBbrkMx2h1yd7L7O', NULL, '2019-05-23 00:57:45', '2019-05-22 21:57:45');
 
 -- --------------------------------------------------------
 
@@ -58,6 +48,14 @@ CREATE TABLE `category` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `category`
+--
+
+INSERT INTO `category` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'категория', NULL, NULL),
+(5, 'оо лллл', '2019-06-09 20:42:50', '2019-06-09 20:42:50');
 
 -- --------------------------------------------------------
 
@@ -119,6 +117,13 @@ CREATE TABLE `subscribers` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Дамп данных таблицы `subscribers`
+--
+
+INSERT INTO `subscribers` (`id`, `name`, `email`, `ip`, `active`, `token`, `created_at`, `updated_at`) VALUES
+(1, 'nwqewqe', 'qweqw@qwewq.ru', '', 0, '', NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -127,9 +132,16 @@ CREATE TABLE `subscribers` (
 
 CREATE TABLE `subscriptions` (
   `id` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
+  `subscriberId` int(11) NOT NULL,
   `categoryId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `subscriptions`
+--
+
+INSERT INTO `subscriptions` (`id`, `subscriberId`, `categoryId`) VALUES
+(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -143,8 +155,42 @@ CREATE TABLE `templates` (
   `body` mediumtext NOT NULL,
   `prior` tinyint(1) NOT NULL,
   `pos` int(11) NOT NULL,
-  `categoryId` int(11) NOT NULL
+  `categoryId` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `templates`
+--
+
+INSERT INTO `templates` (`id`, `name`, `body`, `prior`, `pos`, `categoryId`, `created_at`, `updated_at`) VALUES
+(1, 'tuiop', 'iop[', 3, 0, 1, '2019-06-04 22:20:20', '2019-06-04 22:20:20'),
+(9, 'qq2', '<p>qweq w qweqw</p>\r\n', 2, 0, 1, '2019-06-09 23:07:37', '2019-06-09 23:07:37');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `login` varchar(100) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `password` varchar(255) NOT NULL,
+  `role` varchar(20) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `users`
+--
+
+INSERT INTO `users` (`id`, `login`, `name`, `description`, `password`, `role`, `created_at`, `updated_at`) VALUES
+(1, 'admin', 'admin', NULL, '$2y$10$zAO599PUL3h4fX9s1.SPeOVZyHasQEeuoW5Y1Ejy5G3O.VwBXwwUq', NULL, '2019-05-28 03:06:33', '2019-05-28 00:06:33');
 
 -- --------------------------------------------------------
 
@@ -165,10 +211,11 @@ CREATE TABLE `сustomheaders` (
 --
 
 --
--- Индексы таблицы `admin`
+-- Индексы таблицы `attach`
 --
-ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `attach`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `templateId` (`templateId`);
 
 --
 -- Индексы таблицы `category`
@@ -209,7 +256,7 @@ ALTER TABLE `subscribers`
 --
 ALTER TABLE `subscriptions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `userId` (`userId`),
+  ADD KEY `userId` (`subscriberId`),
   ADD KEY `categoryId` (`categoryId`);
 
 --
@@ -218,6 +265,12 @@ ALTER TABLE `subscriptions`
 ALTER TABLE `templates`
   ADD PRIMARY KEY (`id`),
   ADD KEY `categoryId` (`categoryId`);
+
+--
+-- Индексы таблицы `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `сustomheaders`
@@ -230,16 +283,16 @@ ALTER TABLE `сustomheaders`
 --
 
 --
--- AUTO_INCREMENT для таблицы `admin`
+-- AUTO_INCREMENT для таблицы `attach`
 --
-ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `attach`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `charset`
@@ -263,19 +316,25 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT для таблицы `subscribers`
 --
 ALTER TABLE `subscribers`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `subscriptions`
 --
 ALTER TABLE `subscriptions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `templates`
 --
 ALTER TABLE `templates`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT для таблицы `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `сustomheaders`

@@ -11,9 +11,9 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm" enctype="multipart/form-data" action="{{ category is defined ? path_for('admin.category.update') : path_for('admin.category.store') }}" method="{{ category is defined ? 'put' : 'post' }}" class="smart-form">
+                    <form id="tmplForm" enctype="multipart/form-data" action="{{ subscriber is defined ? path_for('admin.subscriber.update') : path_for('admin.subscriber.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
 
-                        {% if category %}<input type="hidden" name="id" value="{{ category.id }}">{% endif %}
+                        {% if subscriber %}<input type="hidden" name="id" value="{{ subscriber.id }}">{% endif %}
 
                         <header>
                             *-обязательные поля
@@ -22,9 +22,9 @@
                         <fieldset>
 
                             <section>
-                                <label for="name" class="label">Название*</label>
+                                <label for="name" class="label">Имя*</label>
                                 <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ category is defined ? category.name : '' }}" id="name">
+                                    <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ subscriber is defined ? subscriber.name  : _session.post.name }}" id="name">
                                 </label>
 
                                 {% if errors.name %}
@@ -33,11 +33,28 @@
 
                             </section>
 
+
+                            <section>
+                                <label for="name" class="label">Email*</label>
+                                <label class="input">
+                                    <input type="email" maxlength="255" placeholder="Email" name="email" value="{{ subscriber is defined ? subscriber.email  : _session.post.email }}" id="email">
+                                </label>
+
+                                {% if errors.email %}
+                                    <span class="text-danger">{{ errors.email | first }}</span>
+                                {% endif %}
+
+                            </section>
+
+
+
+
+
                         </fieldset>
 
                         <footer>
                             <button type="submit" class="btn btn-primary">
-                                Отправить
+                                Добавить
                             </button>
                             <button type="button" class="btn btn-default" onclick="window.history.back();">
                                 Назад
@@ -52,7 +69,6 @@
             </div>
         </div>
     </div>
-
 
 {% endblock %}
 

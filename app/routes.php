@@ -89,10 +89,9 @@ $app->group('', function () use ($container) {
 
     $this->group('/datatable', function () use ($container) {
         $this->get('/templates', 'DataTableController:getTemplates')->setName('admin.datatable.templates');
-
         $this->get('/category', 'DataTableController:getCategory')->setName('admin.datatable.category');
 
-
+        $this->get('/subscribers', 'DataTableController:getSubscribers')->setName('admin.datatable.subscribers');
 
     });
 

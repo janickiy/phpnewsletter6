@@ -5,8 +5,6 @@ namespace App\Controllers\Dashboard;
 use App\Models\Category;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
-use Psr\Http\Message\RequestInterface as Resquest;
-use Psr\Http\Message\ResponseInterface as Response;
 
 class CategoryController extends Controller
 {
@@ -22,7 +20,7 @@ class CategoryController extends Controller
      * @param $response
      * @return mixed
      */
-   public function create(Resquest $request, Response $response)
+   public function create($request, $response)
    {
        $title = "Добавление категории";
 
@@ -34,24 +32,25 @@ class CategoryController extends Controller
      * @param $response
      * @return mixed
      */
-   public function store(Resquest $request, Response $response)
+   public function store($request, $response)
    {
        $validation = $this->validator->validate($request,[
            'name' => ['rules' => v::stringType()->length(1, 255)->notEmpty(),'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов','notEmpty' => 'Это поле обязательно для заполнения']],
        ]);
 
        if (!$validation->isValid()) {
-
            $_SESSION['errors'] = $validation->getErrors();
+           $_SESSION['post'] = $request->getParsedBody();
 
-           return $response->withRedirect($this->router->pathFor('admin.template.create',array('errors' => ['name' => 12])));
+           return $response->withRedirect($this->router->pathFor('admin.category.create'));
        }
 
        Category::create($request->getParsedBody());
 
+       if (isset($_SESSION['post'])) unset($_SESSION['post']);
        $this->flash->addMessage('info','Данные успешно добавлены');
 
-       return $response->withRedirect($this->router->pathFor('admin.category.list'));
+       return $response->withRedirect($this->router->pathFor('admin.category.index'));
    }
 
     /**
@@ -86,7 +85,7 @@ class CategoryController extends Controller
        if (!$validation->isValid()) {
            $_SESSION['errors'] = $validation->getErrors();
 
-           return $response->withRedirect($this->router->pathFor('admin.template.edit',['id' => $request->getParam('id')]));
+           return $response->withRedirect($this->router->pathFor('admin.category.edit',['id' => $request->getParam('id')]));
        }
 
        $data['name'] = $request->getParam('name');
@@ -107,5 +106,4 @@ class CategoryController extends Controller
    {
        Category::where('id', $id)->delete();
    }
-	
 }

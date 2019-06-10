@@ -48,8 +48,8 @@ class TemplateController extends Controller
         ]);
 
         if (!$validation->isValid()) {
-
             $_SESSION['errors'] = $validation->getErrors();
+            $_SESSION['post'] = $request->getParsedBody();
 
             return $response->withRedirect($this->router->pathFor('admin.template.create'));
         }
@@ -74,6 +74,8 @@ class TemplateController extends Controller
                 //  $response->write('uploaded ' . $filename . '<br/>');
             }
         }
+
+        if (isset($_SESSION['post'])) unset($_SESSION['post']);
 
         $this->flash->addMessage('success', 'Данные успешно добавлены');
 

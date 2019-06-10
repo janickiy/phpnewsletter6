@@ -59,6 +59,10 @@ $container['view'] = function ($container) {
 		'user' => $container->auth->user()
 	]);
 
+    $view->getEnvironment()->addGlobal('_session', $_SESSION);
+    $view->getEnvironment()->addGlobal('_post', $_POST);
+    $view->getEnvironment()->addGlobal('_get', $_GET);
+
 	$view->getEnvironment()->addGlobal('flash',$container->flash);
 
 	return $view;
@@ -117,6 +121,8 @@ $container['csrf'] = function($container) {
 
 	return new \Slim\Csrf\Guard;
 };
+
+
 
 $app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
 $app->add(new \App\Middleware\OldInputMiddleware($container));

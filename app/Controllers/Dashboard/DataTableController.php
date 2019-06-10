@@ -77,11 +77,13 @@ class DataTableController extends Controller
     {
         $table = 'category';
         $primaryKey = 'id';
+        $joinQuery = "FROM category c LEFT JOIN subscriptions s ON c.id=s.categoryId ";
+        $groupBy = 'c.id';
 
         $columns = [
-            ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
-            ['db' => 'name', 'dt' => 'name', 'field' => 'name', 'as' => 'name'],
-            ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
+            ['db' => 'c.name', 'dt' => 'name', 'field' => 'name'],
+            ['db' => 'count(s.categoryId)', 'dt' => 'subcount', 'field' => 'subcount', 'as' => 'subcount'],
+            ['db' => 'c.id', 'dt' => 'action', 'formatter' => function ($d, $row) {
                 $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.category.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
                 $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
                 return $editBtn . $deleteBtn;
@@ -92,6 +94,11 @@ class DataTableController extends Controller
 
         header('Content-Type: application/json');
 
-        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, $joinQuery, null, $groupBy));
+    }
+
+    public function getSubscriber()
+    {
+
     }
 }

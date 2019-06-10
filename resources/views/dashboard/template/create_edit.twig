@@ -24,7 +24,7 @@
                             <section>
                                 <label for="name" class="label">Название*</label>
                                 <label class="input">
-                                    <input type="text" maxlength="10" placeholder="Название" name="name" value="{{ template is defined ? template.name : '' }}" type="text" id="name">
+                                    <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ template is defined ? template.name  : _session.post.name }}" id="name">
                                 </label>
 
                                 {% if errors.name %}
@@ -36,7 +36,7 @@
                             <section>
                                 <label for="body" class="label">Шаблон*</label>
                                 <label class="textarea textarea-resizable">
-                                    <textarea rows="3" class="custom-scroll" placeholder="Название" name="body" value="{{ template is defined ? template.name : '' }}" type="text" id="body">{{ template is defined ? template.body : '' }}</textarea>
+                                    <textarea rows="3" class="custom-scroll" placeholder="Название" name="body" value="{{ template is defined ? template.name : _session.post.body }}" type="text" id="body">{{ template is defined ? template.body : '' }}</textarea>
                                 </label>
                                 {% if errors.body %}
                                     <span class="text-danger">{{ errors.body | first }}</span>
@@ -64,7 +64,7 @@
                                     <select id="category" name="categoryId">
                                         <option>Выберите</option>
                                         {% for o in category %}
-                                            <option value="{{ o.id }}" {{ templat.categoryId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
+                                            <option value="{{ o.id }}" {{ templat.categoryId == o.id or _session.post.categoryId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
                                         {% endfor %}
                                     </select> <i></i>
                                 </label>
@@ -77,13 +77,13 @@
                                 <label for="prior" class="label">Важность</label>
                                 <div class="inline-group">
                                     <label class="radio">
-                                        <input type="radio" name="prior" value="3" {{ ((template is defined and templat.prior == 3) or (template is not defined)) ? 'checked="checked"' : '' }}>
+                                        <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or _session.post.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
                                         <i></i>Нормальнаяa</label>
                                     <label class="radio">
-                                        <input type="radio" name="prior" value="2" {{ template is defined and templat.prior == 2 ? 'checked="checked"' : '' }}>
+                                        <input type="radio" name="prior" value="2" {{ template is defined and (templat.prior == 2 or _session.post.prior == 2) ? 'checked="checked"' : '' }}>
                                         <i></i>Низкая</label>
                                     <label class="radio">
-                                        <input type="radio" name="prior" value="1" {{ template is defined and templat.prior == 1 ? 'checked="checked"' : '' }}>
+                                        <input type="radio" name="prior" value="1" {{ template is defined and (templat.prior == 1 or _session.post.prior == 1) ? 'checked="checked"' : '' }}>
                                         <i></i>Высокая</label>
                                 </div>
                                 {% if errors.prior %}
