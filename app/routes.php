@@ -48,7 +48,7 @@ $app->group('', function () use ($container) {
         $this->get('/create', 'SubscribersController:create')->setName('admin.subscribers.create');
         $this->post('/store', 'SubscribersController:store')->setName('admin.subscribers.store');
         $this->get('/edit/{id:[0-9]+}', 'SubscribersController:edit')->setName('admin.subscribers.edit');
-        $this->get('/update', 'SubscribersController:update')->setName('admin.subscribers.update');
+        $this->map(['GET', 'POST'],'/update', 'SubscribersController:update')->setName('admin.subscribers.update');
         $this->delete('/destroy/{id:[0-9]+}', 'SubscribersController:destroy')->setName('admin.subscribers.destroy');
         $this->get('/import', 'SubscribersController:import')->setName('admin.subscribers.import');
         $this->get('/export', 'SubscribersController:export')->setName('admin.subscribers.export');
@@ -83,7 +83,7 @@ $app->group('', function () use ($container) {
         $this->get('/create', 'SettingsController:create')->setName('admin.settings.create');
         $this->post('/store', 'SettingsController:store')->setName('admin.settings.store');
         $this->get('/edit/{id:[0-9]+}', 'SettingsController:edit')->setName('admin.settings.edit');
-        $this->put('/update', 'SettingsController:update')->setName('admin.settings.update');
+        $this->map(['GET', 'POST'],'/update', 'SettingsController:update')->setName('admin.settings.update');
         $this->delete('/destroy/{id:[0-9]+}', 'SettingsController:destroy')->setName('admin.settings.destroy');
     });
 

@@ -24,7 +24,7 @@
                             <section>
                                 <label for="name" class="label">Ключ*</label>
                                 <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Ключ" name="name" value="{{ settings is defined ? settings.name : _session.post.name }}" id="name">
+                                    <input type="text" maxlength="255" placeholder="Ключ" name="name" value="{{ settings is defined ? settings.name : old.name }}" id="name">
                                 </label>
 
                                 {% if errors.name %}
@@ -36,7 +36,7 @@
                             <section>
                                 <label for="value" class="label">Значение*</label>
                                 <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Значение" name="value" value="{{ settings is defined ? settings.value :  _session.post.value }}" id="name">
+                                    <input type="text" maxlength="255" placeholder="Значение" name="value" value="{{ settings is defined ? settings.value : old.value }}" id="name">
                                 </label>
 
                                 {% if errors.value %}
@@ -48,7 +48,7 @@
                             <section>
                                 <label for="description" class="label">Описание</label>
                                 <label class="textarea textarea-resizable">
-                                    <textarea rows="3" class="custom-scroll" placeholder="Название" name="body"  id="description">{{ settings is defined ? settings.description : _session.post.description }}</textarea>
+                                    <textarea rows="3" class="custom-scroll" placeholder="Описание" name="description"  id="description">{{ settings is defined ? settings.description : old.description }}</textarea>
                                 </label>
                                 {% if errors.description %}
                                     <span class="text-danger">{{ errors.description| first }}</span>
@@ -75,7 +75,6 @@
             </div>
         </div>
     </div>
-
 
 {% endblock %}
 

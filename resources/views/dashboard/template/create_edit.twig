@@ -83,16 +83,15 @@
                                         <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or old.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
                                         <i></i>Нормальнаяa</label>
                                     <label class="radio">
-                                        <input type="radio" name="prior" value="2" {{ template is defined and (templat.prior == 2 or _session.post.prior == 2) ? 'checked="checked"' : '' }}>
+                                        <input type="radio" name="prior" value="2" {{ template is defined and (templat.prior == 2 or old.prior == 2) ? 'checked="checked"' : '' }}>
                                         <i></i>Низкая</label>
                                     <label class="radio">
-                                        <input type="radio" name="prior" value="1" {{ template is defined and (templat.prior == 1 or _session.post.prior == 1) ? 'checked="checked"' : '' }}>
+                                        <input type="radio" name="prior" value="1" {{ template is defined and (templat.prior == 1 or old.prior == 1) ? 'checked="checked"' : '' }}>
                                         <i></i>Высокая</label>
                                 </div>
                                 {% if errors.prior %}
                                     <span class="text-danger">{{ errors.prior | first }}</span>jjj
                                 {% endif %}
-
 
                             </section>
 
@@ -113,8 +112,6 @@
             </div>
         </div>
     </div>
-
-
 
 {% endblock %}
 

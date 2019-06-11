@@ -41,7 +41,6 @@ class SettingsController extends Controller
     {
         $validation = $this->validator->validate($request, [
             'name' => ['rules' => v::stringType()->notEmpty()->length(1, 255), 'messages' => ['length' => 'Ключ должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
-            'value' => ['rules' => v::stringType()->notEmpty()->length(1, 255), 'messages' => ['length' => 'Значение должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
         ]);
 
         if (!$validation->isValid()) {
@@ -86,7 +85,6 @@ class SettingsController extends Controller
 
         $validation = $this->validator->validate($request, [
             'name' => ['rules' => v::stringType()->notEmpty()->length(1, 255), 'messages' => ['length' => 'Ключ должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
-            'value' => ['rules' => v::stringType()->notEmpty()->length(1, 255), 'messages' => ['length' => 'Значение должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
         ]);
 
         if (!$validation->isValid()) {
@@ -103,7 +101,7 @@ class SettingsController extends Controller
 
         $this->flash->addMessage('success', 'Данные успешно обновлены');
 
-        return $response->withRedirect($this->router->pathFor('admin.settings'));
+        return $response->withRedirect($this->router->pathFor('admin.settings.index'));
     }
 
     /**

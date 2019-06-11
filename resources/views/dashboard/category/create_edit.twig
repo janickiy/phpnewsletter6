@@ -28,7 +28,7 @@
                             <section>
                                 <label for="name" class="label">Название*</label>
                                 <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ category is defined ? category.name : '' }}" id="name">
+                                    <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ category is defined ? category.name : old.name }}" id="name">
                                 </label>
 
                                 {% if errors.name %}
@@ -37,18 +37,16 @@
 
                             </section>
 
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    Отправить
+                                </button>
+                                <button type="button" class="btn btn-default" onclick="window.history.back();">
+                                    Назад
+                                </button>
+                            </footer>
+
                         </fieldset>
-
-                        <footer>
-
-                            <input class="btn btn-primary" type="submit" value="Отправить">
-
-                            <button type="button" class="btn btn-default" onclick="window.history.back();">
-                                Назад
-                            </button>
-                        </footer>
-
-
 
                     </form>
 
@@ -56,7 +54,6 @@
             </div>
         </div>
     </div>
-
 
 {% endblock %}
 

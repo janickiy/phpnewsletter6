@@ -24,7 +24,7 @@
                             <section>
                                 <label for="name" class="label">Имя*</label>
                                 <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ subscriber is defined ? subscriber.name  : _session.post.name }}" id="name">
+                                    <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ subscriber is defined ? subscriber.name : old.name }}" id="name">
                                 </label>
 
                                 {% if errors.name %}
@@ -36,7 +36,7 @@
                             <section>
                                 <label for="name" class="label">Email*</label>
                                 <label class="input">
-                                    <input type="email" maxlength="255" placeholder="Email" name="email" value="{{ subscriber is defined ? subscriber.email  : _session.post.email }}" id="email">
+                                    <input type="email" maxlength="255" placeholder="Email" name="email" value="{{ subscriber is defined ? subscriber.email : old.email }}" id="email">
                                 </label>
 
                                 {% if errors.email %}
