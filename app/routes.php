@@ -51,7 +51,9 @@ $app->group('', function () use ($container) {
         $this->map(['GET', 'POST'],'/update', 'SubscribersController:update')->setName('admin.subscribers.update');
         $this->delete('/destroy/{id:[0-9]+}', 'SubscribersController:destroy')->setName('admin.subscribers.destroy');
         $this->get('/import', 'SubscribersController:import')->setName('admin.subscribers.import');
+        $this->post('/import-subscribers', 'SubscribersController:importSubscribers')->setName('admin.subscribers.import_subscribers');
         $this->get('/export', 'SubscribersController:export')->setName('admin.subscribers.export');
+        $this->get('/remove-all', 'SubscribersController:removeAll')->setName('admin.subscribers.remove_all');
     });
 
     $this->group('/category', function () use ($container) {

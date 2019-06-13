@@ -2,6 +2,21 @@
 
 {% block content %}
 
+    <div class="row">
+        <div class="col-lg-12"><p class="text-center">
+                <a class="btn btn-outline btn-default btn-lg" title="Импорт подписчиков" href="{{ path_for('admin.subscribers.import') }}">
+                    <span class="fa fa-download fa-2x"></span> Импорт
+                </a>
+                <a class="btn btn-outline btn-default btn-lg" title="Экспорт подписчиков" href="{{ path_for('admin.subscribers.export') }}">
+                    <span class="fa fa-upload fa-2x"></span> Экспорт
+                </a>
+                <a class="btn btn-outline btn-danger btn-lg" title="Удалить всех подписчиков" href="{{ path_for('admin.subscribers.remove_all') }}" onclick="return confirm('Вы действительно хотите удалить всех подписчиков?');">
+                    <span class="fa fa-trash-o fa-2x"></span> Удалить всех
+                </a>
+            </p>
+        </div>
+    </div>
+
     <div class="row-fluid">
 
         <div class="col">
@@ -108,10 +123,10 @@
                     url: '{{ path_for('admin.datatable.subscribers') }}'
                 },
                 columns: [
-                    {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
-                    {data: 'category', name: 'category'},
-                    {data: 'prior', name: 'prior', searchable: false},
+                    {data: 'email', name: 'email'},
+                    {data: 'ip', name: 'ip'},
+                    {data: 'active', name: 'active'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ],

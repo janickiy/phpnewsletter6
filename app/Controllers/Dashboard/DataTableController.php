@@ -97,9 +97,35 @@ class DataTableController extends Controller
         echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, $joinQuery, null, $groupBy));
     }
 
-    public function getSubscriber()
+    /**
+     * @param $request
+     * @param $response
+     */
+    public function getSubscribers($request, $response)
     {
+        $table = 'subscribers';
+        $primaryKey = 'id';
 
+        $columns = [
+            ['db' => 'name', 'dt' => 'name', 'field' => 'name'],
+            ['db' => 'email', 'dt' => 'email', 'field' => 'email'],
+            ['db' => 'ip', 'dt' => 'ip', 'field' => 'ip'],
+            ['db' => 'active', 'dt' => 'active', 'formatter' => function ($d, $row) {
+                return $d == 1 ? 'да' : 'нет';
+            },  'field' => 'active'],
+            ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
+                $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.subscribers.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
+                $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
+                return $editBtn . $deleteBtn;
+            },
+                'field' => 'action', 'as' => 'action'
+            ],
+            ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at']
+        ];
+
+        header('Content-Type: application/json');
+
+        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
     }
 
     /**

@@ -11,9 +11,7 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm"  action="{{ subscriber is defined ? path_for('admin.subscribers.import_subscribers') : path_for('admin.subscribers.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
-
-                        {% if subscriber %}<input type="hidden" name="id" value="{{ subscriber.id }}">{% endif %}
+                    <form id="tmplForm"  action="{{ path_for('admin.subscribers.import') }}" method="POST" class="smart-form">
 
                         <header>
                             *-обязательные поля
@@ -22,33 +20,36 @@
                         <fieldset>
 
                             <section>
-                                <label for="name" class="label">Имя</label>
-                                <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ subscriber is defined ? subscriber.name : old.name }}" id="name">
-                                </label>
+                                <label for="import" class="label">Присоединить файлы*</label>
+                                <div class="input input-file">
+                                    <span class="button"><input type="file" name="import" id="import" name="file" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
+                                </div>
 
-                                {% if errors.name %}
-                                    <span class="text-danger">{{ errors.name | first }}</span>
+                                {% if errors.import %}
+                                    <span class="text-danger">{{ errors.import | first }}</span>
                                 {% endif %}
 
                             </section>
 
                             <section>
-                                <label for="name" class="label">Email*</label>
-                                <label class="input">
-                                    <input type="email" maxlength="255" placeholder="Email" name="email" value="{{ subscriber is defined ? subscriber.email : old.email }}" id="email">
+                                <label for="charsetId" class="label">Кодировка</label>
+                                <label class="select">
+                                    <select name="charsetId" id="charsetId">
+                                        <option>Выберите</option>
+                                        {% for c in charsets %}
+                                            <option value="{{ c.id }}">{{ c.charset }}</option>
+                                        {% endfor %}
+                                    </select> <i></i>
                                 </label>
-
-                                {% if errors.email %}
-                                    <span class="text-danger">{{ errors.email | first }}</span>
+                                {% if errors.charsetId %}
+                                    <span class="text-danger">{{ errors.charsetId | first }}</span>
                                 {% endif %}
-
                             </section>
 
                             <section>
                                 <label for="categoryId[]" class="label">Категория подписчиков</label>
                                 <label class="input">
-                                    <select name="categoryId[]" multiple="multiple" id="categoryId" class="form-control custom-scroll" title="Выберите категорию">
+                                    <select name="categoryId[]" multiple="multiple" id="multiselect1" class="form-control custom-scroll" title="Выберите категорию">
                                         {% for o in category %}
                                             <option value="{{ o.id }}">{{ o.name }}</option>
                                         {% endfor %}
@@ -61,7 +62,7 @@
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Добавить
+                                    Отправить
                                 </button>
                                 <button type="button" class="btn btn-default" onclick="window.history.back();">
                                     Назад
@@ -78,10 +79,5 @@
             </div>
         </div>
     </div>
-
-{% endblock %}
-
-{% block js %}
-
 
 {% endblock %}

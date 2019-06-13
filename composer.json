@@ -10,6 +10,12 @@
             "email": "janiciy@mail.ru"
         }
     ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/janickiy/ConvertCharset.git"
+        }
+    ],
     "require": {
         "php": ">=7.0.0",
         "slim/slim": "^3.1",
@@ -23,7 +29,8 @@
         "phpunit/phpunit": "^4.8",
         "nette/mail": "^2.4",
         "robmorgan/phinx": "v0.8.0",
-        "awurth/slim-validation": "^3.1"
+        "awurth/slim-validation": "^3.1",
+        "janickiy/ConvertCharset":"dev-master"
     },
     "autoload": {
     	"psr-4": {
