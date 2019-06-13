@@ -11,7 +11,7 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm"  action="{{ subscriber is defined ? path_for('admin.subscriber.update') : path_for('admin.subscriber.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
+                    <form id="tmplForm"  action="{{ subscriber is defined ? path_for('admin.subscribers.update') : path_for('admin.subscribers.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
 
                         {% if subscriber %}<input type="hidden" name="id" value="{{ subscriber.id }}">{% endif %}
 
@@ -43,6 +43,20 @@
                                     <span class="text-danger">{{ errors.email | first }}</span>
                                 {% endif %}
 
+                            </section>
+
+                            <section>
+                                <label for="categoryId[]" class="label">Категория подписчиков*</label>
+                                <label class="input">
+                                    <select name="categoryId[]" multiple="multiple" id="multiselect1" class="form-control custom-scroll" title="Выберите категорию">
+                                        {% for o in category %}
+                                            <option value="{{ o.id }}">{{ o.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                                {% if errors.categoryId %}
+                                    <span class="text-danger">{{ errors.categoryId | first }}</span>
+                                {% endif %}
                             </section>
 
                             <footer>

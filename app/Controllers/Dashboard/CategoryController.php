@@ -40,14 +40,12 @@ class CategoryController extends Controller
 
        if (!$validation->isValid()) {
            $_SESSION['errors'] = $validation->getErrors();
-           $_SESSION['post'] = $request->getParsedBody();
 
            return $response->withRedirect($this->router->pathFor('admin.category.create'));
        }
 
        Category::create($request->getParsedBody());
 
-       if (isset($_SESSION['post'])) unset($_SESSION['post']);
        $this->flash->addMessage('success','Данные успешно добавлены');
 
        return $response->withRedirect($this->router->pathFor('admin.category.index'));

@@ -7,7 +7,6 @@ use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 use App\Models\Category;
 use Slim\Http\UploadedFile;
-use App\Helper\StringHelpers;
 
 class TemplateController extends Controller
 {
@@ -49,7 +48,6 @@ class TemplateController extends Controller
 
         if (!$validation->isValid()) {
             $_SESSION['errors'] = $validation->getErrors();
-            $_SESSION['post'] = $request->getParsedBody();
 
             return $response->withRedirect($this->router->pathFor('admin.template.create'));
         }

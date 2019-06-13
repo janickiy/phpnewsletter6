@@ -38,6 +38,14 @@ class StringHelpers
     }
 
     /**
+     * @return string
+     */
+    public static function token()
+    {
+        return md5(uniqid(rand(), TRUE));
+    }
+
+    /**
      * @param $str
      * @param int $chars
      * @return string

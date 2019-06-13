@@ -2,9 +2,10 @@
 
 namespace App\Controllers\Dashboard;
 
-use App\Models\{Subscribers,Subscriptions};
+use App\Models\{Category, Subscribers, Subscriptions};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
+use App\Helper\StringHelpers;
 
 class SubscribersController extends Controller
 {
@@ -29,7 +30,9 @@ class SubscribersController extends Controller
    {
        $title = "Добавление подписчика";
 
-       return $this->view->render($response,'dashboard/subscribers/create_edit.twig', compact('title'));
+       $category = Category::get();
+
+       return $this->view->render($response,'dashboard/subscribers/create_edit.twig', compact('title', 'category'));
    }
 
     /**
@@ -46,14 +49,22 @@ class SubscribersController extends Controller
 
        if (!$validation->isValid()) {
            $_SESSION['errors'] = $validation->getErrors();
-           $_SESSION['post'] = $request->getParsedBody();
 
            return $response->withRedirect($this->router->pathFor('admin.subscribers.create'));
        }
 
-       Subscribers::create($request->getParsedBody());
+       $id = Subscribers::create(array_merge($request->getParsedBody(),['active' => 1, 'token' => StringHelpers::token()]))->id;
 
-       if (isset($_SESSION['post'])) unset($_SESSION['post']);
+       if ($request->getParam('categoryId')) {
+          $arr =  $request->getParam('categoryId');
+
+          foreach ($request->getParam('categoryId') as $categoryId) {
+              if (is_numeric($categoryId)) {
+                  Subscriptions::create(['subscriberId' => $id, 'categoryId' => $categoryId]);
+              }
+          }
+       }
+
        $this->flash->addMessage('success','Данные успешно добавлены');
 
        return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
@@ -72,7 +83,9 @@ class SubscribersController extends Controller
 
        if (!$subscriber) return $this->view->render($response, 'errors/404.twig');
 
-       return $this->view->render($response, 'dashboard/category/create_edit.twig', compact('subscriber', 'title'));
+       $category = Category::get();
+
+       return $this->view->render($response, 'dashboard/category/create_edit.twig', compact('subscriber', 'title', 'category'));
    }
 
     /**
@@ -89,7 +102,6 @@ class SubscribersController extends Controller
 
        if (!$validation->isValid()) {
            $_SESSION['errors'] = $validation->getErrors();
-           $_SESSION['post'] = $request->getParsedBody();
 
            return $response->withRedirect($this->router->pathFor('admin.subscribers.create'));
        }

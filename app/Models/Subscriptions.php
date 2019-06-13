@@ -9,8 +9,6 @@ class Subscriptions extends Model
 
 	protected $table = 'subscriptions';
 
-    protected $primaryKey = 'id';
-
     public $timestamps = false;
 
 	protected $fillable = [

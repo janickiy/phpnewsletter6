@@ -12,10 +12,12 @@ class UsersController extends Controller
 {
    public function index(Resquest $request, Response $response)
    {
-       return $this->view->render($response,'dashboard/users/index.twig');
+       $title = "Пользователи";
+
+       return $this->view->render($response,'dashboard/users/index.twig', compact('title'));
    }
 
-   public function create()
+   public function create($request,$response)
    {
 
    }
