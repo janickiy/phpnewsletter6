@@ -73,4 +73,62 @@ class StringHelpers
         }
     }
 
+    /**
+     * @param $size
+     * @param int $maxDecimals
+     * @param string $mbSuffix
+     * @return string
+     */
+    public static function formatSizeInMb($size, $maxDecimals = 3, $mbSuffix = "MB")
+    {
+        $mbSize = round($size / 1024 / 1024, $maxDecimals);
+        return preg_replace("/\\.?0+$/", "", $mbSize) . $mbSuffix;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function detectMaxUploadFileSize()
+    {
+        /**
+         * Converts shorthands like "2M" or "512K" to bytes
+         *
+         * @param int $size
+         * @return int|float
+         * @throws Exception
+         */
+        $normalize = function ($size) {
+            if (preg_match('/^(-?[\d\.]+)(|[KMG])$/i', $size, $match)) {
+                $pos = array_search($match[2], ["", "K", "M", "G"]);
+                $size = $match[1] * pow(1024, $pos);
+            } else {
+                throw new Exception("Failed to normalize memory size '{$size}' (unknown format)");
+            }
+            return $size;
+        };
+        $limits = [];
+        $limits[] = $normalize(ini_get('upload_max_filesize'));
+        if (($max_post = $normalize(ini_get('post_max_size'))) != 0) {
+            $limits[] = $max_post;
+        }
+        if (($memory_limit = $normalize(ini_get('memory_limit'))) != -1) {
+            $limits[] = $memory_limit;
+        }
+        $maxFileSize = min($limits);
+        return $maxFileSize;
+    }
+
+    /**
+     * @return string
+     */
+    public static function maxUploadFileSize()
+    {
+        $maxUploadFileSize = self::detectMaxUploadFileSize();
+
+        if (!$maxUploadFileSize or $maxUploadFileSize == 0) {
+            $maxUploadFileSize = 2097152;
+        }
+
+        return self::formatSizeInMb($maxUploadFileSize);
+    }
 }

@@ -141,7 +141,9 @@ class SubscribersController extends Controller
         $title = "Импорт";
         $charsets = Charset::get();
         $category = Category::get();
-        return $this->view->render($response, 'dashboard/subscribers/import.twig', compact('title', 'charsets', 'category'));
+        $maxUploadFileSize = StringHelpers::maxUploadFileSize();
+
+        return $this->view->render($response, 'dashboard/subscribers/import.twig', compact('title', 'charsets', 'category','maxUploadFileSize'));
     }
 
     /**
@@ -152,6 +154,26 @@ class SubscribersController extends Controller
     public function importSubscribers($request, $response)
     {
         $f = $request->getUploadedFiles()['import'];
+
+        $validation = $this->validator->validate($request, [
+            'import' => ['rules' => v::file(), 'messages' => ['file' => 'Файл для импорта не выбран!']],
+            'name' => v::stringType()->notEmpty()
+        ]);
+
+        if (!$validation->isValid()) {
+            $_SESSION['errors'] = $validation->getErrors();
+
+            return $response->withRedirect($this->router->pathFor('admin.subscribers.import'));
+        }
+
+        if (v::file()->size(null, StringHelpers::maxUploadFileSize())->validate($f->getClientFilename()) === false) {
+            $_SESSION['errors'] = $validation->getErrors();
+
+
+
+
+            return $response->withRedirect($this->router->pathFor('admin.subscribers.import'));
+        }
 
         $ext = pathinfo($f->getClientFilename(), PATHINFO_EXTENSION);
 
@@ -278,4 +300,6 @@ class SubscribersController extends Controller
 
         return $count;
     }
+
+
 }
