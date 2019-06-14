@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Июн 10 2019 г., 03:22
+-- Время создания: Июн 14 2019 г., 03:51
 -- Версия сервера: 10.1.36-MariaDB
 -- Версия PHP: 7.2.10
 
@@ -64,9 +64,47 @@ INSERT INTO `category` (`id`, `name`, `created_at`, `updated_at`) VALUES
 --
 
 CREATE TABLE `charset` (
-  `id` int(11) NOT NULL,
-  `charset` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id` int(5) NOT NULL,
+  `charset` varchar(32) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `charset`
+--
+
+INSERT INTO `charset` (`id`, `charset`) VALUES
+(1, 'utf-8'),
+(2, 'iso-8859-1'),
+(3, 'iso-8859-2'),
+(4, 'iso-8859-3'),
+(5, 'iso-8859-4'),
+(6, 'iso-8859-5'),
+(7, 'iso-8859-6'),
+(8, 'iso-8859-8'),
+(9, 'iso-8859-7'),
+(10, 'iso-8859-9'),
+(11, 'iso-8859-10'),
+(12, 'iso-8859-13'),
+(13, 'iso-8859-14'),
+(14, 'iso-8859-15'),
+(15, 'iso-8859-16'),
+(16, 'windows-1250'),
+(17, 'windows-1251'),
+(18, 'windows-1252'),
+(19, 'windows-1253'),
+(20, 'windows-1254'),
+(21, 'windows-1255'),
+(22, 'windows-1256'),
+(23, 'windows-1257'),
+(24, 'windows-1258'),
+(25, 'gb2312'),
+(26, 'big5'),
+(27, 'iso-2022-jp'),
+(28, 'ks_c_5601-1987'),
+(29, 'euc-kr'),
+(30, 'windows-874'),
+(31, 'koi8-r'),
+(32, 'koi8-u');
 
 -- --------------------------------------------------------
 
@@ -92,13 +130,33 @@ CREATE TABLE `log` (
 
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
-  `key_cd` varchar(255) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `display_value` varchar(255) NOT NULL,
-  `value` text NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `name` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `settings`
+--
+
+INSERT INTO `settings` (`id`, `name`, `description`, `value`) VALUES
+(1, 'EMAIL', 'E-mail', 'trust@trust-signal.com'),
+(2, 'SHOW_EMAIL', 'Показывать e-mail администратора в отправляемых письмах', '1'),
+(3, 'EMAIL_NAME', 'Имя к E-mail администратора (from)', 'Trust Signal'),
+(4, 'RETURN_PATH', 'Обратный адрес (Return-path)', ''),
+(5, 'LIST_OWNER', 'Email адрес организатора рассылки (List-Owner)', ''),
+(6, 'ORGANIZATION', 'Организация', ''),
+(7, 'SUBJECTTEXTCONFIRM', 'Тема подтверждения рассылки\r\n', ''),
+(9, 'TEXTCONFIRMATION', 'Текст подтверждения рассылки', 'Здравствуйте, %NAME%  Получение рассылки возможно после завершения этапа активации подписки. Чтобы активировать подписку, перейдите по следующей ссылке: %CONFIRM%'),
+(10, 'REQUIRE_CONFIRMATION', 'Требовать подтверждение подписки', '1'),
+(11, 'UNSUBLINK', 'Текст ссылки отписки от рассылки', 'Отписаться от рассылки: <a href=%UNSUB%>%UNSUB%</a>'),
+(12, 'SMTP_HOST', 'SMTP сервер', ''),
+(13, 'SMTP_USERNAME', 'Логин', ''),
+(14, 'SMTP_PASSWORD', 'Пароль', ''),
+(15, 'SHOW_UNSUBSCRIBE_LINK', 'Показывать форму отписки от рассылки', ''),
+(16, 'REQUEST_REPLY', 'Запрашивать уведомления о прочтении писем', ''),
+(17, 'INTERVAL_NUMBER', 'Отправлять письма подписчику в интервале', '1'),
+(18, 'NEWSUBSCRIBERNOTIFY', 'Уведомлять о новом подписчике', '1');
 
 -- --------------------------------------------------------
 
@@ -117,13 +175,6 @@ CREATE TABLE `subscribers` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Дамп данных таблицы `subscribers`
---
-
-INSERT INTO `subscribers` (`id`, `name`, `email`, `ip`, `active`, `token`, `created_at`, `updated_at`) VALUES
-(1, 'nwqewqe', 'qweqw@qwewq.ru', '', 0, '', NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -131,17 +182,9 @@ INSERT INTO `subscribers` (`id`, `name`, `email`, `ip`, `active`, `token`, `crea
 --
 
 CREATE TABLE `subscriptions` (
-  `id` int(11) NOT NULL,
   `subscriberId` int(11) NOT NULL,
   `categoryId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `subscriptions`
---
-
-INSERT INTO `subscriptions` (`id`, `subscriberId`, `categoryId`) VALUES
-(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -224,12 +267,6 @@ ALTER TABLE `category`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индексы таблицы `charset`
---
-ALTER TABLE `charset`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Индексы таблицы `log`
 --
 ALTER TABLE `log`
@@ -242,7 +279,7 @@ ALTER TABLE `log`
 --
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `key_cd` (`key_cd`);
+  ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Индексы таблицы `subscribers`
@@ -255,7 +292,6 @@ ALTER TABLE `subscribers`
 -- Индексы таблицы `subscriptions`
 --
 ALTER TABLE `subscriptions`
-  ADD PRIMARY KEY (`id`),
   ADD KEY `userId` (`subscriberId`),
   ADD KEY `categoryId` (`categoryId`);
 
@@ -295,12 +331,6 @@ ALTER TABLE `category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT для таблицы `charset`
---
-ALTER TABLE `charset`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT для таблицы `log`
 --
 ALTER TABLE `log`
@@ -310,19 +340,13 @@ ALTER TABLE `log`
 -- AUTO_INCREMENT для таблицы `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT для таблицы `subscribers`
 --
 ALTER TABLE `subscribers`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT для таблицы `subscriptions`
---
-ALTER TABLE `subscriptions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `templates`

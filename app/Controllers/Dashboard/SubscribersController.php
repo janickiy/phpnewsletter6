@@ -15,65 +15,65 @@ class SubscribersController extends Controller
      * @param $response
      * @return mixed
      */
-   public function index($request,$response)
-   {
-       $title = "Подписчики";
+    public function index($request, $response)
+    {
+        $title = "Подписчики";
 
-       return $this->view->render($response,'dashboard/subscribers/index.twig', compact('title'));
-   }
-
-    /**
-     * @param $request
-     * @param $response
-     * @return mixed
-     */
-   public function create($request,$response)
-   {
-       $title = "Добавление подписчика";
-
-       $category = Category::get();
-
-       return $this->view->render($response,'dashboard/subscribers/create_edit.twig', compact('title', 'category'));
-   }
+        return $this->view->render($response, 'dashboard/subscribers/index.twig', compact('title'));
+    }
 
     /**
      * @param $request
      * @param $response
      * @return mixed
      */
-   public function store($request,$response)
-   {
-       $validation = $this->validator->validate($request,[
-           'email' => ['rules' => v::email()->notEmpty(),'messages' => ['email' => 'Адрес электроной почты указан не верно','notEmpty' => 'Это поле обязательно для заполнения']],
-       ]);
+    public function create($request, $response)
+    {
+        $title = "Добавление подписчика";
 
-       if (!$validation->isValid()) {
-           $_SESSION['errors'] = $validation->getErrors();
+        $category = Category::get();
 
-           return $response->withRedirect($this->router->pathFor('admin.subscribers.create'));
-       }
+        return $this->view->render($response, 'dashboard/subscribers/create_edit.twig', compact('title', 'category'));
+    }
 
-       if (Subscribers::where('email','like',$request->getParam('email'))->first()) {
-           $_SESSION['errors'] = ['email' => ['unique' => 'Адрес электроной почты уже есть в базе данных! Укажите другой']];
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
+    public function store($request, $response)
+    {
+        $validation = $this->validator->validate($request, [
+            'email' => ['rules' => v::email()->notEmpty(), 'messages' => ['email' => 'Адрес электроной почты указан не верно', 'notEmpty' => 'Это поле обязательно для заполнения']],
+        ]);
 
-           return $response->withRedirect($this->router->pathFor('admin.subscribers.create'));
-       }
+        if (!$validation->isValid()) {
+            $_SESSION['errors'] = $validation->getErrors();
 
-       $id = Subscribers::create(array_merge($request->getParsedBody(),['active' => 1, 'token' => StringHelpers::token()]))->id;
+            return $response->withRedirect($this->router->pathFor('admin.subscribers.create'));
+        }
 
-       if ($request->getParam('categoryId')) {
+        if (Subscribers::where('email', 'like', $request->getParam('email'))->first()) {
+            $_SESSION['errors'] = ['email' => ['unique' => 'Адрес электроной почты уже есть в базе данных! Укажите другой']];
 
-          foreach ($request->getParam('categoryId') as $categoryId) {
-              if (is_numeric($categoryId)) {
-                  Subscriptions::create(['subscriberId' => $id, 'categoryId' => $categoryId]);
-              }
-          }
-       }
+            return $response->withRedirect($this->router->pathFor('admin.subscribers.create'));
+        }
 
-       $this->flash->addMessage('success','Данные успешно добавлены');
+        $id = Subscribers::create(array_merge($request->getParsedBody(), ['active' => 1, 'token' => StringHelpers::token()]))->id;
 
-       return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
-   }
+        if ($request->getParam('categoryId')) {
+
+            foreach ($request->getParam('categoryId') as $categoryId) {
+                if (is_numeric($categoryId)) {
+                    Subscriptions::create(['subscriberId' => $id, 'categoryId' => $categoryId]);
+                }
+            }
+        }
+
+        $this->flash->addMessage('success', 'Данные успешно добавлены');
+
+        return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
+    }
 
     /**
      * @param $request
@@ -81,102 +81,133 @@ class SubscribersController extends Controller
      * @param $id
      * @return mixed
      */
-   public function edit($request, $response, $id)
-   {
-       $title = "Редактирование подписчика";
-       $subscriber = Subscribers::where('id', $id)->first();
+    public function edit($request, $response, $id)
+    {
+        $title = "Редактирование подписчика";
+        $subscriber = Subscribers::where('id', $id)->first();
 
-       if (!$subscriber) return $this->view->render($response, 'errors/404.twig');
+        if (!$subscriber) return $this->view->render($response, 'errors/404.twig');
 
-       $category = Category::get();
+        $category = Category::get();
 
-       return $this->view->render($response, 'dashboard/category/create_edit.twig', compact('subscriber', 'title', 'category'));
-   }
+        return $this->view->render($response, 'dashboard/category/create_edit.twig', compact('subscriber', 'title', 'category'));
+    }
 
     /**
      * @param $request
      * @param $response
      * @return mixed
      */
-   public function update($request, $response)
-   {
-       $validation = $this->validator->validate($request,[
-           'email' => ['rules' => v::email()->notEmpty(),'messages' => ['email' => 'Адрес электроной почты указан не верно','notEmpty' => 'Это поле обязательно для заполнения']],
-       ]);
+    public function update($request, $response)
+    {
+        $validation = $this->validator->validate($request, [
+            'email' => ['rules' => v::email()->notEmpty(), 'messages' => ['email' => 'Адрес электроной почты указан не верно', 'notEmpty' => 'Это поле обязательно для заполнения']],
+        ]);
 
-       if (!$validation->isValid()) {
-           $_SESSION['errors'] = $validation->getErrors();
+        if (!$validation->isValid()) {
+            $_SESSION['errors'] = $validation->getErrors();
 
-           return $response->withRedirect($this->router->pathFor('admin.subscribers.create'));
-       }
+            return $response->withRedirect($this->router->pathFor('admin.subscribers.create'));
+        }
 
-       $data['name'] = $request->getParam('name');
-       $data['email'] = $request->getParam('email');
+        $data['name'] = $request->getParam('name');
+        $data['email'] = $request->getParam('email');
 
-       Subscribers::where('id', $request->getParam('id'))->update($data);
+        Subscribers::where('id', $request->getParam('id'))->update($data);
 
-       $this->flash->addMessage('success', 'Данные успешно обновлены');
+        $this->flash->addMessage('success', 'Данные успешно обновлены');
 
-       return $response->withRedirect($this->router->pathFor('admin.category'));
-   }
+        return $response->withRedirect($this->router->pathFor('admin.category'));
+    }
 
     /**
      * @param $request
      * @param $response
      * @param $id
      */
-   public function destroy($request, $response, $id)
-   {
-       Subscribers::where('id', $id)->delete();
-       Subscriptions::where('subscriberId', $id)->delete();
-   }
+    public function destroy($request, $response, $id)
+    {
+        Subscribers::where('id', $id)->delete();
+        Subscriptions::where('subscriberId', $id)->delete();
+    }
 
     /**
      * @param $request
      * @param $response
      * @return mixed
      */
-   public function import($request, $response)
-   {
-       $title = "Импорт";
-       $charsets = Charset::get();
-       $category = Category::get();
-       return $this->view->render($response,'dashboard/subscribers/import.twig', compact('title','charsets','category'));
-   }
-
-   public function importSubscribers($request, $response)
-   {
-
-   }
-
-   public function export()
-   {
-
-   }
+    public function import($request, $response)
+    {
+        $title = "Импорт";
+        $charsets = Charset::get();
+        $category = Category::get();
+        return $this->view->render($response, 'dashboard/subscribers/import.twig', compact('title', 'charsets', 'category'));
+    }
 
     /**
      * @param $request
      * @param $response
      * @return mixed
      */
-   public function removeAll($request, $response)
-   {
-       Subscribers::truncate();
-       Subscriptions::truncate();
+    public function importSubscribers($request, $response)
+    {
+        $f = $request->getUploadedFiles()['import'];
 
-       $this->flash->addMessage('success', 'Данные успешно удалены');
+        $ext = pathinfo($f->getClientFilename(), PATHINFO_EXTENSION);
 
-       return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
-   }
+        if ($ext == 'xls' || $ext == 'xlsx') {
+           // $result = $this->importFromExcel($f->file,$request->getParam('categoryId'));
+        } else {
+            $result = $this->importFromText($f->file,$request->getParam('categoryId'));
+        }
 
-    private function importFromText($id_cat)
+        if ($result === false) {
+            $this->flash->addMessage('error', 'Ошибка импорта! Невозможно прочитать файл');
+
+            return $response->withRedirect($this->router->pathFor('admin.subscribers.import'));
+        }
+
+        $this->flash->addMessage('success', 'Импорт завершен. Всего импортировано: ' . $result);
+
+        return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
+    }
+
+    public function export()
     {
 
+    }
 
-        if (!($fp = @fopen($_FILES['file']['tmp_name'], "rb"))) {
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
+    public function removeAll($request, $response)
+    {
+        Subscribers::truncate();
+        Subscriptions::truncate();
+
+        $this->flash->addMessage('success', 'Данные успешно удалены');
+
+        return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
+    }
+
+    private function importFromExcel()
+    {
+
+    }
+
+    /**
+     * @param $file
+     * @param array|null $categoryId
+     * @return bool|int
+     */
+    private function importFromText($file, array $categoryId = null)
+    {
+        if (!($fp = @fopen($file, "rb"))) {
             return false;
         } else {
-            $buffer = fread($fp, filesize($_FILES['file']['tmp_name']));
+            $buffer = fread($fp, filesize($file));
             fclose($fp);
             $tok = strtok($buffer, "\n");
 
@@ -190,8 +221,8 @@ class SubscribersController extends Controller
             foreach ($strtmp as $val) {
                 $str = $val;
 
-                if (!mb_check_encoding($str, 'utf-8') && core::getSetting('id_charset')) {
-                    $sh = new ConvertCharset(core::getSetting('id_charset'), "utf-8");
+                if (!mb_check_encoding($str, 'utf-8')) {
+                    $sh = new ConvertCharset("utf-8", "utf-8");
                     $str = $sh->Convert($str);
                 }
 
@@ -207,52 +238,36 @@ class SubscribersController extends Controller
                 }
 
                 if ($email) {
-                    $query = "SELECT * FROM " . core::database()->getTableName('users') . " WHERE email='" . $email . "'";
-                    $result = core::database()->querySQL($query);
 
-                    if (core::database()->getRecordCount($result) > 0) {
-                        $row = core::database()->getRow($result);
+                    $subscriber = Subscribers::where('email','like',$email);
+                    $row = $subscriber->first();
 
-                        core::database()->delete(core::database()->getTableName('subscription'), "id_user=" . $row['id_user'], '');
+                    if ($row) {
+                        Subscriptions::where('subscriberId',$row->id)->delete();
 
-                        if ($id_cat) {
-                            foreach ($id_cat as $id) {
+                        if ($categoryId) {
+                            foreach ($categoryId as $id) {
                                 if (is_numeric($id)) {
-                                    $fields = [
-                                        'id_sub'  => 0,
-                                        'id_user' => $row['id_user'],
-                                        'id_cat'  => $id
-                                    ];
-
-                                    core::database()->insert($fields, core::database()->getTableName('subscription'));
+                                    Subscriptions::create(['subscriberId' => $row->id, 'categoryId' => $id]);
                                 }
                             }
                         }
                     } else {
-                        $fields = [
-                            'id_user' => 0,
-                            'name'    => $name,
-                            'email'   => $email,
-                            'token'   => Pnl::getRandomCode(),
-                            'time'    => date("Y-m-d H:i:s"),
-                            'status'  =>  'active',
-                            'time_send' => '0000-00-00 00:00:00'
+                        $data = [
+                            'name' => $name,
+                            'email' => $email,
+                            'token' => StringHelpers::token(),
+                            'active' => 1,
                         ];
 
-                        $insert_id = core::database()->insert($fields, core::database()->getTableName('users'));
+                        $insertId = Subscribers::create($data)->id;
 
-                        if ($insert_id) $count++;
+                        if ($insertId) $count++;
 
-                        if ($id_cat) {
-                            foreach ($id_cat as $id) {
+                        if ($categoryId) {
+                            foreach ($categoryId as $id) {
                                 if (is_numeric($id)) {
-                                    $fields = [
-                                        'id_sub'  => 0,
-                                        'id_user' => $insert_id,
-                                        'id_cat'  => $id,
-                                    ];
-
-                                    core::database()->insert($fields, core::database()->getTableName('subscription'));
+                                    Subscriptions::create(['subscriberId' => $insertId, 'categoryId' => $id]);
                                 }
                             }
                         }

@@ -11,7 +11,7 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm"  action="{{ path_for('admin.subscribers.import') }}" method="POST" class="smart-form">
+                    <form id="tmplForm" enctype="multipart/form-data" action="{{ path_for('admin.subscribers.import_subscribers') }}" method="POST" class="smart-form">
 
                         <header>
                             *-обязательные поля
@@ -22,7 +22,7 @@
                             <section>
                                 <label for="import" class="label">Присоединить файлы*</label>
                                 <div class="input input-file">
-                                    <span class="button"><input type="file" name="import" id="import" name="file" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
+                                    <span class="button"><input type="file" name="import" id="import" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
                                 </div>
 
                                 {% if errors.import %}
