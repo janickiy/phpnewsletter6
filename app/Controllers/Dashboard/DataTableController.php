@@ -107,7 +107,13 @@ class DataTableController extends Controller
         $primaryKey = 'id';
 
         $columns = [
+            ['db' => 'id', 'dt' => 'checkbox', 'formatter' => function ($d, $row) {
+                return '<input type="checkbox" title="Отметить/Снять отметку" value="' . $d . '" name="activate[]">';
+            }, 'field' => 'checkbox', 'as' => 'checkbox'],
             ['db' => 'name', 'dt' => 'name', 'field' => 'name'],
+            ['db' => 'active', 'dt' => 'subStatus', 'formatter' => function ($d, $row) {
+                return $d;
+            }, 'field' => 'subStatus'],
             ['db' => 'email', 'dt' => 'email', 'field' => 'email'],
             ['db' => 'ip', 'dt' => 'ip', 'field' => 'ip'],
             ['db' => 'active', 'dt' => 'active', 'formatter' => function ($d, $row) {
@@ -145,6 +151,35 @@ class DataTableController extends Controller
                 $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.settings.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
                 $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
                 return $editBtn . $deleteBtn;
+            },
+                'field' => 'action', 'as' => 'action'
+            ],
+        ];
+
+        header('Content-Type: application/json');
+
+        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+    }
+
+    /**
+     * @param $request
+     * @param $response
+     */
+    public function getUsers($request, $response)
+    {
+        $table = 'users';
+        $primaryKey = 'id';
+
+        $columns = [
+            ['db' => 'name', 'dt' => 'name', 'field' => 'name'],
+            ['db' => 'login', 'dt' => 'login', 'field' => 'login'],
+            ['db' => 'description', 'dt' => 'description', 'field' => 'description'],
+            ['db' => 'role', 'dt' => 'role', 'field' => 'role'],
+            ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at'],
+            ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
+                $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.users.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
+                $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
+                return $this->auth->user()->id != $d ? $editBtn . $deleteBtn : '';
             },
                 'field' => 'action', 'as' => 'action'
             ],

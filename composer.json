@@ -1,19 +1,13 @@
 {
-    "name": "havenshen/slim-born",
-    "description": "Slim Framework 3 skeleton application has authentication.",
+    "name": "janickiy/phpnewsletter6",
+    "description": "php newsletter",
     "type": "project",
-    "keywords": ["slim", "slim 3", "skeleton", "authentication"],
+    "keywords": ["slim", "slim Framework 3", "php newsletter"],
     "license": "MIT",
     "authors": [
         {
             "name": "Alexander Yanitsky",
             "email": "janiciy@mail.ru"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/janickiy/ConvertCharset.git"
         }
     ],
     "require": {
@@ -30,7 +24,6 @@
         "nette/mail": "^2.4",
         "robmorgan/phinx": "v0.8.0",
         "awurth/slim-validation": "^3.1",
-        "janickiy/ConvertCharset":"dev-master",
         "phpoffice/phpspreadsheet": "^1.7"
     },
     "autoload": {

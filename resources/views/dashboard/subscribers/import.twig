@@ -38,15 +38,15 @@
                             <section>
                                 <label for="charsetId" class="label">Кодировка</label>
                                 <label class="select">
-                                    <select name="charsetId" id="charsetId">
-                                        <option>Выберите</option>
+                                    <select name="charset" id="charset">
+                                        <option value="">Выберите</option>
                                         {% for c in charsets %}
-                                            <option value="{{ c.id }}">{{ c.charset }}</option>
+                                            <option value="{{ c.charset }}">{{ c.charset }}</option>
                                         {% endfor %}
                                     </select> <i></i>
                                 </label>
                                 {% if errors.charsetId %}
-                                    <span class="text-danger">{{ errors.charsetId | first }}</span>
+                                    <span class="text-danger">{{ errors.charset | first }}</span>
                                 {% endif %}
                             </section>
 

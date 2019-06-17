@@ -1,0 +1,99 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    <div class="row-fluid">
+        <div class="col">
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+
+                <!-- widget div-->
+                <div>
+
+                    <form id="tmplForm"  action="{{ user is defined ? path_for('admin.subscribers.import_subscribers') : path_for('admin.subscribers.store') }}" method="{{ user is defined ? 'put' : 'post' }}" class="smart-form">
+
+                        {% if user %}<input type="hidden" name="id" value="{{ user.id }}">{% endif %}
+
+                        <header>
+                            *-обязательные поля
+                        </header>
+
+                        <fieldset>
+
+                            <section>
+                                <label for="name" class="label">Имя*</label>
+                                <label class="input">
+                                    <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ user is defined ? user.name : old.name }}" id="name">
+                                </label>
+
+                                {% if errors.name %}
+                                    <span class="text-danger">{{ errors.name | first }}</span>
+                                {% endif %}
+
+                            </section>
+
+                            <section>
+                                <label for="login" class="label">Логин*</label>
+                                <label class="input">
+                                    <input type="login" maxlength="255" placeholder="Логин" name="login" value="{{ user is defined ? user.login : old.login }}" id="login">
+                                </label>
+
+                                {% if errors.email %}
+                                    <span class="text-danger">{{ errors.email | first }}</span>
+                                {% endif %}
+
+                            </section>
+
+                            <section>
+                                <label for="description" class="label">Описание</label>
+                                <label class="textarea textarea-resizable">
+                                    <textarea rows="3" class="custom-scroll" placeholder="Описание" name="description"  id="description">{{ user is defined ? user.description: old.description}}</textarea>
+                                </label>
+                                {% if errors.body %}
+                                    <span class="text-danger">{{ errors.description | first }}</span>
+                                {% endif %}
+
+                            </section>
+
+                            <section>
+                                <label for="role" class="label">Роль*</label>
+                                <label class="select">
+                                    <select id="role" name="role">
+                                        <option>Выберите</option>
+                                        <option value="admin" {{ user.role == 'admin' or old.role == 'admin' ? 'selected="selected"' : '' }}>Админ</option>
+                                        <option value="moderator" {{ user.role == 'moderator' or old.role == 'moderator' ? 'selected="selected"' : '' }}>Модератор</option>
+                                        <option value="editor" {{ user.role == 'editor' or old.role == 'editor' ? 'selected="selected"' : '' }}>Редактор</option>
+                                    </select> <i></i>
+                                </label>
+                                {% if errors.role %}
+                                    <span class="text-danger">{{ errors.role | first }}</span>
+                                {% endif %}
+                            </section>
+
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    Добавить
+                                </button>
+                                <button type="button" class="btn btn-default" onclick="window.history.back();">
+                                    Назад
+                                </button>
+                            </footer>
+
+                        </fieldset>
+
+                        {{ csrf.field | raw }}
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+
+{% endblock %}

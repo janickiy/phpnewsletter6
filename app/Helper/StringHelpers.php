@@ -131,4 +131,16 @@ class StringHelpers
 
         return self::formatSizeInMb($maxUploadFileSize);
     }
+
+    /**
+     * @param $email
+     * @return bool
+     */
+    public static function isEmail($email)
+    {
+        if (preg_match("/^([a-z0-9_\.\-]{1,70})@([a-z0-9\.\-]{1,70})\.([a-z]{2,6})$/i", $email))
+            return true;
+        else
+            return false;
+    }
 }

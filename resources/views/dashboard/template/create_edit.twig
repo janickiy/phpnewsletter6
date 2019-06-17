@@ -38,7 +38,7 @@
                             <section>
                                 <label for="body" class="label">Шаблон*</label>
                                 <label class="textarea textarea-resizable">
-                                    <textarea rows="3" class="custom-scroll" placeholder="Название" name="body"  id="body">{{ template is defined ? template.body : old.body }}</textarea>
+                                    <textarea rows="3" class="custom-scroll" placeholder="Описание" name="body"  id="body">{{ template is defined ? template.body : old.body }}</textarea>
                                 </label>
                                 {% if errors.body %}
                                     <span class="text-danger">{{ errors.body | first }}</span>
@@ -67,7 +67,7 @@
                                     <select id="category" name="categoryId">
                                         <option>Выберите</option>
                                         {% for o in category %}
-                                            <option value="{{ o.id }}" {{ templat.categoryId == o.id or _session.post.categoryId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
+                                            <option value="{{ o.id }}" {{ templat.categoryId == o.id or old.categoryId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
                                         {% endfor %}
                                     </select> <i></i>
                                 </label>

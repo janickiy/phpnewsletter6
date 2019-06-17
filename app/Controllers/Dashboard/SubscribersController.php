@@ -6,8 +6,6 @@ use App\Models\{Category, Charset, Subscribers, Subscriptions};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 use App\Helper\StringHelpers;
-use Janickiy\ConvertCharset\ConvertCharset;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
@@ -151,7 +149,13 @@ class SubscribersController extends Controller
         return $this->view->render($response, 'dashboard/subscribers/import.twig', compact('title', 'charsets', 'category', 'maxUploadFileSize'));
     }
 
-
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
     public function importSubscribers($request, $response)
     {
         $f = $request->getUploadedFiles()['import'];
@@ -168,68 +172,20 @@ class SubscribersController extends Controller
             return $response->withRedirect($this->router->pathFor('admin.subscribers.import'));
         }
 
-
-
-
-    //    PhpOffice\PhpSpreadsheet\IOFactory
-
         $ext = pathinfo($f->getClientFilename(), PATHINFO_EXTENSION);
 
+        switch ($ext) {
+            case 'csv':
+            case 'xls':
+            case 'xlsx':
 
-        if($ext == 'csv'){
-            $reader = new Csv();
-        } elseif($ext == 'xlsx') {
-            $reader = new Xlsx();
-        } else {
-            $reader = new Xls();
-        }
+                $result = $this->importFromExcel($f, $request->getParam('categoryId'), $request->getParam('charset'));
 
-      //  $f->file = StringHelper::convertEncoding ($f->file, 'windows-1251', 'UTF-8');
+                break;
 
+            default:
 
-
-        if($ext == 'csv') {
-            $encoding = mb_detect_encoding(file_get_contents($f->file),
-                // example of a manual detection order
-                'ISO-8859-15,UTF-8,Windows-1251,ASCII');
-
-            $reader->setInputEncoding( 'Windows-1251');
-
-          // echo $encoding;
-        //   exit;
-        }
-
-        $spreadsheet = $reader->load($f->file);
-
-        $allDataInSheet = $spreadsheet->getActiveSheet()->toArray(true, true, true, true);
-
-
-        // array Count
-        $arrayCount = count($allDataInSheet);
-        $flag = 0;
-        $createArray = array('Email', 'Name');
-        $makeArray = array('Email' => 'Email', 'Name' => 'Name');
-        $SheetDataKey = array();
-
-        foreach ($allDataInSheet as $dataInSheet) {
-
-            foreach ($dataInSheet as $key => $value) {
-
-            echo $key . ' - '. $value;
-            }
-        }
-
-
-       exit;
-
-
-
-        if ($ext == 'xls' || $ext == 'xlsx') {
-            $result = $this->importFromExcel($f->file,$request->getParam('categoryId'));
-        } else if($ext == 'csv') {
-            $result = $this->importFromCsv($f->file,$request->getParam('categoryId'));
-        } else {
-            $result = $this->importFromText($f->file, $request->getParam('categoryId'));
+                $result = $this->importFromText($f, $request->getParam('categoryId'), $request->getParam('charset'));
         }
 
         if ($result === false) {
@@ -241,6 +197,90 @@ class SubscribersController extends Controller
         $this->flash->addMessage('success', 'Импорт завершен. Всего импортировано: ' . $result);
 
         return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
+    }
+
+    /**
+     * @param $f
+     * @param array|null $categoryId
+     * @param null $charset
+     * @return bool|int
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    private function importFromExcel($f, array $categoryId = null, $charset = null)
+    {
+        $ext = pathinfo($f->getClientFilename(), PATHINFO_EXTENSION);
+
+        if ($ext == 'csv') {
+            $reader = new Csv();
+
+            if ($ext == 'csv' && $charset) {
+                $reader->setInputEncoding($charset);
+            }
+
+        } elseif ($ext == 'xlsx') {
+            $reader = new Xlsx();
+        } else {
+            $reader = new Xls();
+        }
+
+        $count = 0;
+
+        $spreadsheet = $reader->load($f->file);
+
+        if (!$spreadsheet) return false;
+
+        $allDataInSheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+
+        foreach ($allDataInSheet as $dataInSheet) {
+            $email = trim($dataInSheet['A']);
+            $name = trim($dataInSheet['B']);
+
+            if (StringHelpers::isEmail($email)) {
+                $subscribers = Subscribers::where('email', 'like', $email)->first();
+
+                if ($subscribers && $categoryId) {
+                    Subscriptions::where('subscriberId', $subscribers->id)->delete();
+
+                    foreach ($categoryId as $category) {
+                        if (is_numeric($category)) {
+                            $data = [
+                                'subscriberId' => $subscribers->id,
+                                'categoryId' => $category,
+                            ];
+
+                            Subscriptions::create($data);
+                        }
+                    }
+                } else {
+                    $subscribersData = [
+                        'name' => $name,
+                        'email' => $email,
+                        'active' => 1,
+                        'token' => StringHelpers::token()
+                    ];
+
+                    $insertId = Subscribers::create($subscribersData)->id;
+
+                    if ($categoryId) {
+                        foreach ($categoryId as $category) {
+                            if (is_numeric($category)) {
+                                $data = [
+                                    'subscriberId' => $insertId,
+                                    'categoryId' => $category,
+                                ];
+                            }
+                        }
+
+                        Subscriptions::create($data);
+                    }
+
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
     }
 
     public function export()
@@ -263,46 +303,17 @@ class SubscribersController extends Controller
         return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
     }
 
-    private function importFromCsv($file, array $categoryId = null)
-    {
-        $inputFileType = 'Csv';
-
-        $reader = IOFactory::createReader($inputFileType);
-        $inputFileName = array_shift($file);
-       // $helper->log('Loading file ' . pathinfo($inputFileName, PATHINFO_BASENAME) . ' into WorkSheet #1 using IOFactory with a defined reader type of ' . $inputFileType);
-        $spreadsheet = $reader->load($inputFileName);
-        $spreadsheet->getActiveSheet()->setTitle(pathinfo($inputFileName, PATHINFO_BASENAME));
-
-//            $reader->setSheetIndex($sheet + 1);
-            $reader->loadIntoExisting($file, $spreadsheet);
-            $spreadsheet->getActiveSheet()->setTitle(pathinfo($file, PATHINFO_BASENAME));
-
-        $loadedSheetNames = $spreadsheet->getSheetNames();
-
-            $spreadsheet->setActiveSheetIndexByName($file);
-            $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
-            var_dump($sheetData);
-
-
-
-    }
-
-    private function importFromExcel($file, array $categoryId = null)
-    {
-
-    }
-
     /**
      * @param $file
      * @param array|null $categoryId
      * @return bool|int
      */
-    private function importFromText($file, array $categoryId = null)
+    private function importFromText($f, array $categoryId = null, $charset = null)
     {
-        if (!($fp = @fopen($file, "rb"))) {
+        if (!($fp = @fopen($f->file, "rb"))) {
             return false;
         } else {
-            $buffer = fread($fp, filesize($file));
+            $buffer = fread($fp, filesize($f->file));
             fclose($fp);
             $tok = strtok($buffer, "\n");
 
@@ -316,9 +327,8 @@ class SubscribersController extends Controller
             foreach ($strtmp as $val) {
                 $str = $val;
 
-                if (!mb_check_encoding($str, 'utf-8')) {
-                    $sh = new ConvertCharset("utf-8", "utf-8");
-                    $str = $sh->Convert($str);
+                if ($charset) {
+                    $str = StringHelper::convertEncoding($str, 'utf-8', $charset);
                 }
 
                 preg_match('/([a-z0-9&\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)/uis', $str, $out);
@@ -333,17 +343,15 @@ class SubscribersController extends Controller
                 }
 
                 if ($email) {
+                    $subscriber = Subscribers::where('email', 'like', $email)->first();
 
-                    $subscriber = Subscribers::where('email', 'like', $email);
-                    $row = $subscriber->first();
-
-                    if ($row) {
-                        Subscriptions::where('subscriberId', $row->id)->delete();
+                    if ($subscriber) {
+                        Subscriptions::where('subscriberId', $subscriber->id)->delete();
 
                         if ($categoryId) {
                             foreach ($categoryId as $id) {
                                 if (is_numeric($id)) {
-                                    Subscriptions::create(['subscriberId' => $row->id, 'categoryId' => $id]);
+                                    Subscriptions::create(['subscriberId' => $subscriber->id, 'categoryId' => $id]);
                                 }
                             }
                         }
@@ -374,5 +382,39 @@ class SubscribersController extends Controller
         return $count;
     }
 
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
+    public function status($request, $response)
+    {
+        $temp = [];
 
+        foreach ($request->getParam('activate') as $id) {
+            if (is_numeric($id)) {
+                $temp[] = $id;
+            }
+        }
+
+        switch ($request->getParam('action')) {
+            case  0 :
+            case  1 :
+
+                Subscribers::whereIN('id', $temp)->update(['active' => $request->getParam('action')]);
+
+                break;
+
+            case 2 :
+
+                Subscribers::whereIN('id', $temp)->delete();
+
+                break;
+        }
+
+        $this->flash->addMessage('success', 'Действия были выполнены');
+
+        return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
+
+    }
 }
