@@ -30,7 +30,8 @@
         "nette/mail": "^2.4",
         "robmorgan/phinx": "v0.8.0",
         "awurth/slim-validation": "^3.1",
-        "janickiy/ConvertCharset":"dev-master"
+        "janickiy/ConvertCharset":"dev-master",
+        "phpoffice/phpspreadsheet": "^1.7"
     },
     "autoload": {
     	"psr-4": {

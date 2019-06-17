@@ -7,6 +7,11 @@ use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 use App\Helper\StringHelpers;
 use Janickiy\ConvertCharset\ConvertCharset;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
 
 class SubscribersController extends Controller
 {
@@ -143,44 +148,88 @@ class SubscribersController extends Controller
         $category = Category::get();
         $maxUploadFileSize = StringHelpers::maxUploadFileSize();
 
-        return $this->view->render($response, 'dashboard/subscribers/import.twig', compact('title', 'charsets', 'category','maxUploadFileSize'));
+        return $this->view->render($response, 'dashboard/subscribers/import.twig', compact('title', 'charsets', 'category', 'maxUploadFileSize'));
     }
 
-    /**
-     * @param $request
-     * @param $response
-     * @return mixed
-     */
+
     public function importSubscribers($request, $response)
     {
         $f = $request->getUploadedFiles()['import'];
 
-        $validation = $this->validator->validate($request, [
-            'import' => ['rules' => v::file(), 'messages' => ['file' => 'Файл для импорта не выбран!']],
-            'name' => v::stringType()->notEmpty()
-        ]);
-
-        if (!$validation->isValid()) {
-            $_SESSION['errors'] = $validation->getErrors();
+        if (v::exists()->validate($f->file) === false) {
+            $_SESSION['errors'] = 'Файл для импорта не выбран!';
 
             return $response->withRedirect($this->router->pathFor('admin.subscribers.import'));
         }
 
-        if (v::file()->size(null, StringHelpers::maxUploadFileSize())->validate($f->getClientFilename()) === false) {
-            $_SESSION['errors'] = $validation->getErrors();
-
-
-
+        if (v::size(null, StringHelpers::maxUploadFileSize())->validate($f->file) === false) {
+            $_SESSION['errors'] = 'Максимальный размер файла превышает ' . StringHelpers::maxUploadFileSize() . '!';
 
             return $response->withRedirect($this->router->pathFor('admin.subscribers.import'));
         }
+
+
+
+
+    //    PhpOffice\PhpSpreadsheet\IOFactory
 
         $ext = pathinfo($f->getClientFilename(), PATHINFO_EXTENSION);
 
-        if ($ext == 'xls' || $ext == 'xlsx') {
-           // $result = $this->importFromExcel($f->file,$request->getParam('categoryId'));
+
+        if($ext == 'csv'){
+            $reader = new Csv();
+        } elseif($ext == 'xlsx') {
+            $reader = new Xlsx();
         } else {
-            $result = $this->importFromText($f->file,$request->getParam('categoryId'));
+            $reader = new Xls();
+        }
+
+      //  $f->file = StringHelper::convertEncoding ($f->file, 'windows-1251', 'UTF-8');
+
+
+
+        if($ext == 'csv') {
+            $encoding = mb_detect_encoding(file_get_contents($f->file),
+                // example of a manual detection order
+                'ISO-8859-15,UTF-8,Windows-1251,ASCII');
+
+            $reader->setInputEncoding( 'Windows-1251');
+
+          // echo $encoding;
+        //   exit;
+        }
+
+        $spreadsheet = $reader->load($f->file);
+
+        $allDataInSheet = $spreadsheet->getActiveSheet()->toArray(true, true, true, true);
+
+
+        // array Count
+        $arrayCount = count($allDataInSheet);
+        $flag = 0;
+        $createArray = array('Email', 'Name');
+        $makeArray = array('Email' => 'Email', 'Name' => 'Name');
+        $SheetDataKey = array();
+
+        foreach ($allDataInSheet as $dataInSheet) {
+
+            foreach ($dataInSheet as $key => $value) {
+
+            echo $key . ' - '. $value;
+            }
+        }
+
+
+       exit;
+
+
+
+        if ($ext == 'xls' || $ext == 'xlsx') {
+            $result = $this->importFromExcel($f->file,$request->getParam('categoryId'));
+        } else if($ext == 'csv') {
+            $result = $this->importFromCsv($f->file,$request->getParam('categoryId'));
+        } else {
+            $result = $this->importFromText($f->file, $request->getParam('categoryId'));
         }
 
         if ($result === false) {
@@ -214,7 +263,31 @@ class SubscribersController extends Controller
         return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
     }
 
-    private function importFromExcel()
+    private function importFromCsv($file, array $categoryId = null)
+    {
+        $inputFileType = 'Csv';
+
+        $reader = IOFactory::createReader($inputFileType);
+        $inputFileName = array_shift($file);
+       // $helper->log('Loading file ' . pathinfo($inputFileName, PATHINFO_BASENAME) . ' into WorkSheet #1 using IOFactory with a defined reader type of ' . $inputFileType);
+        $spreadsheet = $reader->load($inputFileName);
+        $spreadsheet->getActiveSheet()->setTitle(pathinfo($inputFileName, PATHINFO_BASENAME));
+
+//            $reader->setSheetIndex($sheet + 1);
+            $reader->loadIntoExisting($file, $spreadsheet);
+            $spreadsheet->getActiveSheet()->setTitle(pathinfo($file, PATHINFO_BASENAME));
+
+        $loadedSheetNames = $spreadsheet->getSheetNames();
+
+            $spreadsheet->setActiveSheetIndexByName($file);
+            $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+            var_dump($sheetData);
+
+
+
+    }
+
+    private function importFromExcel($file, array $categoryId = null)
     {
 
     }
@@ -261,11 +334,11 @@ class SubscribersController extends Controller
 
                 if ($email) {
 
-                    $subscriber = Subscribers::where('email','like',$email);
+                    $subscriber = Subscribers::where('email', 'like', $email);
                     $row = $subscriber->first();
 
                     if ($row) {
-                        Subscriptions::where('subscriberId',$row->id)->delete();
+                        Subscriptions::where('subscriberId', $row->id)->delete();
 
                         if ($categoryId) {
                             foreach ($categoryId as $id) {
