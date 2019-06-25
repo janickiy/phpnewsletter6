@@ -283,9 +283,81 @@ class SubscribersController extends Controller
         return $count;
     }
 
-    public function export()
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
+    public function export($request, $response)
     {
+        $title = "Экспорт";
+        $category = Category::get();
 
+        return $this->view->render($response, 'dashboard/subscribers/export.twig', compact('title','category'));
+    }
+
+    /**
+     * @param $request
+     * @param $response
+     */
+    public function exportSubscribers($request, $response)
+    {
+        $request->getParam('export_type');
+        $subscribers = $this->getSubscribersList($request->getParam('categoryId'));
+
+        if ($request->getParam('export_type') == 1) {
+            $ext = 'txt';
+            $filename = 'emailexport' . date("d_m_Y") . '.txt';
+
+            if ($subscribers) {
+                $contents = '';
+                foreach ($subscribers as $subscriber) {
+                    $contents .= "" . $subscriber->email . " " . $subscriber->name . "\r\n";
+                }
+            }
+        } elseif ($request->getParam('export_type') == 2) {
+
+        }
+
+        if ($request->getParam('zip') == 2){
+
+            header('Content-type: application/zip');
+            header('Content-Disposition: attachment; filename=emailexport_' . date("d_m_Y") . '.zip');
+
+            $fout = fopen("php://output", "wb");
+
+            if ($fout !== false){
+                fwrite($fout, "\x1F\x8B\x08\x08".pack("V", '')."\0\xFF", 10);
+
+                $oname = str_replace("\0", "", $filename);
+                fwrite($fout, $oname."\0", 1+strlen($oname));
+
+                $fltr = stream_filter_append($fout, "zlib.deflate", STREAM_FILTER_WRITE, -1);
+                $hctx = hash_init("crc32b");
+
+                if (!ini_get("safe_mode")) set_time_limit(0);
+
+                hash_update($hctx, $contents);
+                $fsize = strlen($contents);
+
+                fwrite($fout, $contents, $fsize);
+
+                stream_filter_remove($fltr);
+
+                $crc = hash_final($hctx, TRUE);
+
+                fwrite($fout, $crc[3] . $crc[2] . $crc[1] . $crc[0], 4);
+                fwrite($fout, pack("V", $fsize), 4);
+                fclose($fout);
+            }
+            exit();
+        } else {
+            header('Content-Type: ' . StringHelpers::getMimeType($ext));
+            header('Content-Disposition: attachment; filename=' . $filename);
+            header('Cache-Control: max-age=0');
+            echo $contents;
+            exit;
+        }
     }
 
     /**
@@ -416,5 +488,36 @@ class SubscribersController extends Controller
 
         return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
 
+    }
+
+    /**
+     * @param array $categoryId
+     * @return mixed
+     */
+    public function getSubscribersList(array $categoryId = [])
+    {
+        if ($categoryId) {
+            $temp = [];
+            foreach ($categoryId as $id) {
+                if (is_numeric($id)) {
+                    $temp[] = $id;
+                }
+            }
+
+            $subscribers = Subscribers::select('subscribers.name','subscribers.email')
+                ->leftJoin('subscriptions', function($join) {
+                    $join->on('subscribers.id', '=', 'subscriptions.subscriberId');
+                })
+                ->where('subscribers.active','=',1)
+                ->whereIn('subscriptions.categoryId',$temp)
+                ->groupBy('subscribers.id')
+                ->get();
+        } else {
+            $subscribers = Subscribers::select('name','email')
+                ->where('active','=',1)
+                ->get();
+        }
+
+        return $subscribers;
     }
 }

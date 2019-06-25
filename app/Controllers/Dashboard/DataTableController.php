@@ -171,6 +171,7 @@ class DataTableController extends Controller
         $primaryKey = 'id';
 
         $columns = [
+            ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
             ['db' => 'name', 'dt' => 'name', 'field' => 'name'],
             ['db' => 'login', 'dt' => 'login', 'field' => 'login'],
             ['db' => 'description', 'dt' => 'description', 'field' => 'description'],
@@ -178,8 +179,8 @@ class DataTableController extends Controller
             ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at'],
             ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
                 $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.users.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
-                $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
-                return $this->auth->user()->id != $d ? $editBtn . $deleteBtn : '';
+                $deleteBtn = $this->auth->user()->id != $d ? '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>' : '';
+                return $editBtn . $deleteBtn;
             },
                 'field' => 'action', 'as' => 'action'
             ],

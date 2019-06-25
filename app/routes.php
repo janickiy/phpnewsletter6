@@ -96,7 +96,6 @@ $app->group('', function () use ($container) {
         $this->get('/subscribers', 'DataTableController:getSubscribers')->setName('admin.datatable.subscribers')->add(new PermissionMiddleware($container,'moderator'));
         $this->get('/settings', 'DataTableController:getSettings')->setName('admin.datatable.settings');
         $this->get('/users', 'DataTableController:getUsers')->setName('admin.datatable.users');
-
     });
 
 })->add(new AuthMiddleware($container));

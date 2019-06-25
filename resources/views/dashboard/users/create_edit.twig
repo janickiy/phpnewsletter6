@@ -11,7 +11,9 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm"  action="{{ user is defined ? path_for('admin.subscribers.import_subscribers') : path_for('admin.subscribers.store') }}" method="{{ user is defined ? 'put' : 'post' }}" class="smart-form">
+                    <form id="tmplForm"  action="{{ user is defined ? path_for('admin.users.update') : path_for('admin.users.store') }}" method="{{ user is defined ? 'PUT' : 'POST' }}" class="smart-form">
+
+                        {{ csrf.field | raw }}
 
                         {% if user %}<input type="hidden" name="id" value="{{ user.id }}">{% endif %}
 
@@ -36,11 +38,11 @@
                             <section>
                                 <label for="login" class="label">Логин*</label>
                                 <label class="input">
-                                    <input type="login" maxlength="255" placeholder="Логин" name="login" value="{{ user is defined ? user.login : old.login }}" id="login">
+                                    <input type="text" maxlength="255" placeholder="Логин" name="login" value="{{ user is defined ? user.login : old.login }}" id="login">
                                 </label>
 
-                                {% if errors.email %}
-                                    <span class="text-danger">{{ errors.email | first }}</span>
+                                {% if errors.login %}
+                                    <span class="text-danger">{{ errors.login | first }}</span>
                                 {% endif %}
 
                             </section>
@@ -50,7 +52,7 @@
                                 <label class="textarea textarea-resizable">
                                     <textarea rows="3" class="custom-scroll" placeholder="Описание" name="description"  id="description">{{ user is defined ? user.description: old.description}}</textarea>
                                 </label>
-                                {% if errors.body %}
+                                {% if errors.description %}
                                     <span class="text-danger">{{ errors.description | first }}</span>
                                 {% endif %}
 
@@ -71,18 +73,40 @@
                                 {% endif %}
                             </section>
 
+                            <section>
+                                <label for="password" class="label">Пароль</label>
+                                <label class="input">
+                                    <input type="password" maxlength="255" placeholder="пароль" name="password" value="{{ user is defined ? user.password : old.password }}" id="password">
+                                </label>
+
+                                {% if errors.password %}
+                                    <span class="text-danger">{{ errors.password | first }}</span>
+                                {% endif %}
+
+                            </section>
+
+                            <section>
+                                <label for="password_again" class="label">Павтор пароля</label>
+                                <label class="input">
+                                    <input type="password" maxlength="255" placeholder="павтор пароля" name="password_again" value="{{ user is defined ? template.password_again : old.password_again }}" id="password_again">
+                                </label>
+
+                                {% if errors.password_again %}
+                                    <span class="text-danger">{{ errors.password_again | first }}</span>
+                                {% endif %}
+
+                            </section>
+
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Добавить
+                                    Отправить
                                 </button>
-                                <button type="button" class="btn btn-default" onclick="window.history.back();">
+                                <a class="btn btn-default" href="{{ path_for('admin.users.index') }}">
                                     Назад
-                                </button>
+                                </a>
                             </footer>
 
                         </fieldset>
-
-                        {{ csrf.field | raw }}
 
                     </form>
 

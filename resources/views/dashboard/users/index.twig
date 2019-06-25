@@ -15,7 +15,7 @@
                     <div class="box-header">
                         <div class="row">
                             <div class="col-md-12">
-                                <a href="{{ path_for('admin.subscribers.create') }}" class="btn btn-info btn-sm pull-left"><span class="fa fa-plus"> &nbsp;</span>Добавить пользователя</a>
+                                <a href="{{ path_for('admin.users.create') }}" class="btn btn-info btn-sm pull-left"><span class="fa fa-plus"> &nbsp;</span>Добавить пользователя</a>
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,6 @@
                 },
                 'createdRow': function (row, data, dataIndex) {
                     $(row).attr('id', 'rowid_' + data['id']);
-                    if (data['subStatus'] == '0') $(row).attr('class', 'danger');
                 },
                 aaSorting: [[1, 'asc']],
                 processing: true,

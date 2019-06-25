@@ -1,0 +1,89 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    <div class="row-fluid">
+        <div class="col">
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+
+                <!-- widget div-->
+                <div>
+
+                    <form id="tmplForm" enctype="multipart/form-data" action="{{ path_for('admin.subscribers.export') }}" method="POST" class="smart-form">
+
+                        <header>
+                            *-обязательные поля
+                        </header>
+
+                        <fieldset>
+
+                            <section>
+                                <label for="import" class="label">Присоединить файлы*</label>
+                                <div class="input input-file">
+                                    <span class="button"><input type="file" name="import" id="import" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
+                                </div>
+
+                                {% if errors.import %}
+                                    <span class="text-danger">{{ errors.import | first }}</span>
+                                {% endif %}
+
+                                <div class="note">
+                                    Максимальный размер: <strong>{{ maxUploadFileSize }}</strong>
+                                </div>
+
+                            </section>
+
+                            <section>
+                                <label for="charsetId" class="label">Кодировка</label>
+                                <label class="select">
+                                    <select name="charset" id="charset">
+                                        <option value="">Выберите</option>
+                                        {% for c in charsets %}
+                                            <option value="{{ c.charset }}">{{ c.charset }}</option>
+                                        {% endfor %}
+                                    </select> <i></i>
+                                </label>
+                                {% if errors.charsetId %}
+                                    <span class="text-danger">{{ errors.charset | first }}</span>
+                                {% endif %}
+                            </section>
+
+                            <section>
+                                <label for="categoryId[]" class="label">Категория подписчиков</label>
+                                <label class="input">
+                                    <select name="categoryId[]" multiple="multiple" id="multiselect1" class="form-control custom-scroll" title="Выберите категорию">
+                                        {% for o in category %}
+                                            <option value="{{ o.id }}">{{ o.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                                {% if errors.categoryId %}
+                                    <span class="text-danger">{{ errors.categoryId | first }}</span>
+                                {% endif %}
+                            </section>
+
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    Отправить
+                                </button>
+                                <button type="button" class="btn btn-default" onclick="window.history.back();">
+                                    Назад
+                                </button>
+                            </footer>
+
+                        </fieldset>
+
+                        {{ csrf.field | raw }}
+
+                    </form>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -44,6 +44,12 @@ class CategoryController extends Controller
            return $response->withRedirect($this->router->pathFor('admin.category.create'));
        }
 
+       if (Category::where('name', 'like', $request->getParam('name'))->first()) {
+           $_SESSION['errors'] = ['name' => ['unique' => 'Категория с таким именем уже существует! Укажите другое название']];;
+
+           return $response->withRedirect($this->router->pathFor('admin.users.create'));
+       }
+
        Category::create($request->getParsedBody());
 
        $this->flash->addMessage('success','Данные успешно добавлены');
@@ -84,6 +90,12 @@ class CategoryController extends Controller
            $_SESSION['errors'] = $validation->getErrors();
 
            return $response->withRedirect($this->router->pathFor('admin.category.edit',['id' => $request->getParam('id')]));
+       }
+
+       if (Category::where('name', 'like', $request->getParam('name'))->where('id','!=',$request->getParam('id'))->first()) {
+           $_SESSION['errors'] = ['name' => ['unique' => 'Категория с таким именем уже существует! Укажите другое название']];;
+
+           return $response->withRedirect($this->router->pathFor('admin.users.create'));
        }
 
        $data['name'] = $request->getParam('name');
