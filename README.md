@@ -1,13 +1,10 @@
-# slim-auth
+# PHP Newsletter
 
-> Slim Framework 3 skeleton application with authentication and email confirmation.
+> Slim Framework 3 application 
 
 ## Original repository:
-[HavenShen/slim-born](https://github.com/HavenShen/slim-born)
+[janickiy/phpnewsletter6](https://github.com/janickiy/phpnewsletter6)
 Check it for more info.
-
-I added a email confirmation. More details:
-[http://bsosna.com/2017/04/02/slim-framework-authorization-with-email-confirmation/](http://bsosna.com/2017/04/02/slim-framework-authorization-with-email-confirmation/)
 
 ## License
 
