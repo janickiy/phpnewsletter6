@@ -53,6 +53,7 @@ $app->group('', function () use ($container) {
         $this->get('/import', 'SubscribersController:import')->setName('admin.subscribers.import')->add(new PermissionMiddleware($container,'moderator'));
         $this->post('/import-subscribers', 'SubscribersController:importSubscribers')->setName('admin.subscribers.import_subscribers')->add(new PermissionMiddleware($container,'moderator'));
         $this->get('/export', 'SubscribersController:export')->setName('admin.subscribers.export')->add(new PermissionMiddleware($container,'moderator'));
+        $this->post('/export-subscribers', 'SubscribersController:exportSubscribers')->setName('admin.subscribers.export_subscribers')->add(new PermissionMiddleware($container,'moderator'));
         $this->get('/remove-all', 'SubscribersController:removeAll')->setName('admin.subscribers.remove_all')->add(new PermissionMiddleware($container,'moderator'));
         $this->post('/status', 'SubscribersController:status')->setName('admin.subscribers.status')->add(new PermissionMiddleware($container,'moderator'));
     });

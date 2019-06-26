@@ -11,49 +11,42 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm" enctype="multipart/form-data" action="{{ path_for('admin.subscribers.export') }}" method="POST" class="smart-form">
-
-                        <header>
-                            *-обязательные поля
-                        </header>
+                    <form action="{{ path_for('admin.subscribers.export_subscribers') }}" method="POST" class="smart-form">
 
                         <fieldset>
 
                             <section>
-                                <label for="import" class="label">Присоединить файлы*</label>
-                                <div class="input input-file">
-                                    <span class="button"><input type="file" name="import" id="import" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
+                                <label for="export_type" class="label">Формат</label>
+                                <div class="inline-group">
+                                    <label class="radio">
+                                        <input type="radio" name="export_type" value="text" checked="checked">
+                                        <i></i>Текст
+                                    </label>
+                                    <label class="radio">
+                                        <input type="radio" name="export_type" value="excel">
+                                        <i></i>MS Excel
+                                    </label>
                                 </div>
-
-                                {% if errors.import %}
-                                    <span class="text-danger">{{ errors.import | first }}</span>
-                                {% endif %}
-
-                                <div class="note">
-                                    Максимальный размер: <strong>{{ maxUploadFileSize }}</strong>
-                                </div>
-
                             </section>
 
                             <section>
-                                <label for="charsetId" class="label">Кодировка</label>
-                                <label class="select">
-                                    <select name="charset" id="charset">
-                                        <option value="">Выберите</option>
-                                        {% for c in charsets %}
-                                            <option value="{{ c.charset }}">{{ c.charset }}</option>
-                                        {% endfor %}
-                                    </select> <i></i>
-                                </label>
-                                {% if errors.charsetId %}
-                                    <span class="text-danger">{{ errors.charset | first }}</span>
-                                {% endif %}
+                                <label for="compress" class="label">Упаковать</label>
+                                <div class="inline-group">
+                                    <label class="radio">
+                                        <input type="radio" name="compress" value="none" checked="checked">
+                                        <i></i>нет
+                                    </label>
+                                    <label class="radio">
+                                        <input type="radio" name="compress" value="zip">
+                                        <i></i>zip
+                                    </label>
+                                </div>
                             </section>
 
                             <section>
                                 <label for="categoryId[]" class="label">Категория подписчиков</label>
                                 <label class="input">
-                                    <select name="categoryId[]" multiple="multiple" id="multiselect1" class="form-control custom-scroll" title="Выберите категорию">
+                                    <select name="categoryId[]" multiple="multiple" class="form-control custom-scroll" title="Выберите категорию">
                                         {% for o in category %}
                                             <option value="{{ o.id }}">{{ o.name }}</option>
                                         {% endfor %}

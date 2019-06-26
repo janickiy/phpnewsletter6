@@ -10,6 +10,10 @@ use App\Models\{Attach};
 
 class DataTableController extends Controller
 {
+    /**
+     * @param $request
+     * @param $response
+     */
     public function action($request, $response)
     {
         if ($request->getParam('action')) {
@@ -28,6 +32,9 @@ class DataTableController extends Controller
         }
     }
 
+    /**
+     * @return array
+     */
     private function getDetails()
     {
         return ['user' => getenv('DB_USERNAME'), 'pass' => getenv('DB_PASSWORD'), 'db' => getenv('DB_DATABASE'), 'host' => getenv('DB_HOST'), 'charset' => getenv('DB_CHARSET')];
@@ -36,6 +43,7 @@ class DataTableController extends Controller
     /**
      * @param $request
      * @param $response
+     * @return mixed
      */
     public function getTemplates($request, $response)
     {
@@ -64,14 +72,13 @@ class DataTableController extends Controller
             ],
         ];
 
-        header('Content-Type: application/json');
-
-        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, $joinQuery));
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, $joinQuery));
     }
 
     /**
      * @param $request
      * @param $response
+     * @return mixed
      */
     public function getCategory($request, $response)
     {
@@ -92,14 +99,13 @@ class DataTableController extends Controller
             ],
         ];
 
-        header('Content-Type: application/json');
-
-        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, $joinQuery, null, $groupBy));
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, $joinQuery, null, $groupBy));
     }
 
     /**
      * @param $request
      * @param $response
+     * @return mixed
      */
     public function getSubscribers($request, $response)
     {
@@ -129,14 +135,13 @@ class DataTableController extends Controller
             ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at']
         ];
 
-        header('Content-Type: application/json');
-
-        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
     }
 
     /**
      * @param $request
      * @param $response
+     * @return mixed
      */
     public function getSettings($request, $response)
     {
@@ -156,14 +161,14 @@ class DataTableController extends Controller
             ],
         ];
 
-        header('Content-Type: application/json');
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
 
-        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
     }
 
     /**
      * @param $request
      * @param $response
+     * @return mixed
      */
     public function getUsers($request, $response)
     {
@@ -186,8 +191,6 @@ class DataTableController extends Controller
             ],
         ];
 
-        header('Content-Type: application/json');
-
-        echo json_encode(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
     }
 }

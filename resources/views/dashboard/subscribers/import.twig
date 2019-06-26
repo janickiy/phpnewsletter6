@@ -11,7 +11,7 @@
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm" enctype="multipart/form-data" action="{{ path_for('admin.subscribers.import_subscribers') }}" method="POST" class="smart-form">
+                    <form enctype="multipart/form-data" action="{{ path_for('admin.subscribers.import_subscribers') }}" method="POST" class="smart-form">
 
                         <header>
                             *-обязательные поля
@@ -53,7 +53,7 @@
                             <section>
                                 <label for="categoryId[]" class="label">Категория подписчиков</label>
                                 <label class="input">
-                                    <select name="categoryId[]" multiple="multiple" id="multiselect1" class="form-control custom-scroll" title="Выберите категорию">
+                                    <select name="categoryId[]" multiple="multiple" class="form-control custom-scroll" title="Выберите категорию">
                                         {% for o in category %}
                                             <option value="{{ o.id }}">{{ o.name }}</option>
                                         {% endfor %}
@@ -68,9 +68,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     Отправить
                                 </button>
-                                <button type="button" class="btn btn-default" onclick="window.history.back();">
+                                <a class="btn btn-default" href="{{ path_for('admin.subscribers.index') }}">
                                     Назад
-                                </button>
+                                </a>
                             </footer>
 
                         </fieldset>

@@ -11,6 +11,12 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+
 class SubscribersController extends Controller
 {
     /**
@@ -296,16 +302,19 @@ class SubscribersController extends Controller
         return $this->view->render($response, 'dashboard/subscribers/export.twig', compact('title','category'));
     }
 
+
     /**
      * @param $request
      * @param $response
+     * @return mixed
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function exportSubscribers($request, $response)
     {
         $request->getParam('export_type');
         $subscribers = $this->getSubscribersList($request->getParam('categoryId'));
 
-        if ($request->getParam('export_type') == 1) {
+        if ($request->getParam('export_type') == 'text') {
             $ext = 'txt';
             $filename = 'emailexport' . date("d_m_Y") . '.txt';
 
@@ -315,14 +324,46 @@ class SubscribersController extends Controller
                     $contents .= "" . $subscriber->email . " " . $subscriber->name . "\r\n";
                 }
             }
-        } elseif ($request->getParam('export_type') == 2) {
+        } elseif ($request->getParam('export_type') == 'excel') {
 
+            $ext = 'xlsx';
+            $filename = 'emailexport' . date("d_m_Y") . '.xlsx';
+            $oSpreadsheet_Out = new Spreadsheet();
+
+            $oSpreadsheet_Out->getProperties()->setCreator('Maarten Balliauw')
+                ->setLastModifiedBy('PHP Newsletter')
+                ->setTitle('Office 2007 XLSX Document')
+                ->setSubject('Office 2007 XLSX Document')
+                ->setDescription('Document for Office 2007 XLSX, generated using PHP classes.')
+                ->setKeywords('office 2007 openxml php')
+                ->setCategory('Email export file')
+            ;
+
+            // Add some data
+            $oSpreadsheet_Out->setActiveSheetIndex(0)
+                ->setCellValue('A1', 'User email')
+                ->setCellValue('B2', 'Name')
+            ;
+
+            $i = 0;
+
+            foreach ($subscribers as $subscriber) {
+                $i++;
+
+                $oSpreadsheet_Out->setActiveSheetIndex(0)
+                    ->setCellValue('A'.$i, $subscriber->email)
+                    ->setCellValue('B'.$i, $subscriber->name)
+                ;
+            }
+
+            $oWriter = IOFactory::createWriter($oSpreadsheet_Out, 'Xlsx');
+            ob_start();
+            $oWriter->save('php://output');
+            $contents = ob_get_contents();
+            ob_end_clean();
         }
 
-        if ($request->getParam('zip') == 2){
-
-            header('Content-type: application/zip');
-            header('Content-Disposition: attachment; filename=emailexport_' . date("d_m_Y") . '.zip');
+        if ($request->getParam('compress') == 'zip'){
 
             $fout = fopen("php://output", "wb");
 
@@ -348,15 +389,19 @@ class SubscribersController extends Controller
 
                 fwrite($fout, $crc[3] . $crc[2] . $crc[1] . $crc[0], 4);
                 fwrite($fout, pack("V", $fsize), 4);
+
                 fclose($fout);
+
+                return $response->withHeader('Content-Type', 'application/zip')
+                        ->withHeader('Content-Disposition', 'filename=emailexport_' . date("d_m_Y") . '.zip');
+
             }
-            exit();
+
         } else {
-            header('Content-Type: ' . StringHelpers::getMimeType($ext));
-            header('Content-Disposition: attachment; filename=' . $filename);
-            header('Cache-Control: max-age=0');
-            echo $contents;
-            exit;
+            return $response->write($contents)
+                ->withHeader('Content-Disposition', 'attachment; filename=' . $filename)
+                ->withHeader('Cache-Control', 'max-age=0')
+                ->withHeader('Content-Type', StringHelpers::getMimeType($ext));
         }
     }
 
@@ -494,7 +539,7 @@ class SubscribersController extends Controller
      * @param array $categoryId
      * @return mixed
      */
-    public function getSubscribersList(array $categoryId = [])
+    private function getSubscribersList($categoryId = [])
     {
         if ($categoryId) {
             $temp = [];
