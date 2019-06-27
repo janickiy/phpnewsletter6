@@ -2,48 +2,543 @@
 
 {% block content %}
 
-    <div class="row-fluid">
+    <!-- widget grid -->
+    <section id="widget-grid" class="">
 
-        <div class="col">
+        <!-- row -->
+        <div class="row">
+            <article class="col-sm-12">
+                <!-- new widget -->
+                <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false"
+                     data-widget-fullscreenbutton="false" data-widget-colorbutton="false"
+                     data-widget-deletebutton="false">
+                    <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
 
-            <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
 
-                <!-- widget div-->
-                <div>
+                    -->
+                    <header>
 
-                    <div class="box-header">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="{{ path_for('admin.settings.create') }}" class="btn btn-info btn-sm pull-left"><span class="fa fa-plus"> &nbsp;</span>Добавить параметр</a>
+                        <ul class="nav nav-tabs pull-right in" id="myTab">
+                            <li class="active">
+                                <a data-toggle="tab" href="#s1"><i class="fa fa-gear"></i> <span  class="hidden-mobile hidden-tablet">Настройки интерфейса</span></a>
+                            </li>
+
+                            <li>
+                                <a data-toggle="tab" href="#s2"><i class="fa fa-database"></i> <span  class="hidden-mobile hidden-tablet">SMTP сервера</span></a>
+                            </li>
+
+                            <li>
+                                <a data-toggle="tab" href="#s3"><i class="fa fa-cogs"></i> <span  class="hidden-mobile hidden-tablet">Параметры рассылки</span></a>
+                            </li>
+
+                            <li>
+                                <a data-toggle="tab" href="#s4"><i class="fa fa-file-code-o"></i> <span class="hidden-mobile hidden-tablet">Дополнительные заголовки</span></a>
+                            </li>
+
+                        </ul>
+
+                    </header>
+
+                    <!-- widget div-->
+                    <div class="no-padding">
+                        <!-- widget edit box -->
+
+                        <!-- end widget edit box -->
+
+                        <form action="{{ path_for('admin.settings.update') }}" method="POST" class="form-horizontal">
+
+                            {{ csrf.field | raw }}
+
+                                <!-- content -->
+
+                                <div id="myTabContent" class="tab-content">
+                                    <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+
+                                        <fieldset>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Email</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" placeholder="Email" name="EMAIL" value="{{ get_setting('EMAIL') }}" type="text">
+
+                                                    {% if errors.EMAIL %}
+                                                        <span class="text-danger">{{ errors.EMAIL | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Показывать e-mail администратора в отправляемых письмах</label>
+                                                <div class="col-md-10">
+                                                    <label class="checkbox-inline">
+                                                        <input name="SHOW_EMAIL" {{ get_setting('SHOW_EMAIL') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+
+                                                    {% if errors.EMAIL %}
+                                                        <span class="text-danger">{{ errors.SHOW_EMAIL | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Имя к E-mail администратора (from)</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" name="FROM" value="{{ get_setting('FROM') }}" placeholder="Имя к E-mail администратора (from)" type="text">
+
+                                                    {% if errors.EMAIL %}
+                                                        <span class="text-danger">{{ errors.FROM | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Обратный адрес (Return-path)</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" value="{{ get_setting('RETURN_PATH') }}" name="RETURN_PATH" placeholder="Обратный адрес (Return-path)" type="text">
+
+                                                    {% if errors.RETURN_PATH %}
+                                                        <span class="text-danger">{{ errors.RETURN_PATH | first }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Email адрес организатора рассылки (List-Owner)</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" value="{{ get_setting('LIST_OWNER') }}" name="LIST_OWNER" placeholder="Email адрес организатора рассылки (List-Owner)" type="text">
+
+                                                    {% if errors.LIST_OWNER %}
+                                                        <span class="text-danger">{{ errors.LIST_OWNER | first }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Организация</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" value="{{ get_setting('ORGANIZATION') }}" name="ORGANIZATION" placeholder="Организация" type="text">
+
+                                                    {% if errors.ORGANIZATION %}
+                                                        <span class="text-danger">{{ errors.ORGANIZATION | first }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Тема подтверждения рассылки</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" value="{{ get_setting('SUBJECT_TEXT_CONFIRM') }}" name="SUBJECT_TEXT_CONFIRM" placeholder="Тема подтверждения рассылки" type="text">
+
+                                                    {% if errors.SUBJECT_TEXT_CONFIRM %}
+                                                        <span class="text-danger">{{ errors.SUBJECT_TEXT_CONFIRM | first }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Текст подтверждения рассылки</label>
+                                                <div class="col-md-10">
+                                                    <textarea class="form-control" name="TEXT_CONFIRMATION" placeholder="Текст подтверждения рассылки" rows="4">{{ get_setting('TEXT_CONFIRMATION') }}</textarea>
+
+                                                    {% if errors.TEXT_CONFIRMATION %}
+                                                        <span class="text-danger">{{ errors.TEXT_CONFIRMATION | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Требовать подтверждение подписки</label>
+                                                <div class="col-md-10">
+                                                    <label class="checkbox-inline">
+                                                        <input type="checkbox" name="REQUIRE_SUB_CONFIRMATION" {{ get_setting('REQUIRE_SUB_CONFIRMATION') == 1 ? 'checked="checked"' }}" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+
+                                                    {% if errors.REQUIRE_SUB_CONFIRMATION %}
+                                                        <span class="text-danger">{{ errors.REQUIRE_SUB_CONFIRMATION | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Текст ссылки отписки от рассылки</label>
+                                                <div class="col-md-10">
+                                                    <textarea class="form-control" name="UNSUBLINK" placeholder="Текст ссылки отписки от рассылки" rows="4">{{ get_setting('UNSUBLINK') }}</textarea>
+                                                </div>
+
+                                                {% if errors.UNSUBLINK %}
+                                                    <span class="text-danger">{{ errors.UNSUBLINK | first }}</span>
+                                                {% endif %}
+
+                                            </div>
+
+                                        </fieldset>
+
+                                    </div>
+                                    <!-- end s1 tab pane -->
+
+                                    <div class="tab-pane fadein padding-10 no-padding-bottom" id="s2">
+
+                                    </div>
+                                    <!-- end s2 tab pane -->
+
+                                    <div class="tab-pane fade in padding-10" id="s3">
+
+                                        <fieldset>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Показывать форму отписки от рассылки</label>
+                                                <div class="col-md-10">
+                                                    <label class="checkbox-inline">
+                                                        <input name="SHOW_UNSUBSCRIBE_LINK" {{ get_setting('SHOW_UNSUBSCRIBE_LINK') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+
+                                                    {% if errors.SHOW_UNSUBSCRIBE_LINK %}
+                                                        <span class="text-danger">{{ errors.SHOW_UNSUBSCRIBE_LINK | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Запрашивать уведомления о прочтении писем</label>
+                                                <div class="col-md-10">
+                                                    <label class="checkbox-inline">
+                                                        <input name="REQUEST_REPLY" {{ get_setting('REQUEST_REPLY') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+
+                                                    {% if errors.REQUEST_REPLY %}
+                                                        <span class="text-danger">{{ errors.REQUEST_REPLY | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Уведомлять о новом подписчике</label>
+                                                <div class="col-md-10">
+                                                    <label class="checkbox-inline">
+                                                        <input name="NEW_SUBSCRIBER_NOTIFY" {{ get_setting('NEW_SUBSCRIBER_NOTIFY') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+
+                                                    {% if errors.NEW_SUBSCRIBER_NOTIFY %}
+                                                        <span class="text-danger">{{ errors.NEW_SUBSCRIBER_NOTIFY | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Отправлять не более писем за раз</label>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{ get_setting('LIMIT_NUMBER') }}" name="LIMIT_NUMBER" placeholder="Отправлять не более писем за раз" type="text">
+                                                    {% if errors.LIMIT_NUMBER %}
+                                                        <span class="text-danger">{{ errors.LIMIT_NUMBER | first }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="checkbox-inline">
+                                                        <input name="LIMIT_SEND" {{ get_setting('LIMIT_SEND') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Задержка между отправки писем (сек.)</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" placeholder="Задержка между отправки писем (сек.)" name="SLEEP" value="{{ get_setting('SLEEP') }}" type="text">
+
+                                                    {% if errors.SLEEP %}
+                                                        <span class="text-danger">{{ errors.SLEEP | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Удалять подписчиков которые не подтвердили подписку в течении дней</label>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{ get_setting('DAYS_FOR_REMOVE_SUBSCRIBER') }}" name="DAYS_FOR_REMOVE_SUBSCRIBER" placeholder="Удалять подписчиков которые не подтвердили подписку в течении дней" type="text">
+                                                    {% if errors.DAYS_FOR_REMOVE_SUBSCRIBER %}
+                                                        <span class="text-danger">{{ errors.DAYS_FOR_REMOVE_SUBSCRIBER | first }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="checkbox-inline">
+                                                        <input name="REMOVE_SUBSCRIBER" {{ get_setting('REMOVE_SUBSCRIBER') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Рандомизация рассылки</label>
+                                                <div class="col-md-10">
+                                                    <label class="checkbox-inline">
+                                                        <input name="RANDOM_SEND" {{ get_setting('RANDOM_SEND') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+
+                                                    {% if errors.RANDOM_SEND %}
+                                                        <span class="text-danger">{{ errors.RANDOM_SEND | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Рандомная замена кириллицы в загаловке письма на латиницу (обход спам фильтра)</label>
+                                                <div class="col-md-10">
+                                                    <label class="checkbox-inline">
+                                                        <input name="RENDOM_REPLACEMENT_SUBJECT" {{ get_setting('RENDOM_REPLACEMENT_SUBJECT') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+
+                                                    {% if errors.RENDOM_REPLACEMENT_SUBJECT %}
+                                                        <span class="text-danger">{{ errors.RENDOM_REPLACEMENT_SUBJECT | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Рандомная замена кириллицы в теле письма на латиницу (обход спам фильтра)</label>
+                                                <div class="col-md-10">
+                                                    <label class="checkbox-inline">
+                                                        <input name="RANDOM_REPLACEMENT_BODY" {{ get_setting('RANDOM_REPLACEMENT_BODY') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+
+                                                    {% if errors.RANDOM_REPLACEMENT_BODY %}
+                                                        <span class="text-danger">{{ errors.RANDOM_REPLACEMENT_BODY | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Precedence</label>
+                                                <div class="col-md-10">
+                                                    <select name="PRECEDENCE" class="form-control">
+                                                        <option value="no" {{ get_setting('RANDOM_REPLACEMENT_BODY') == 'no' or get_setting('RANDOM_REPLACEMENT_BODY') == '' ? 'selected="selected"' : '' }}>нет</option>
+                                                        <option value="bulk" {{ get_setting('RANDOM_REPLACEMENT_BODY') == 'bulk' ? 'selected="selected"' : '' }} selected="selected">bulk</option>
+                                                        <option value="junk" {{ get_setting('RANDOM_REPLACEMENT_BODY') == 'junk' ? 'selected="selected"' : '' }}>junk</option>
+                                                        <option value="list" {{ get_setting('RANDOM_REPLACEMENT_BODY') == 'list' ? 'selected="selected"' : '' }}>list</option>
+                                                    </select>
+
+                                                    {% if errors.PRECEDENCE %}
+                                                        <span class="text-danger">{{ errors.PRECEDENCE | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Кодировка исходящих писем</label>
+                                                <div class="col-md-10">
+                                                    <select name="CHARSET" class="form-control">
+                                                        {% for o in charset %}
+                                                            <option value="{{ o.charset }}" {{ o.charset == get_setting('CHARSET') ? 'selected="selected"' : '' }}>{{ o.charset }}</option>
+                                                        {% endfor %}
+                                                    </select>
+
+                                                    {% if errors.CHARSET %}
+                                                        <span class="text-danger">{{ errors.CHARSET | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Формат исходящих писем</label>
+                                                <div class="col-md-10">
+                                                    <label class="radio radio-inline">
+                                                        <input type="radio" class="radiobox style-0" value="html" {{ get_setting('CONTENT_TYPE') == 'html' ? 'checked="checked"' : '' }} name="CONTENT_TYPE">
+                                                        <span>HTML</span>
+                                                    </label>
+                                                    <label class="radio radio-inline">
+                                                        <input type="radio" class="radiobox style-0" value="plain" {{  get_setting('CONTENT_TYPE') == 'plain' ? 'checked="checked"' : '' }} name="CONTENT_TYPE">
+                                                        <span>Plain</span>
+                                                    </label>
+                                                   </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Способ отправки</label>
+                                                <div class="col-md-10">
+                                                    <label class="radio radio-inline">
+                                                        <input type="radio" class="radiobox style-0" value="" {{ get_setting('HOW_TO_SEND') == 'php' ? 'checked="checked"' : '' }} name="HOW_TO_SEND">
+                                                        <span>PHP Mail</span>
+                                                    </label>
+                                                    <label class="radio radio-inline">
+                                                        <input type="radio" class="radiobox style-0" value="" {{  get_setting('HOW_TO_SEND') == 'smtp' ? 'checked="checked"' : '' }} name="HOW_TO_SEND">
+                                                        <span>SMTP сервер</span>
+                                                    </label>
+                                                    <label class="radio radio-inline">
+                                                        <input type="radio" class="radiobox style-0" value="" {{  get_setting('HOW_TO_SEND') == 'sendmail' ? 'checked="checked"' : '' }} name="HOW_TO_SEND">
+                                                        <span>Sendmail</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Путь к Sendmail</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" placeholder="Путь к Sendmail" name="SENDMAIL_PATH" value="{{ get_setting('SENDMAIL_PATH') }}" type="text">
+
+                                                    {% if errors.SENDMAIL_PATH %}
+                                                        <span class="text-danger">{{ errors.SENDMAIL_PATH | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">URL путь</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" placeholder="URL путь" name="URL" value="{{ get_setting('URL') }}" type="text">
+
+                                                    {% if errors.URL %}
+                                                        <span class="text-danger">{{ errors.URL | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Добавить подпись DKIM в заголовок письма</label>
+                                                <div class="col-md-10">
+                                                    <label class="checkbox-inline">
+                                                        <input name="ADD_DKIM" {{ get_setting('ADD_DKIM') == 1 ? 'checked' : ''  }} type="checkbox" class="checkbox style-0">
+                                                        <span></span>
+                                                    </label>
+
+                                                    {% if errors.ADD_DKIM %}
+                                                        <span class="text-danger">{{ errors.ADD_DKIM | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Подписанный домен</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" placeholder="Подписанный домен" name="DKIM_DOMAIN" value="{{ get_setting('DKIM_DOMAIN') }}" type="text">
+
+                                                    {% if errors.DKIM_DOMAIN %}
+                                                        <span class="text-danger">{{ errors.DKIM_DOMAIN | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Селектор</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" placeholder="Селектор" name="DKIM_SELECTOR" value="{{ get_setting('DKIM_SELECTOR') }}" type="text">
+
+                                                    {% if errors.DKIM_SELECTOR %}
+                                                        <span class="text-danger">{{ errors.DKIM_SELECTOR | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Файл секретного ключа(dkim private)</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" placeholder="Файл секретного ключа(dkim private)" name="DKIM_PRIVATE" value="{{ get_setting('DKIM_PRIVATE') }}" type="text">
+
+                                                    {% if errors.DKIM_PRIVATE %}
+                                                        <span class="text-danger">{{ errors.DKIM_PRIVATE | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Ключевое слово</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" placeholder="Ключевое слово" name="DKIM_PASSPHRAS" value="{{ get_setting('DKIM_PASSPHRAS') }}" type="text">
+
+                                                    {% if errors.DKIM_PASSPHRAS %}
+                                                        <span class="text-danger">{{ errors.DKIM_PASSPHRAS | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Подписанная личность (E-mail)</label>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" placeholder="Подписанная личность (E-mail)" name="DKIM_IDENTITY" value="{{ get_setting('DKIM_IDENTITY') }}" type="text">
+
+                                                    {% if errors.DKIM_IDENTITY %}
+                                                        <span class="text-danger">{{ errors.DKIM_IDENTITY | first }}</span>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                        </fieldset>
+
+                                    </div>
+                                    <!-- end s3 tab pane -->
+
+
+                                    <div class="tab-pane fade in padding-10" id="s4">
+
+
+
+                                    </div>
+
+
+                                    </div>
+                                    <!-- end s4 tab pane -->
+
+
+                                <!-- end content -->
+
+
+                            <div class="padding-10">
+
+                                <button type="submit" class="btn btn-primary pull-right margin-bottom-10">
+                                    Применить
+                                </button>
                             </div>
-                        </div>
+                        </form>
+
                     </div>
 
-                    <div class="table-responsive">
-                        <table id="itemList" class="table table-striped table-bordered table-hover" width="100%">
-                            <thead>
-                            <tr>
-                                <th>Ключ</th>
-                                <th>Значение</th>
-                                <th>Описание</th>
-                                <th>Действия</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+                    <!-- end widget div -->
                 </div>
-                <!-- end widget content -->
+                <!-- end widget -->
 
-            </div>
-            <!-- end widget div -->
-
+            </article>
         </div>
-        <!-- end widget -->
 
-    </div>
+    </section>
+    <!-- end widget grid -->
 
 {% endblock %}
 
@@ -51,106 +546,6 @@
 
     <script>
 
-        $(document).ready(function () {
-
-            pageSetUp();
-
-            /* // DOM Position key index //
-
-            l - Length changing (dropdown)
-            f - Filtering input (search)
-            t - The Table! (datatable)
-            i - Information (records)
-            p - Pagination (paging)
-            r - pRocessing
-            < and > - div elements
-            <"#id" and > - div with an id
-            <"class" and > - div with a class
-            <"#id.class" and > - div with an id and class
-
-            Also see: http://legacy.datatables.net/usage/features
-            */
-
-            /* BASIC ;*/
-            var responsiveHelper_dt_basic = undefined;
-
-            var breakpointDefinition = {
-                tablet: 1024,
-                phone: 480
-            };
-
-            $('#itemList').dataTable({
-                "sDom": "flrtip",
-                "autoWidth": true,
-                "oLanguage": {
-                    "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>'
-                },
-                "preDrawCallback": function () {
-                    // Initialize the responsive datatables helper once.
-                    if (!responsiveHelper_dt_basic) {
-                        responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#itemList'), breakpointDefinition);
-                    }
-                },
-                "rowCallback": function (nRow) {
-                    responsiveHelper_dt_basic.createExpandIcon(nRow);
-                },
-                "drawCallback": function (oSettings) {
-                    responsiveHelper_dt_basic.respond();
-                },
-                'createdRow': function (row, data, dataIndex) {
-                    $(row).attr('id', 'rowid_' + data['id']);
-                },
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: '{{ path_for('admin.datatable.settings') }}'
-                },
-                columns: [
-                    {data: 'name', name: 'name'},
-                    {data: 'value', name: 'value'},
-                    {data: 'description', name: 'description'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false}
-                ],
-            });
-
-            $('#itemList').on('click', 'a.deleteRow', function () {
-
-                var btn = this;
-                var rowid = $(this).attr('id');
-                var csrfData = {"csrf_name" : "{{ csrf.attribute.name | raw }}","csrf_value" : "{{ csrf.attribute.value | raw }}"};
-                swal({
-                        title: "Вы уверены?",
-                        text: "Вы не сможете восстановить эту информацию!",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Да, удалить!",
-                        closeOnConfirm: false
-                    },
-                    function (isConfirm) {
-                        if (!isConfirm) return;
-                        $.ajax({
-                            url: SITE_URL + "settings/destroy/" + rowid,
-                            type: "DELETE",
-                            data : csrfData,
-                            dataType: "html",
-                            headers: {
-                                'X-CSRF-Token': {
-                                    'csrf_name': '{{ csrf.attribute.name | raw }}',
-                                    'csrf_value': '{{ csrf.attribute.value | raw }}'
-                                }
-                            },
-                            success: function () {
-                                $("#rowid_" + rowid).remove();
-                                swal("Сделано!", "Данные успешно удалены!", "success");
-                            },
-                            error: function (xhr, ajaxOptions, thrownError) {
-                                swal("Ошибка при удалении!", "Попробуйте еще раз", "error");
-                            }
-                        });
-                    });
-            });
-        })
 
     </script>
 

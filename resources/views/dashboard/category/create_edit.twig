@@ -2,40 +2,72 @@
 
 {% block content %}
 
-    <div class="row-fluid">
-        <div class="col">
+    <!-- START ROW -->
+    <div class="row">
+
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12 col-lg-12">
 
             <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false"
+                 data-widget-custombutton="false">
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
 
                 <!-- widget div-->
                 <div>
 
-                    <form  action="{{ category is defined ? path_for('admin.category.update') : path_for('admin.category.store') }}" method="{{ category is defined ? 'PUT' : 'POST' }}" class="smart-form">
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
 
-                        <input type="hidden" name="_METHOD" value="PUT"/>
+                    </div>
+                    <!-- end widget edit box -->
 
-                        {{ csrf.field | raw }}
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
 
-                        {% if category %}<input type="hidden" name="id" value="{{ category.id }}">{% endif %}
 
-                        <header>
-                            *-обязательные поля
-                        </header>
+                        <form action="{{ category is defined ? path_for('admin.category.update') : path_for('admin.category.store') }}"
+                              method="{{ category is defined ? 'PUT' : 'POST' }}" class="smart-form">
 
-                        <fieldset>
+                            <input type="hidden" name="_METHOD" value="PUT"/>
 
-                            <section>
-                                <label for="name" class="label">Название*</label>
-                                <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ category is defined ? category.name : old.name }}" id="name">
-                                </label>
+                            {{ csrf.field | raw }}
 
-                                {% if errors.name %}
-                                    <span class="text-danger">{{ errors.name | first }}</span>
-                                {% endif %}
+                            {% if category %}<input type="hidden" name="id" value="{{ category.id }}">{% endif %}
 
-                            </section>
+                            <header>
+                                *-обязательные поля
+                            </header>
+
+                            <fieldset>
+
+                                <section>
+                                    <label for="name" class="label">Название*</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="Название" name="name"
+                                               value="{{ category is defined ? category.name : old.name }}" id="name">
+                                    </label>
+
+                                    {% if errors.name %}
+                                        <span class="text-danger">{{ errors.name | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                            </fieldset>
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
@@ -46,18 +78,26 @@
                                 </a>
                             </footer>
 
-                        </fieldset>
+                        </form>
 
-                    </form>
+                    </div>
+                    <!-- end widget content -->
 
                 </div>
+                <!-- end widget div -->
+
             </div>
-        </div>
+            <!-- end widget -->
+
+        </article>
+        <!-- END COL -->
+
     </div>
+
+    <!-- END ROW -->
 
 {% endblock %}
 
 {% block js %}
-
 
 {% endblock %}

@@ -84,11 +84,7 @@ $app->group('', function () use ($container) {
 
     $this->group('/settings', function () use ($container) {
         $this->get('/', 'SettingsController:index')->setName('admin.settings.index');
-        $this->get('/create', 'SettingsController:create')->setName('admin.settings.create');
-        $this->post('/store', 'SettingsController:store')->setName('admin.settings.store');
-        $this->get('/edit/{id:[0-9]+}', 'SettingsController:edit')->setName('admin.settings.edit');
         $this->map(['GET', 'POST'],'/update', 'SettingsController:update')->setName('admin.settings.update');
-        $this->delete('/destroy/{id:[0-9]+}', 'SettingsController:destroy')->setName('admin.settings.destroy');
     });
 
     $this->group('/datatable', function () use ($container) {

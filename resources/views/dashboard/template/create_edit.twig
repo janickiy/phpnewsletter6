@@ -2,98 +2,129 @@
 
 {% block content %}
 
-    <div class="row-fluid">
-        <div class="col">
+    <!-- START ROW -->
+    <div class="row">
+
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12 col-lg-12">
 
             <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false"
+                 data-widget-custombutton="false">
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
 
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm" enctype="multipart/form-data" action="{{ template is defined ? path_for('admin.template.update') : path_for('admin.template.store') }}" method="{{ template is defined ? 'put' : 'post' }}" class="smart-form">
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
 
-                        {{ csrf.field | raw }}
+                    </div>
+                    <!-- end widget edit box -->
 
-                        {% if template %}<input type="hidden" name="id" value="{{ template.id }}">{% endif %}
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
 
-                        <header>
-                            *-обязательные поля
-                        </header>
+                        <form id="tmplForm" enctype="multipart/form-data" action="{{ template is defined ? path_for('admin.template.update') : path_for('admin.template.store') }}" method="{{ template is defined ? 'put' : 'post' }}" class="smart-form">
 
-                        <fieldset>
+                            {{ csrf.field | raw }}
 
-                            <section>
-                                <label for="name" class="label">Название*</label>
-                                <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ template is defined ? template.name  : old.name }}" id="name">
-                                </label>
+                            {% if template %}<input type="hidden" name="id" value="{{ template.id }}">{% endif %}
 
-                                {% if errors.name %}
-                                    <span class="text-danger">{{ errors.name | first }}</span>
-                                {% endif %}
+                            <header>
+                                *-обязательные поля
+                            </header>
 
-                            </section>
+                            <fieldset>
 
-                            <section>
-                                <label for="body" class="label">Шаблон*</label>
-                                <label class="textarea textarea-resizable">
-                                    <textarea rows="3" class="custom-scroll" placeholder="Описание" name="body"  id="body">{{ template is defined ? template.body : old.body }}</textarea>
-                                </label>
-                                {% if errors.body %}
-                                    <span class="text-danger">{{ errors.body | first }}</span>
-                                {% endif %}
+                                <section>
+                                    <label for="name" class="label">Название*</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ template is defined ? template.name  : old.name }}" id="name">
+                                    </label>
 
-                                <div class="note">
-                                    <strong>Персонализация:</strong> %NAME% - имя подписчика, %EMAIL% - E-mail адрес, %UNSUB% - ссылка для удаления рассылки, %SERVER_NAME% - адрес сайта, %REFERRAL:http://my_website.com/% - ссылка для статистика переходов по ссылкам
-                                </div>
-                            </section>
+                                    {% if errors.name %}
+                                        <span class="text-danger">{{ errors.name | first }}</span>
+                                    {% endif %}
 
-                            <section>
-                                <label for="attachfile[]" class="label">Присоединить файлы</label>
-                                <div class="input input-file">
-                                    <span class="button"><input type="file" name="attachfile[]" multiple="true"  id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
-                                </div>
+                                </section>
 
-                                {% if errors.attachfile %}
-                                    <span class="text-danger">{{ errors.attachfile | first }}</span>
-                                {% endif %}
+                                <section>
+                                    <label for="body" class="label">Шаблон*</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea rows="3" class="custom-scroll" placeholder="Описание" name="body"  id="body">{{ template is defined ? template.body : old.body }}</textarea>
+                                    </label>
+                                    {% if errors.body %}
+                                        <span class="text-danger">{{ errors.body | first }}</span>
+                                    {% endif %}
 
-                            </section>
+                                    <div class="note">
+                                        <strong>Персонализация:</strong> %NAME% - имя подписчика, %EMAIL% - E-mail адрес, %UNSUB% - ссылка для удаления рассылки, %SERVER_NAME% - адрес сайта, %REFERRAL:http://my_website.com/% - ссылка для статистика переходов по ссылкам
+                                    </div>
+                                </section>
 
-                            <section>
-                                <label for="categoryId" class="label">Категория подписчиков*</label>
-                                <label class="select">
-                                    <select id="category" name="categoryId">
-                                        <option>Выберите</option>
-                                        {% for o in category %}
-                                            <option value="{{ o.id }}" {{ templat.categoryId == o.id or old.categoryId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
-                                        {% endfor %}
-                                    </select> <i></i>
-                                </label>
-                                {% if errors.categoryId %}
-                                    <span class="text-danger">{{ errors.categoryId | first }}</span>
-                                {% endif %}
-                            </section>
+                                <section>
+                                    <label for="attachfile[]" class="label">Присоединить файлы</label>
+                                    <div class="input input-file">
+                                        <span class="button"><input type="file" name="attachfile[]" multiple="true"  id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
+                                    </div>
 
-                            <section>
-                                <label for="prior" class="label">Важность</label>
-                                <div class="inline-group">
-                                    <label class="radio">
-                                        <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or old.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
-                                        <i></i>Нормальнаяa</label>
-                                    <label class="radio">
-                                        <input type="radio" name="prior" value="2" {{ template is defined and (templat.prior == 2 or old.prior == 2) ? 'checked="checked"' : '' }}>
-                                        <i></i>Низкая</label>
-                                    <label class="radio">
-                                        <input type="radio" name="prior" value="1" {{ template is defined and (templat.prior == 1 or old.prior == 1) ? 'checked="checked"' : '' }}>
-                                        <i></i>Высокая</label>
-                                </div>
-                                {% if errors.prior %}
-                                    <span class="text-danger">{{ errors.prior | first }}</span>jjj
-                                {% endif %}
+                                    {% if errors.attachfile %}
+                                        <span class="text-danger">{{ errors.attachfile | first }}</span>
+                                    {% endif %}
 
-                            </section>
+                                </section>
+
+                                <section>
+                                    <label for="categoryId" class="label">Категория подписчиков*</label>
+                                    <label class="select">
+                                        <select id="category" name="categoryId">
+                                            <option>Выберите</option>
+                                            {% for o in category %}
+                                                <option value="{{ o.id }}" {{ templat.categoryId == o.id or old.categoryId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
+                                            {% endfor %}
+                                        </select> <i></i>
+                                    </label>
+                                    {% if errors.categoryId %}
+                                        <span class="text-danger">{{ errors.categoryId | first }}</span>
+                                    {% endif %}
+                                </section>
+
+                                <section>
+                                    <label for="prior" class="label">Важность</label>
+                                    <div class="inline-group">
+                                        <label class="radio">
+                                            <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or old.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
+                                            <i></i>Нормальнаяa</label>
+                                        <label class="radio">
+                                            <input type="radio" name="prior" value="2" {{ template is defined and (templat.prior == 2 or old.prior == 2) ? 'checked="checked"' : '' }}>
+                                            <i></i>Низкая</label>
+                                        <label class="radio">
+                                            <input type="radio" name="prior" value="1" {{ template is defined and (templat.prior == 1 or old.prior == 1) ? 'checked="checked"' : '' }}>
+                                            <i></i>Высокая</label>
+                                    </div>
+                                    {% if errors.prior %}
+                                        <span class="text-danger">{{ errors.prior | first }}</span>jjj
+                                    {% endif %}
+
+                                </section>
+
+
+
+                            </fieldset>
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
@@ -104,14 +135,24 @@
                                 </a>
                             </footer>
 
-                        </fieldset>
+                        </form>
 
-                    </form>
+
+                    </div>
+                    <!-- end widget content -->
 
                 </div>
+                <!-- end widget div -->
+
             </div>
-        </div>
+            <!-- end widget -->
+
+        </article>
+        <!-- END COL -->
+
     </div>
+
+    <!-- END ROW -->
 
 {% endblock %}
 

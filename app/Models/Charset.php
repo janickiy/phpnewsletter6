@@ -8,9 +8,8 @@ class Charset extends Model
 {
 	protected $table = 'charset';
 
+    protected $primaryKey = 'id';
+
     public $timestamps = false;
 
-	protected $fillable = [
-        'charset'
-	];
 }

@@ -44,6 +44,10 @@ $container['mailer'] = function($container) {
 	return new Nette\Mail\SmtpMailer($container['settings']['mailer']);
 };
 
+$container['url'] = function($container) {
+    return 12;
+};
+
 $container['view'] = function ($container) {
 	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/views/', [
 		'cache' => false,
@@ -59,14 +63,32 @@ $container['view'] = function ($container) {
 		'user' => $container->auth->user()
 	]);
 
+
     $view->getEnvironment()->addGlobal('_session', $_SESSION);
     $view->getEnvironment()->addGlobal('_post', $_POST);
     $view->getEnvironment()->addGlobal('_get', $_GET);
-
 	$view->getEnvironment()->addGlobal('flash',$container->flash);
+
+    $getSetting = new \Twig\TwigFunction('get_setting', function ($key = '') {
+        $setting = \App\Models\Settings::where('name', $key)->first();
+
+        if ($setting) {
+            return $setting->value;
+        } else {
+            return '';
+        }
+    });
+
+    $view->getEnvironment()->addFunction($getSetting);
+
 
 	return $view;
 };
+
+$view = $app->getContainer()['view'];
+$view->getEnvironment()->addGlobal('url', function ($url) {
+    return url($url);
+});
 
 $container['upload_directory'] = __DIR__ . '/../attach';
 
@@ -126,6 +148,8 @@ $container['csrf'] = function($container) {
 $app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
 $app->add(new \App\Middleware\OldInputMiddleware($container));
 $app->add(new \App\Middleware\CsrfViewMiddleware($container));
+
+
 
 $app->add($container->csrf);
 

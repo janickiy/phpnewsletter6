@@ -2,62 +2,91 @@
 
 {% block content %}
 
-    <div class="row-fluid">
-        <div class="col">
+    <!-- START ROW -->
+    <div class="row">
+
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12 col-lg-12">
 
             <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false"
+                 data-widget-custombutton="false">
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
 
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm"  action="{{ subscriber is defined ? path_for('admin.subscribers.import_subscribers') : path_for('admin.subscribers.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
 
-                        {% if subscriber %}<input type="hidden" name="id" value="{{ subscriber.id }}">{% endif %}
+                    </div>
+                    <!-- end widget edit box -->
 
-                        <header>
-                            *-обязательные поля
-                        </header>
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
 
-                        <fieldset>
+                        <form id="tmplForm"  action="{{ subscriber is defined ? path_for('admin.subscribers.import_subscribers') : path_for('admin.subscribers.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
 
-                            <section>
-                                <label for="name" class="label">Имя</label>
-                                <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ subscriber is defined ? subscriber.name : old.name }}" id="name">
-                                </label>
+                            {% if subscriber %}<input type="hidden" name="id" value="{{ subscriber.id }}">{% endif %}
 
-                                {% if errors.name %}
-                                    <span class="text-danger">{{ errors.name | first }}</span>
-                                {% endif %}
+                            <header>
+                                *-обязательные поля
+                            </header>
 
-                            </section>
+                            <fieldset>
 
-                            <section>
-                                <label for="name" class="label">Email*</label>
-                                <label class="input">
-                                    <input type="email" maxlength="255" placeholder="Email" name="email" value="{{ subscriber is defined ? subscriber.email : old.email }}" id="email">
-                                </label>
+                                <section>
+                                    <label for="name" class="label">Имя</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ subscriber is defined ? subscriber.name : old.name }}" id="name">
+                                    </label>
 
-                                {% if errors.email %}
-                                    <span class="text-danger">{{ errors.email | first }}</span>
-                                {% endif %}
+                                    {% if errors.name %}
+                                        <span class="text-danger">{{ errors.name | first }}</span>
+                                    {% endif %}
 
-                            </section>
+                                </section>
 
-                            <section>
-                                <label for="categoryId[]" class="label">Категория подписчиков</label>
-                                <label class="input">
-                                    <select name="categoryId[]" multiple="multiple" id="categoryId" class="form-control custom-scroll" title="Выберите категорию">
-                                        {% for o in category %}
-                                            <option value="{{ o.id }}" {% if o.id in subscriptions %}selected="selected"{% endif %}>{{ o.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </label>
-                                {% if errors.categoryId %}
-                                    <span class="text-danger">{{ errors.categoryId | first }}</span>
-                                {% endif %}
-                            </section>
+                                <section>
+                                    <label for="name" class="label">Email*</label>
+                                    <label class="input">
+                                        <input type="email" maxlength="255" placeholder="Email" name="email" value="{{ subscriber is defined ? subscriber.email : old.email }}" id="email">
+                                    </label>
+
+                                    {% if errors.email %}
+                                        <span class="text-danger">{{ errors.email | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                                <section>
+                                    <label for="categoryId[]" class="label">Категория подписчиков</label>
+                                    <label class="input">
+                                        <select name="categoryId[]" multiple="multiple" id="categoryId" class="form-control custom-scroll" title="Выберите категорию">
+                                            {% for o in category %}
+                                                <option value="{{ o.id }}" {% if o.id in subscriptions %}selected="selected"{% endif %}>{{ o.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                    {% if errors.categoryId %}
+                                        <span class="text-danger">{{ errors.categoryId | first }}</span>
+                                    {% endif %}
+                                </section>
+
+                            </fieldset>
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
@@ -68,16 +97,28 @@
                                 </a>
                             </footer>
 
-                        </fieldset>
+                            {{ csrf.field | raw }}
 
-                        {{ csrf.field | raw }}
+                        </form>
 
-                    </form>
+
+                    </div>
+                    <!-- end widget content -->
 
                 </div>
+                <!-- end widget div -->
+
             </div>
-        </div>
+            <!-- end widget -->
+
+        </article>
+        <!-- END COL -->
+
     </div>
+
+    <!-- END ROW -->
+
+
 
 {% endblock %}
 

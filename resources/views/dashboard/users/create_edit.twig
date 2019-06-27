@@ -2,100 +2,129 @@
 
 {% block content %}
 
-    <div class="row-fluid">
-        <div class="col">
+    <!-- START ROW -->
+    <div class="row">
+
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12 col-lg-12">
 
             <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false"
+                 data-widget-custombutton="false">
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
 
                 <!-- widget div-->
                 <div>
 
-                    <form id="tmplForm"  action="{{ user is defined ? path_for('admin.users.update') : path_for('admin.users.store') }}" method="{{ user is defined ? 'PUT' : 'POST' }}" class="smart-form">
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
 
-                        {{ csrf.field | raw }}
+                    </div>
+                    <!-- end widget edit box -->
 
-                        {% if user %}<input type="hidden" name="id" value="{{ user.id }}">{% endif %}
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
 
-                        <header>
-                            *-обязательные поля
-                        </header>
+                        <form id="tmplForm"  action="{{ user is defined ? path_for('admin.users.update') : path_for('admin.users.store') }}" method="{{ user is defined ? 'PUT' : 'POST' }}" class="smart-form">
 
-                        <fieldset>
+                            {{ csrf.field | raw }}
 
-                            <section>
-                                <label for="name" class="label">Имя*</label>
-                                <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ user is defined ? user.name : old.name }}" id="name">
-                                </label>
+                            {% if user %}<input type="hidden" name="id" value="{{ user.id }}">{% endif %}
 
-                                {% if errors.name %}
-                                    <span class="text-danger">{{ errors.name | first }}</span>
-                                {% endif %}
+                            <header>
+                                *-обязательные поля
+                            </header>
 
-                            </section>
+                            <fieldset>
 
-                            <section>
-                                <label for="login" class="label">Логин*</label>
-                                <label class="input">
-                                    <input type="text" maxlength="255" placeholder="Логин" name="login" value="{{ user is defined ? user.login : old.login }}" id="login">
-                                </label>
+                                <section>
+                                    <label for="name" class="label">Имя*</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ user is defined ? user.name : old.name }}" id="name">
+                                    </label>
 
-                                {% if errors.login %}
-                                    <span class="text-danger">{{ errors.login | first }}</span>
-                                {% endif %}
+                                    {% if errors.name %}
+                                        <span class="text-danger">{{ errors.name | first }}</span>
+                                    {% endif %}
 
-                            </section>
+                                </section>
 
-                            <section>
-                                <label for="description" class="label">Описание</label>
-                                <label class="textarea textarea-resizable">
-                                    <textarea rows="3" class="custom-scroll" placeholder="Описание" name="description"  id="description">{{ user is defined ? user.description: old.description}}</textarea>
-                                </label>
-                                {% if errors.description %}
-                                    <span class="text-danger">{{ errors.description | first }}</span>
-                                {% endif %}
+                                <section>
+                                    <label for="login" class="label">Логин*</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="Логин" name="login" value="{{ user is defined ? user.login : old.login }}" id="login">
+                                    </label>
 
-                            </section>
+                                    {% if errors.login %}
+                                        <span class="text-danger">{{ errors.login | first }}</span>
+                                    {% endif %}
 
-                            <section>
-                                <label for="role" class="label">Роль*</label>
-                                <label class="select">
-                                    <select id="role" name="role">
-                                        <option>Выберите</option>
-                                        <option value="admin" {{ user.role == 'admin' or old.role == 'admin' ? 'selected="selected"' : '' }}>Админ</option>
-                                        <option value="moderator" {{ user.role == 'moderator' or old.role == 'moderator' ? 'selected="selected"' : '' }}>Модератор</option>
-                                        <option value="editor" {{ user.role == 'editor' or old.role == 'editor' ? 'selected="selected"' : '' }}>Редактор</option>
-                                    </select> <i></i>
-                                </label>
-                                {% if errors.role %}
-                                    <span class="text-danger">{{ errors.role | first }}</span>
-                                {% endif %}
-                            </section>
+                                </section>
 
-                            <section>
-                                <label for="password" class="label">Пароль</label>
-                                <label class="input">
-                                    <input type="password" maxlength="255" placeholder="пароль" name="password" value="{{ user is defined ? user.password : old.password }}" id="password">
-                                </label>
+                                <section>
+                                    <label for="description" class="label">Описание</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea rows="3" class="custom-scroll" placeholder="Описание" name="description"  id="description">{{ user is defined ? user.description: old.description}}</textarea>
+                                    </label>
+                                    {% if errors.description %}
+                                        <span class="text-danger">{{ errors.description | first }}</span>
+                                    {% endif %}
 
-                                {% if errors.password %}
-                                    <span class="text-danger">{{ errors.password | first }}</span>
-                                {% endif %}
+                                </section>
 
-                            </section>
+                                <section>
+                                    <label for="role" class="label">Роль*</label>
+                                    <label class="select">
+                                        <select id="role" name="role">
+                                            <option>Выберите</option>
+                                            <option value="admin" {{ user.role == 'admin' or old.role == 'admin' ? 'selected="selected"' : '' }}>Админ</option>
+                                            <option value="moderator" {{ user.role == 'moderator' or old.role == 'moderator' ? 'selected="selected"' : '' }}>Модератор</option>
+                                            <option value="editor" {{ user.role == 'editor' or old.role == 'editor' ? 'selected="selected"' : '' }}>Редактор</option>
+                                        </select> <i></i>
+                                    </label>
+                                    {% if errors.role %}
+                                        <span class="text-danger">{{ errors.role | first }}</span>
+                                    {% endif %}
+                                </section>
 
-                            <section>
-                                <label for="password_again" class="label">Павтор пароля</label>
-                                <label class="input">
-                                    <input type="password" maxlength="255" placeholder="павтор пароля" name="password_again" value="{{ user is defined ? template.password_again : old.password_again }}" id="password_again">
-                                </label>
+                                <section>
+                                    <label for="password" class="label">Пароль</label>
+                                    <label class="input">
+                                        <input type="password" maxlength="255" placeholder="пароль" name="password" value="{{ user is defined ? user.password : old.password }}" id="password">
+                                    </label>
 
-                                {% if errors.password_again %}
-                                    <span class="text-danger">{{ errors.password_again | first }}</span>
-                                {% endif %}
+                                    {% if errors.password %}
+                                        <span class="text-danger">{{ errors.password | first }}</span>
+                                    {% endif %}
 
-                            </section>
+                                </section>
+
+                                <section>
+                                    <label for="password_again" class="label">Павтор пароля</label>
+                                    <label class="input">
+                                        <input type="password" maxlength="255" placeholder="павтор пароля" name="password_again" value="{{ user is defined ? template.password_again : old.password_again }}" id="password_again">
+                                    </label>
+
+                                    {% if errors.password_again %}
+                                        <span class="text-danger">{{ errors.password_again | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                            </fieldset>
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
@@ -106,14 +135,25 @@
                                 </a>
                             </footer>
 
-                        </fieldset>
+                        </form>
 
-                    </form>
+
+                    </div>
+                    <!-- end widget content -->
 
                 </div>
+                <!-- end widget div -->
+
             </div>
-        </div>
+            <!-- end widget -->
+
+        </article>
+        <!-- END COL -->
+
     </div>
+
+    <!-- END ROW -->
+
 
 {% endblock %}
 
