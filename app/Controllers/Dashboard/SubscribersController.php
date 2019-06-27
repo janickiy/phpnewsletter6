@@ -10,12 +10,8 @@ use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
-
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-
-
 use PhpOffice\PhpSpreadsheet\IOFactory;
-
 
 class SubscribersController extends Controller
 {
@@ -98,8 +94,13 @@ class SubscribersController extends Controller
         if (!$subscriber) return $this->view->render($response, 'errors/404.twig');
 
         $category = Category::get();
+        $subscriptions = [];
 
-        return $this->view->render($response, 'dashboard/category/create_edit.twig', compact('subscriber', 'title', 'category'));
+        foreach (Subscriptions::where('subscriberId',$id)->get() as $subscription) {
+            $subscriptions[] = $subscription->categoryId;
+        }
+
+        return $this->view->render($response, 'dashboard/subscribers/create_edit.twig', compact('subscriber', 'title', 'category', 'subscriptions'));
     }
 
     /**
@@ -355,6 +356,9 @@ class SubscribersController extends Controller
                     ->setCellValue('B'.$i, $subscriber->name)
                 ;
             }
+
+            $oSpreadsheet_Out->getActiveSheet()->getColumnDimension('A')->setWidth(30);
+            $oSpreadsheet_Out->getActiveSheet()->getColumnDimension('B')->setWidth(30);
 
             $oWriter = IOFactory::createWriter($oSpreadsheet_Out, 'Xlsx');
             ob_start();

@@ -50,7 +50,7 @@
                                 <label class="input">
                                     <select name="categoryId[]" multiple="multiple" id="categoryId" class="form-control custom-scroll" title="Выберите категорию">
                                         {% for o in category %}
-                                            <option value="{{ o.id }}">{{ o.name }}</option>
+                                            <option value="{{ o.id }}" {% if o.id in subscriptions %}selected="selected"{% endif %}>{{ o.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </label>
