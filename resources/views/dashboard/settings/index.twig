@@ -164,7 +164,7 @@
                                                 <label class="col-md-2 control-label">Требовать подтверждение подписки</label>
                                                 <div class="col-md-10">
                                                     <label class="checkbox-inline">
-                                                        <input type="checkbox" name="REQUIRE_SUB_CONFIRMATION" {{ get_setting('REQUIRE_SUB_CONFIRMATION') == 1 ? 'checked="checked"' }}" class="checkbox style-0">
+                                                        <input type="checkbox" name="REQUIRE_SUB_CONFIRMATION" {{ get_setting('REQUIRE_SUB_CONFIRMATION') == 1 ? 'checked="checked"' }} class="checkbox style-0">
                                                         <span></span>
                                                     </label>
 
@@ -192,12 +192,7 @@
                                     </div>
                                     <!-- end s1 tab pane -->
 
-                                    <div class="tab-pane fadein padding-10 no-padding-bottom" id="s2">
-
-                                    </div>
-                                    <!-- end s2 tab pane -->
-
-                                    <div class="tab-pane fade in padding-10" id="s3">
+                                    <div class="tab-pane fade in padding-10" id="s2">
 
                                         <fieldset>
 
@@ -339,10 +334,10 @@
                                                 <label class="col-md-2 control-label">Precedence</label>
                                                 <div class="col-md-10">
                                                     <select name="PRECEDENCE" class="form-control">
-                                                        <option value="no" {{ get_setting('RANDOM_REPLACEMENT_BODY') == 'no' or get_setting('RANDOM_REPLACEMENT_BODY') == '' ? 'selected="selected"' : '' }}>нет</option>
-                                                        <option value="bulk" {{ get_setting('RANDOM_REPLACEMENT_BODY') == 'bulk' ? 'selected="selected"' : '' }} selected="selected">bulk</option>
-                                                        <option value="junk" {{ get_setting('RANDOM_REPLACEMENT_BODY') == 'junk' ? 'selected="selected"' : '' }}>junk</option>
-                                                        <option value="list" {{ get_setting('RANDOM_REPLACEMENT_BODY') == 'list' ? 'selected="selected"' : '' }}>list</option>
+                                                        <option value="no" {{ get_setting('PRECEDENCE') == 'no' or get_setting('PRECEDENCE') == '' ? 'selected="selected"' : '' }}>нет</option>
+                                                        <option value="bulk" {{ get_setting('PRECEDENCE') == 'bulk' ? 'selected="selected"' : '' }} selected="selected">bulk</option>
+                                                        <option value="junk" {{ get_setting('PRECEDENCE') == 'junk' ? 'selected="selected"' : '' }}>junk</option>
+                                                        <option value="list" {{ get_setting('PRECEDENCE') == 'list' ? 'selected="selected"' : '' }}>list</option>
                                                     </select>
 
                                                     {% if errors.PRECEDENCE %}
@@ -386,15 +381,15 @@
                                                 <label class="col-md-2 control-label">Способ отправки</label>
                                                 <div class="col-md-10">
                                                     <label class="radio radio-inline">
-                                                        <input type="radio" class="radiobox style-0" value="" {{ get_setting('HOW_TO_SEND') == 'php' ? 'checked="checked"' : '' }} name="HOW_TO_SEND">
+                                                        <input type="radio" class="radiobox style-0" value="php" {{ get_setting('HOW_TO_SEND') == 'php' ? 'checked="checked"' : '' }} name="HOW_TO_SEND">
                                                         <span>PHP Mail</span>
                                                     </label>
                                                     <label class="radio radio-inline">
-                                                        <input type="radio" class="radiobox style-0" value="" {{  get_setting('HOW_TO_SEND') == 'smtp' ? 'checked="checked"' : '' }} name="HOW_TO_SEND">
+                                                        <input type="radio" class="radiobox style-0" value="smtp" {{  get_setting('HOW_TO_SEND') == 'smtp' ? 'checked="checked"' : '' }} name="HOW_TO_SEND">
                                                         <span>SMTP сервер</span>
                                                     </label>
                                                     <label class="radio radio-inline">
-                                                        <input type="radio" class="radiobox style-0" value="" {{  get_setting('HOW_TO_SEND') == 'sendmail' ? 'checked="checked"' : '' }} name="HOW_TO_SEND">
+                                                        <input type="radio" class="radiobox style-0" value="sendmail" {{  get_setting('HOW_TO_SEND') == 'sendmail' ? 'checked="checked"' : '' }} name="HOW_TO_SEND">
                                                         <span>Sendmail</span>
                                                     </label>
                                                 </div>
@@ -487,7 +482,6 @@
                                                 </div>
                                             </div>
 
-
                                             <div class="form-group">
                                                 <label class="col-md-2 control-label">Подписанная личность (E-mail)</label>
                                                 <div class="col-md-10">
@@ -503,18 +497,46 @@
                                         </fieldset>
 
                                     </div>
+                                    <!-- end s2 tab pane -->
+
+                                    <div class="tab-pane fade in padding-10" id="s3">
+
+                                        <div id="headerslist">
+
+                                            {% for c in customheaders %}
+
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <label class="col-lg-4 control-label">Имя</label>
+                                                        <div class="col-lg-8"><input class="form-control" type="text" value="{{ c.name }}" name="header_name[]"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <div class="form-group">
+                                                        <label class="col-lg-4 control-label">Значение</label>
+                                                        <div class="col-lg-6"><input class="form-control" type="text" value="{{ c.value }}" name="header_value[]"></div>
+                                                        <div class="col-lg-2"><a class="btn btn-outline btn-danger removeBlock" title="Удалить"> - </a></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {% endfor %}
+
+
+                                                <div class="form-group">
+                                                    <div class="col-lg-12">
+                                                        <input class="btn btn-default" id="add_field" type="button" value="+ Добавить">
+                                                    </div>
+                                                </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    </div>
                                     <!-- end s3 tab pane -->
-
-
-                                    <div class="tab-pane fade in padding-10" id="s4">
-
-
-
-                                    </div>
-
-
-                                    </div>
-                                    <!-- end s4 tab pane -->
 
 
                                 <!-- end content -->
@@ -545,7 +567,45 @@
 {% block js %}
 
     <script>
+        $(function () {
+            // Tabs
+            $('#tabs').tabs();
 
+            //hover states on the static widgets
+            $('#dialog_link, #modal_link, ul#icons li').hover(
+
+                function () {
+                    $(this).addClass('ui-state-hover');
+                }, function () {
+                    $(this).removeClass('ui-state-hover');
+                });
+        });
+
+        $(document).on( "click", '#add_field', function() {
+            var html = '<div class="row">';
+            html += '<div class="col-lg-4">';
+            html += '<div class="form-group">';
+            html += '<label class="col-lg-4 control-label">Имя</label>';
+            html += '<div class="col-lg-8"><input class="form-control" type="text" value="" name="header_name[]"></div>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="col-lg-8">';
+            html += '<div class="form-group">';
+            html += '<label class="col-lg-4 control-label">Значение</label>';
+            html += '<div class="col-lg-6"><input class="form-control" type="text" value="" name="header_value[]"></div>';
+            html += '<div class="col-lg-2"><a class="btn btn-outline btn-danger removeBlock" title="Удалить"> - </a></div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+
+            $('#headerslist').prepend(html);
+
+        });
+
+        $(document).on( "click", '.removeBlock', function() {
+            var parent = $(this).closest('div[class^="row"]');
+            parent.remove();
+        });
 
     </script>
 
