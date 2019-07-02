@@ -1,0 +1,178 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    <!-- START ROW -->
+    <div class="row">
+
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12 col-lg-12">
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false"
+                 data-widget-custombutton="false">
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
+
+                <!-- widget div-->
+                <div>
+
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+
+                    </div>
+                    <!-- end widget edit box -->
+
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+
+
+                        <form action="{{ smtp is defined ? path_for('admin.smtp.update') : path_for('admin.smtp.store') }}" method="{{ smtp is defined ? 'PUT' : 'POST' }}" class="smart-form">
+
+                            {{ csrf.field | raw }}
+
+                            {% if smtp %}<input type="hidden" name="id" value="{{ smtp.id }}">{% endif %}
+
+                            <header>
+                                *-обязательные поля
+                            </header>
+
+                            <fieldset>
+
+                                <section>
+                                    <label for="host" class="label">SMTP сервер*</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="SMTP сервер" name="host"  value="{{ smtp is defined ? smtp.host : old.host }}" id="host">
+                                    </label>
+
+                                    {% if errors.host %}
+                                        <span class="text-danger">{{ errors.host | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                                <section>
+                                    <label for="username" class="label">Логин*</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="Логин" name="username"  value="{{ smtp is defined ? smtp.username : old.username }}" id="username">
+                                    </label>
+
+                                    {% if errors.username %}
+                                        <span class="text-danger">{{ errors.username | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                                <section>
+                                    <label for="password" class="label">Пароль*</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="Пароль" name="password"  value="{{ smtp is defined ? smtp.password : old.password }}" id="password">
+                                    </label>
+
+                                    {% if errors.password %}
+                                        <span class="text-danger">{{ errors.password | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                                <section>
+                                    <label for="port" class="label">Порт smtp сервера*</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="Порт smtp сервера" name="port"  value="{{ smtp is defined ? smtp.port : old.port }}" id="port">
+                                    </label>
+
+                                    {% if errors.port %}
+                                        <span class="text-danger">{{ errors.port | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                                <section>
+                                    <label for="timeout" class="label">Таймаут соединения*</label>
+                                    <label class="input">
+                                        <input type="text" maxlength="255" placeholder="Таймаут соединения" name="timeout"  value="{{ smtp is defined ? smtp.timeout : old.timeout }}" id="timeout">
+                                    </label>
+
+                                    {% if errors.timeout %}
+                                        <span class="text-danger">{{ errors.timeout | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                                <section>
+                                    <label class="label">Подключаться через безопасное соединение</label>
+                                    <div class="inline-group">
+                                        <label class="radio">
+                                            <input type="radio" value="no" name="secure" {{ smtp.secure == 'no' or old.secure == 'no' or smtp is not defined ? 'checked="checked"' : '' }}>
+                                            <i></i>нет</label>
+                                        <label class="radio">
+                                            <input type="radio" value="ssl" name="secure" {{ smtp.secure == 'ssl' or old.secure == 'ssl' ? 'checked="checked"' : '' }}>
+                                            <i></i>ssl</label>
+                                        <label class="radio">
+                                            <input type="radio" value="tls" name="secure" {{ smtp.secure == 'tls' or old.secure == 'tls' ? 'checked="checked"' : '' }}>
+                                            <i></i>tls</label>
+                                    </div>
+                                </section>
+
+                                <section>
+                                    <label class="label">Метод аутентификации</label>
+                                    <div class="inline-group">
+                                        <label class="radio">
+                                            <input type="radio" value="login" name="authentication" {{ smtp.authentication == 'login' or old.authentication == 'login' or smtp is not defined ? 'checked="checked"' : '' }}>
+                                            <i></i>LOGIN (Низкая секретность)</label>
+                                        <label class="radio">
+                                            <input type="radio" value="plain" name="authentication" {{ smtp.authentication == 'plain' or old.authentication == 'plain' ? 'checked="checked"' : '' }}>
+                                            <i></i>PLAIN (Cредняя секретность)</label>
+                                        <label class="radio">
+                                            <input type="radio" value="crammd5" name="authentication" {{ smtp.authentication == 'crammd5' or old.authentication == 'crammd5' ? 'checked="checked"' : '' }}>
+                                            <i></i>CRAM-MD5 (Высокая секретность</label>
+                                    </div>
+                                </section>
+
+
+                            </fieldset>
+
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    Отправить
+                                </button>
+                                <a class="btn btn-default" href="{{ path_for('admin.smtp.index') }}">
+                                    Назад
+                                </a>
+                            </footer>
+
+                        </form>
+
+                    </div>
+                    <!-- end widget content -->
+
+                </div>
+                <!-- end widget div -->
+
+            </div>
+            <!-- end widget -->
+
+        </article>
+        <!-- END COL -->
+
+    </div>
+
+    <!-- END ROW -->
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

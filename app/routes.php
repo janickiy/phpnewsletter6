@@ -68,12 +68,13 @@ $app->group('', function () use ($container) {
     });
 
     $this->group('/smtp', function () use ($container) {
-        $this->get('/', 'CategoryController:index')->setName('admin.smtp.index');
-        $this->get('/create', 'CategoryController:create')->setName('admin.smtp.create');
-        $this->post('/store', 'CategoryController:store')->setName('admin.smtp.store');
-        $this->get('/edit/{id:[0-9]+}', 'CategoryController:edit')->setName('admin.smtp.edit');
-        $this->map(['GET', 'POST'], '/update', 'CategoryController:update')->setName('admin.smtp.update');
-        $this->delete('/destroy/{id:[0-9]+}', 'CategoryController:destroy')->setName('admin.smtp.destroy');
+        $this->get('/', 'SmtpController:index')->setName('admin.smtp.index');
+        $this->get('/create', 'SmtpController:create')->setName('admin.smtp.create');
+        $this->post('/store', 'SmtpController:store')->setName('admin.smtp.store');
+        $this->get('/edit/{id:[0-9]+}', 'SmtpController:edit')->setName('admin.smtp.edit');
+        $this->map(['GET', 'POST'], '/update', 'SmtpController:update')->setName('admin.smtp.update');
+        $this->delete('/destroy/{id:[0-9]+}', 'SmtpController:destroy')->setName('admin.smtp.destroy');
+        $this->post('/status', 'SmtpController:status')->setName('admin.smtp.status');
     });
 
     $this->group('/users', function () use ($container) {
@@ -102,6 +103,7 @@ $app->group('', function () use ($container) {
         $this->get('/subscribers', 'DataTableController:getSubscribers')->setName('admin.datatable.subscribers')->add(new PermissionMiddleware($container, 'moderator'));
         $this->get('/settings', 'DataTableController:getSettings')->setName('admin.datatable.settings');
         $this->get('/users', 'DataTableController:getUsers')->setName('admin.datatable.users');
+        $this->get('/smtp', 'DataTableController:getSmtp')->setName('admin.datatable.smtp');
     });
 
 })->add(new AuthMiddleware($container));

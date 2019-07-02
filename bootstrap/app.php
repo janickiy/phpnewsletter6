@@ -119,6 +119,10 @@ $container['CategoryController'] = function($container) {
     return new \App\Controllers\Dashboard\CategoryController($container);
 };
 
+$container['SmtpController'] = function($container) {
+    return new \App\Controllers\Dashboard\SmtpController($container);
+};
+
 $container['UsersController'] = function($container) {
     return new \App\Controllers\Dashboard\UsersController($container);
 };

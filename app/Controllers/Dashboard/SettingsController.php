@@ -41,7 +41,7 @@ class SettingsController extends Controller
         if (!$validation->isValid()) {
             $_SESSION['errors'] = $validation->getErrors();
 
-            return $response->withRedirect($this->router->pathFor('admin.category.create'));
+            return $response->withRedirect($this->router->pathFor('admin.settings.index'));
         }
 
         $array = $request->getParsedBody();
@@ -62,6 +62,9 @@ class SettingsController extends Controller
         }
 
         if (count($request->getParam('header_name'))) {
+
+            Customheaders::truncate();
+
             for ($i = 0; $i < count($request->getParam('header_name')); $i++) {
                 $name = $request->getParam('header_name');
                 $value = $request->getParam('header_value');
@@ -81,6 +84,8 @@ class SettingsController extends Controller
                     }
                 }
             }
+        } else {
+            Customheaders::truncate();
         }
 
         $this->flash->addMessage('success', 'Данные успешно обновлены');

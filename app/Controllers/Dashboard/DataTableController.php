@@ -88,6 +88,7 @@ class DataTableController extends Controller
         $groupBy = 'c.id';
 
         $columns = [
+            ['db' => 'c.id', 'dt' => 'id', 'field' => 'id'],
             ['db' => 'c.name', 'dt' => 'name', 'field' => 'name'],
             ['db' => 'count(s.categoryId)', 'dt' => 'subcount', 'field' => 'subcount', 'as' => 'subcount'],
             ['db' => 'c.id', 'dt' => 'action', 'formatter' => function ($d, $row) {
@@ -116,6 +117,7 @@ class DataTableController extends Controller
             ['db' => 'id', 'dt' => 'checkbox', 'formatter' => function ($d, $row) {
                 return '<input type="checkbox" title="Отметить/Снять отметку" value="' . $d . '" name="activate[]">';
             }, 'field' => 'checkbox', 'as' => 'checkbox'],
+            ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
             ['db' => 'name', 'dt' => 'name', 'field' => 'name'],
             ['db' => 'active', 'dt' => 'subStatus', 'formatter' => function ($d, $row) {
                 return $d;
@@ -189,6 +191,46 @@ class DataTableController extends Controller
             },
                 'field' => 'action', 'as' => 'action'
             ],
+        ];
+
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+    }
+
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
+    public function getSmtp($request, $response)
+    {
+        $table = 'smtp';
+        $primaryKey = 'id';
+
+        $columns = [
+            ['db' => 'id', 'dt' => 'checkbox', 'formatter' => function ($d, $row) {
+                return '<input type="checkbox" title="Отметить/Снять отметку" value="' . $d . '" name="activate[]">';
+            }, 'field' => 'checkbox', 'as' => 'checkbox'],
+            ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
+            ['db' => 'host', 'dt' => 'host', 'field' => 'host'],
+            ['db' => 'username', 'dt' => 'username', 'field' => 'username'],
+            ['db' => 'port', 'dt' => 'port', 'field' => 'port'],
+            ['db' => 'authentication', 'dt' => 'authentication', 'field' => 'authentication'],
+            ['db' => 'secure', 'dt' => 'secure', 'field' => 'secure'],
+            ['db' => 'timeout', 'dt' => 'timeout', 'field' => 'timeout'],
+            ['db' => 'active', 'dt' => 'activeStatus', 'formatter' => function ($d, $row) {
+                return $d;
+            }, 'field' => 'activeStatus'],
+            ['db' => 'active', 'dt' => 'active', 'formatter' => function ($d, $row) {
+                return $d == 1 ? 'да' : 'нет';
+            },  'field' => 'active'],
+            ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
+                $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.smtp.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
+                $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
+                return $editBtn . $deleteBtn;
+            },
+                'field' => 'action', 'as' => 'action'
+            ],
+            ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at']
         ];
 
         return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));

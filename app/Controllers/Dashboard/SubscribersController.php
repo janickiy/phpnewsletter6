@@ -127,7 +127,7 @@ class SubscribersController extends Controller
 
         $this->flash->addMessage('success', 'Данные успешно обновлены');
 
-        return $response->withRedirect($this->router->pathFor('admin.category'));
+        return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
     }
 
     /**
@@ -302,7 +302,6 @@ class SubscribersController extends Controller
 
         return $this->view->render($response, 'dashboard/subscribers/export.twig', compact('title','category'));
     }
-
 
     /**
      * @param $request
@@ -536,7 +535,6 @@ class SubscribersController extends Controller
         $this->flash->addMessage('success', 'Действия были выполнены');
 
         return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
-
     }
 
     /**
