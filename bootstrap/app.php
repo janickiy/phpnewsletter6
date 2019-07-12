@@ -1,6 +1,8 @@
 <?php
 
 use Respect\Validation\Validator as v;
+use Symfony\Component\Translation\Loader\PhpFileLoader;
+use Symfony\Component\Translation\Translator;
 
 session_start();
 
@@ -44,11 +46,8 @@ $container['mailer'] = function($container) {
 	return new Nette\Mail\SmtpMailer($container['settings']['mailer']);
 };
 
-$container['url'] = function($container) {
-    return 12;
-};
-
 $container['view'] = function ($container) {
+
 	$view = new \Slim\Views\Twig(__DIR__ . '/../resources/views/', [
 		'cache' => false,
 	]);
@@ -62,7 +61,6 @@ $container['view'] = function ($container) {
 		'check' => $container->auth->check(),
 		'user' => $container->auth->user()
 	]);
-
 
     $view->getEnvironment()->addGlobal('_session', $_SESSION);
     $view->getEnvironment()->addGlobal('_post', $_POST);
@@ -81,6 +79,16 @@ $container['view'] = function ($container) {
 
     $view->getEnvironment()->addFunction($getSetting);
 
+    $translator = new Translator("en");
+    $translator->setFallbackLocales(['en']);
+    $translator->addLoader('php', new PhpFileLoader());
+    $translator->addResource('php', __DIR__ . '/../resources/lang/en.php', 'en');
+
+    $getTrans = new \Twig\TwigFunction('trans', function ($name) use ($translator) {
+        return $translator->trans($name);
+    });
+
+    $view->getEnvironment()->addFunction($getTrans);
 
 	return $view;
 };
@@ -148,12 +156,9 @@ $container['csrf'] = function($container) {
 	return new \Slim\Csrf\Guard;
 };
 
-
 $app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
 $app->add(new \App\Middleware\OldInputMiddleware($container));
 $app->add(new \App\Middleware\CsrfViewMiddleware($container));
-
-
 
 $app->add($container->csrf);
 

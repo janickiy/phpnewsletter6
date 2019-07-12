@@ -4,14 +4,14 @@
 
     <div class="row">
         <div class="col-lg-12"><p class="text-center">
-                <a class="btn btn-outline btn-default btn-lg" title="Импорт подписчиков" href="{{ path_for('admin.subscribers.import') }}">
-                    <span class="fa fa-download fa-2x"></span> Импорт
+                <a class="btn btn-outline btn-default btn-lg" title="{{ trans('str.import_subscribers') }}" href="{{ path_for('admin.subscribers.import') }}">
+                    <span class="fa fa-download fa-2x"></span> {{ trans('str.import') }}
                 </a>
-                <a class="btn btn-outline btn-default btn-lg" title="Экспорт подписчиков" href="{{ path_for('admin.subscribers.export') }}">
-                    <span class="fa fa-upload fa-2x"></span> Экспорт
+                <a class="btn btn-outline btn-default btn-lg" title="{{ trans('str.export_subscribers') }}" href="{{ path_for('admin.subscribers.export') }}">
+                    <span class="fa fa-upload fa-2x"></span> {{ trans('str.export') }}
                 </a>
-                <a class="btn btn-outline btn-danger btn-lg" title="Удалить всех подписчиков" href="{{ path_for('admin.subscribers.remove_all') }}" onclick="return confirm('Вы действительно хотите удалить всех подписчиков?');">
-                    <span class="fa fa-trash-o fa-2x"></span> Удалить всех
+                <a class="btn btn-outline btn-danger btn-lg" title="Удалить всех подписчиков" href="{{ path_for('admin.subscribers.remove_all') }}" onclick="return confirm('{{ trans('str.want_to_delete_all_subscribers') }}');">
+                    <span class="fa fa-trash-o fa-2x"></span> {{ trans('str.delete_all') }}
                 </a>
             </p>
         </div>

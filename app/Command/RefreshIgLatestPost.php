@@ -5,6 +5,7 @@ namespace App\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
 
 class RefreshIgLatestPost extends Command
 {
@@ -12,10 +13,13 @@ class RefreshIgLatestPost extends Command
     {
         $this
             // the name of the command (the part after "bin/console")
-            ->setName('app:refresh-ig-latest-post')
+            ->setName('app:refresh-ig-latest-post6')
 
             // the short description shown while running "php bin/console list"
             ->setDescription('Refresh latest post on Algolia dataset.')
+
+            ->addArgument('name', InputArgument::OPTIONAL, 'Who do you want to greet?')
+
 
             // the full command description shown when running the command with
             // the "--help" option
@@ -25,9 +29,9 @@ class RefreshIgLatestPost extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
+        $text = 'Hi '.$input->getArgument('name');
         // Example code
-        $output->writeLn("Fetched records from Algolia");
+        $output->writeLn("Fetched records from Algolia 3" . $text);
 
     }
 }
