@@ -45,7 +45,7 @@ return [
         'admin' => 'Админ',
         'moderator' => 'Модератор',
         'edit' => 'Редактор',
-        'footer_copyright' => '<a href="http:://janicky.com">PHP Newsletter</a>, Яницкий Александр</span>',
+        'author' => 'Яницкий Александр',
         'roll_up' => 'Свернуть',
         'expand_full_screen' => 'Развернуть на весь экран',
         'signout' => 'Выйти',

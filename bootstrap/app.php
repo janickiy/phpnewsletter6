@@ -79,6 +79,7 @@ $container['view'] = function ($container) {
 
     $view->getEnvironment()->addFunction($getSetting);
 
+
     $translator = new Translator("en");
     $translator->setFallbackLocales(['en']);
     $translator->addLoader('php', new PhpFileLoader());
