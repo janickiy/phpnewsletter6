@@ -2,9 +2,6 @@
 
 {% block content %}
 
-
-
-
     <div class="row-fluid">
 
         <div class="col">
@@ -18,7 +15,7 @@
                     <div class="box-header">
                         <div class="row">
                             <div class="col-md-12">
-                                <a href="{{ path_for('admin.category.create') }}" class="btn btn-info btn-sm pull-left"><span class="fa fa-plus"> &nbsp;</span>Добавить категорию</a>
+                                <a href="{{ path_for('admin.category.create') }}" class="btn btn-info btn-sm pull-left"><span class="fa fa-plus"> &nbsp;</span>{{ trans('str.add_category') }}</a>
                             </div>
                         </div>
                     </div>
@@ -27,9 +24,9 @@
                         <table id="itemList" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>
                             <tr>
-                                <th>Имя</th>
-                                <th>Количество подписчиков</th>
-                                <th width="20px">Действие</th>
+                                <th>{{ trans('str.name') }}</th>
+                                <th>{{ trans('str.subscribers_number') }}</th>
+                                <th width="20px">{{ trans('str.action') }}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -120,12 +117,12 @@
                 var rowid = $(this).attr('id');
                 var csrfData = {"csrf_name" : "{{ csrf.attribute.name | raw }}","csrf_value" : "{{ csrf.attribute.value | raw }}"};
                 swal({
-                        title: "Вы уверены?",
-                        text: "Вы не сможете восстановить эту информацию!",
+                        title: "{{ trans('msg.are_you_sure') }}",
+                        text: "{{ trans('msg.will_not_be_able_to_ecover_information') }}",
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Да, удалить!",
+                        confirmButtonText: "{{ trans('msg.yes_remove') }}",
                         closeOnConfirm: false
                     },
                     function (isConfirm) {
@@ -143,10 +140,10 @@
                             },
                             success: function () {
                                 $("#rowid_" + rowid).remove();
-                                swal("Сделано!", "Данные успешно удалены!", "success");
+                                swal("{{ trans('msg.done') }}", "{{ trans('msg.data_successfully_deleted') }}", "success");
                             },
                             error: function (xhr, ajaxOptions, thrownError) {
-                                swal("Ошибка при удалении!", "Попробуйте еще раз", "error");
+                                swal("{{ trans('msg.error_eleting') }}", "{{ trans('msg.try_again') }}", "error");
                             }
                         });
                     });

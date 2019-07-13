@@ -45,15 +45,15 @@
                             {% if user %}<input type="hidden" name="id" value="{{ user.id }}">{% endif %}
 
                             <header>
-                                *-обязательные поля
+                                *-{{ trans('form.required_fields') }}
                             </header>
 
                             <fieldset>
 
                                 <section>
-                                    <label for="name" class="label">Имя*</label>
+                                    <label for="name" class="label">{{ trans('form.name') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ user is defined ? user.name : old.name }}" id="name">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('form.name') }}" name="name" value="{{ user is defined ? user.name : old.name }}" id="name">
                                     </label>
 
                                     {% if errors.name %}
@@ -63,9 +63,9 @@
                                 </section>
 
                                 <section>
-                                    <label for="login" class="label">Логин*</label>
+                                    <label for="login" class="label">{{ trans('form.login') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="Логин" name="login" value="{{ user is defined ? user.login : old.login }}" id="login">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('form.login') }}" name="login" value="{{ user is defined ? user.login : old.login }}" id="login">
                                     </label>
 
                                     {% if errors.login %}
@@ -75,9 +75,9 @@
                                 </section>
 
                                 <section>
-                                    <label for="description" class="label">Описание</label>
+                                    <label for="description" class="label">{{ trans('form.description') }}</label>
                                     <label class="textarea textarea-resizable">
-                                        <textarea rows="3" class="custom-scroll" placeholder="Описание" name="description"  id="description">{{ user is defined ? user.description: old.description}}</textarea>
+                                        <textarea rows="3" class="custom-scroll" placeholder="{{ trans('form.description') }}" name="description"  id="description">{{ user is defined ? user.description: old.description}}</textarea>
                                     </label>
                                     {% if errors.description %}
                                         <span class="text-danger">{{ errors.description | first }}</span>
@@ -86,13 +86,13 @@
                                 </section>
 
                                 <section>
-                                    <label for="role" class="label">Роль*</label>
+                                    <label for="role" class="label">{{ trans('form.role') }}*</label>
                                     <label class="select">
                                         <select id="role" name="role">
-                                            <option>Выберите</option>
-                                            <option value="admin" {{ user.role == 'admin' or old.role == 'admin' ? 'selected="selected"' : '' }}>Админ</option>
-                                            <option value="moderator" {{ user.role == 'moderator' or old.role == 'moderator' ? 'selected="selected"' : '' }}>Модератор</option>
-                                            <option value="editor" {{ user.role == 'editor' or old.role == 'editor' ? 'selected="selected"' : '' }}>Редактор</option>
+                                            <option>{{ trans('form.select') }}</option>
+                                            <option value="admin" {{ user.role == 'admin' or old.role == 'admin' ? 'selected="selected"' : '' }}>{{ trans('str.admin') }}</option>
+                                            <option value="moderator" {{ user.role == 'moderator' or old.role == 'moderator' ? 'selected="selected"' : '' }}>{{ trans('str.moderator') }}</option>
+                                            <option value="editor" {{ user.role == 'editor' or old.role == 'editor' ? 'selected="selected"' : '' }}>{{ trans('str.edit') }}</option>
                                         </select> <i></i>
                                     </label>
                                     {% if errors.role %}
@@ -101,9 +101,9 @@
                                 </section>
 
                                 <section>
-                                    <label for="password" class="label">Пароль</label>
+                                    <label for="password" class="label">{{ trans('form.password') }}</label>
                                     <label class="input">
-                                        <input type="password" maxlength="255" placeholder="пароль" name="password" value="{{ user is defined ? user.password : old.password }}" id="password">
+                                        <input type="password" maxlength="255" placeholder="{{ trans('form.password') }}" name="password" value="{{ user is defined ? user.password : old.password }}" id="password">
                                     </label>
 
                                     {% if errors.password %}
@@ -113,9 +113,9 @@
                                 </section>
 
                                 <section>
-                                    <label for="password_again" class="label">Павтор пароля</label>
+                                    <label for="password_again" class="label">{{ trans('form.password_again') }}</label>
                                     <label class="input">
-                                        <input type="password" maxlength="255" placeholder="павтор пароля" name="password_again" value="{{ user is defined ? template.password_again : old.password_again }}" id="password_again">
+                                        <input type="password" maxlength="255" placeholder="{{ trans('form.password_again') }}" name="password_again" value="{{ user is defined ? template.password_again : old.password_again }}" id="password_again">
                                     </label>
 
                                     {% if errors.password_again %}
@@ -128,10 +128,10 @@
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Отправить
+                                    {{ trans('form.send') }}
                                 </button>
                                 <a class="btn btn-default" href="{{ path_for('admin.users.index') }}">
-                                    Назад
+                                    {{ trans('form.back') }}
                                 </a>
                             </footer>
 

@@ -16,11 +16,11 @@
                         <fieldset>
 
                             <section>
-                                <label for="export_type" class="label">Формат</label>
+                                <label for="export_type" class="label">{{ trans('form.format') }}</label>
                                 <div class="inline-group">
                                     <label class="radio">
                                         <input type="radio" name="export_type" value="text" checked="checked">
-                                        <i></i>Текст
+                                        <i></i>{{ trans('form.text') }}
                                     </label>
                                     <label class="radio">
                                         <input type="radio" name="export_type" value="excel">
@@ -30,11 +30,11 @@
                             </section>
 
                             <section>
-                                <label for="compress" class="label">Упаковать</label>
+                                <label for="compress" class="label">{{ trans('form.compress') }}</label>
                                 <div class="inline-group">
                                     <label class="radio">
                                         <input type="radio" name="compress" value="none" checked="checked">
-                                        <i></i>нет
+                                        <i></i>{{ trans('str.no') }}
                                     </label>
                                     <label class="radio">
                                         <input type="radio" name="compress" value="zip">
@@ -44,9 +44,9 @@
                             </section>
 
                             <section>
-                                <label for="categoryId[]" class="label">Категория подписчиков</label>
+                                <label for="categoryId[]" class="label">{{ trans('form.subscribers_category') }}</label>
                                 <label class="input">
-                                    <select name="categoryId[]" multiple="multiple" class="form-control custom-scroll" title="Выберите категорию">
+                                    <select name="categoryId[]" multiple="multiple" class="form-control custom-scroll" title="{{ trans('form.select_category') }}">
                                         {% for o in category %}
                                             <option value="{{ o.id }}">{{ o.name }}</option>
                                         {% endfor %}
@@ -59,10 +59,10 @@
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Отправить
+                                    {{ trans('form.send') }}
                                 </button>
                                 <button type="button" class="btn btn-default" onclick="window.history.back();">
-                                    Назад
+                                    {{ trans('form.back') }}
                                 </button>
                             </footer>
 
@@ -71,8 +71,6 @@
                         {{ csrf.field | raw }}
 
                     </form>
-
-
 
                 </div>
             </div>

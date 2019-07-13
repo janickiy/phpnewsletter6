@@ -14,15 +14,15 @@
                     <form enctype="multipart/form-data" action="{{ path_for('admin.subscribers.import_subscribers') }}" method="POST" class="smart-form">
 
                         <header>
-                            *-обязательные поля
+                            *-{{ trans('form.required_fields') }}
                         </header>
 
                         <fieldset>
 
                             <section>
-                                <label for="import" class="label">Присоединить файлы*</label>
+                                <label for="import" class="label">{{ trans('form.attach_files') }}*</label>
                                 <div class="input input-file">
-                                    <span class="button"><input type="file" name="import" id="import" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
+                                    <span class="button"><input type="file" name="import" id="import" onchange="this.parentNode.nextSibling.value = this.value">{{ trans('form.browse') }}</span><input type="text" placeholder="{{ trans('form.select_files') }}" readonly="">
                                 </div>
 
                                 {% if errors.import %}
@@ -30,16 +30,16 @@
                                 {% endif %}
 
                                 <div class="note">
-                                    Максимальный размер: <strong>{{ maxUploadFileSize }}</strong>
+                                    {{ trans('form.maximum_size') }}: <strong>{{ maxUploadFileSize }}</strong>
                                 </div>
 
                             </section>
 
                             <section>
-                                <label for="charsetId" class="label">Кодировка</label>
+                                <label for="charsetId" class="label">{{ trans('form.charset') }}</label>
                                 <label class="select">
                                     <select name="charset" id="charset">
-                                        <option value="">Выберите</option>
+                                        <option value="">{{ trans('form.select') }}</option>
                                         {% for c in charsets %}
                                             <option value="{{ c.charset }}">{{ c.charset }}</option>
                                         {% endfor %}
@@ -51,9 +51,9 @@
                             </section>
 
                             <section>
-                                <label for="categoryId[]" class="label">Категория подписчиков</label>
+                                <label for="categoryId[]" class="label">{{ trans('form.subscribers_category') }}</label>
                                 <label class="input">
-                                    <select name="categoryId[]" multiple="multiple" class="form-control custom-scroll" title="Выберите категорию">
+                                    <select name="categoryId[]" multiple="multiple" class="form-control custom-scroll" title="{{ trans('form.select_category') }}">
                                         {% for o in category %}
                                             <option value="{{ o.id }}">{{ o.name }}</option>
                                         {% endfor %}
@@ -66,10 +66,10 @@
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Отправить
+                                    {{ trans('form.send') }}
                                 </button>
                                 <a class="btn btn-default" href="{{ path_for('admin.subscribers.index') }}">
-                                    Назад
+                                    {{ trans('form.back') }}
                                 </a>
                             </footer>
 

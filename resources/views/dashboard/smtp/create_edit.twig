@@ -46,15 +46,15 @@
                             {% if smtp %}<input type="hidden" name="id" value="{{ smtp.id }}">{% endif %}
 
                             <header>
-                                *-обязательные поля
+                                *-{{ trans('form.required_fields') }}
                             </header>
 
                             <fieldset>
 
                                 <section>
-                                    <label for="host" class="label">SMTP сервер*</label>
+                                    <label for="host" class="label">{{ trans('form.smtp_server') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="SMTP сервер" name="host"  value="{{ smtp is defined ? smtp.host : old.host }}" id="host">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('form.smtp_server') }}" name="host"  value="{{ smtp is defined ? smtp.host : old.host }}" id="host">
                                     </label>
 
                                     {% if errors.host %}
@@ -64,9 +64,9 @@
                                 </section>
 
                                 <section>
-                                    <label for="username" class="label">Логин*</label>
+                                    <label for="username" class="label">{{ trans('form.login') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="Логин" name="username"  value="{{ smtp is defined ? smtp.username : old.username }}" id="username">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('form.login') }}" name="username"  value="{{ smtp is defined ? smtp.username : old.username }}" id="username">
                                     </label>
 
                                     {% if errors.username %}
@@ -76,9 +76,9 @@
                                 </section>
 
                                 <section>
-                                    <label for="password" class="label">Пароль*</label>
+                                    <label for="password" class="label">{{ trans('form.password') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="Пароль" name="password"  value="{{ smtp is defined ? smtp.password : old.password }}" id="password">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('form.password') }}" name="password"  value="{{ smtp is defined ? smtp.password : old.password }}" id="password">
                                     </label>
 
                                     {% if errors.password %}
@@ -88,9 +88,9 @@
                                 </section>
 
                                 <section>
-                                    <label for="port" class="label">Порт smtp сервера*</label>
+                                    <label for="port" class="label">{{ trans('form.port') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="Порт smtp сервера" name="port"  value="{{ smtp is defined ? smtp.port : old.port }}" id="port">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('trans.port') }}а" name="port"  value="{{ smtp is defined ? smtp.port : old.port }}" id="port">
                                     </label>
 
                                     {% if errors.port %}
@@ -100,9 +100,9 @@
                                 </section>
 
                                 <section>
-                                    <label for="timeout" class="label">Таймаут соединения*</label>
+                                    <label for="timeout" class="label">{{ trans('form.connection_timeout') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="Таймаут соединения" name="timeout"  value="{{ smtp is defined ? smtp.timeout : old.timeout }}" id="timeout">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('form.connection_timeout') }}" name="timeout"  value="{{ smtp is defined ? smtp.timeout : old.timeout }}" id="timeout">
                                     </label>
 
                                     {% if errors.timeout %}
@@ -112,11 +112,11 @@
                                 </section>
 
                                 <section>
-                                    <label class="label">Подключаться через безопасное соединение</label>
+                                    <label class="label">{{ trans('form.secure_connection') }}</label>
                                     <div class="inline-group">
                                         <label class="radio">
                                             <input type="radio" value="no" name="secure" {{ smtp.secure == 'no' or old.secure == 'no' or smtp is not defined ? 'checked="checked"' : '' }}>
-                                            <i></i>нет</label>
+                                            <i></i>{{ trans('str.no') }}</label>
                                         <label class="radio">
                                             <input type="radio" value="ssl" name="secure" {{ smtp.secure == 'ssl' or old.secure == 'ssl' ? 'checked="checked"' : '' }}>
                                             <i></i>ssl</label>
@@ -127,29 +127,28 @@
                                 </section>
 
                                 <section>
-                                    <label class="label">Метод аутентификации</label>
+                                    <label class="label">{{ trans('form.authentication_method') }}</label>
                                     <div class="inline-group">
                                         <label class="radio">
                                             <input type="radio" value="login" name="authentication" {{ smtp.authentication == 'login' or old.authentication == 'login' or smtp is not defined ? 'checked="checked"' : '' }}>
-                                            <i></i>LOGIN (Низкая секретность)</label>
+                                            <i></i>LOGIN ({{ trans('form.low_secrecy') }})</label>
                                         <label class="radio">
                                             <input type="radio" value="plain" name="authentication" {{ smtp.authentication == 'plain' or old.authentication == 'plain' ? 'checked="checked"' : '' }}>
-                                            <i></i>PLAIN (Cредняя секретность)</label>
+                                            <i></i>PLAIN ({{ trans('form.medium_secrecy') }})</label>
                                         <label class="radio">
                                             <input type="radio" value="crammd5" name="authentication" {{ smtp.authentication == 'crammd5' or old.authentication == 'crammd5' ? 'checked="checked"' : '' }}>
-                                            <i></i>CRAM-MD5 (Высокая секретность</label>
+                                            <i></i>CRAM-MD5 ({{ trans('form.high_secrecy') }})</label>
                                     </div>
                                 </section>
-
 
                             </fieldset>
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Отправить
+                                    {{ trans('form.send') }}
                                 </button>
                                 <a class="btn btn-default" href="{{ path_for('admin.smtp.index') }}">
-                                    Назад
+                                    {{ trans('form.back') }}
                                 </a>
                             </footer>
 

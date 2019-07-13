@@ -43,15 +43,15 @@
                             {% if subscriber %}<input type="hidden" name="id" value="{{ subscriber.id }}">{% endif %}
 
                             <header>
-                                *-обязательные поля
+                                *-{{ trans('form.required_fields') }}
                             </header>
 
                             <fieldset>
 
                                 <section>
-                                    <label for="name" class="label">Имя</label>
+                                    <label for="name" class="label">{{ trans('form.name') }}</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="Имя" name="name" value="{{ subscriber is defined ? subscriber.name : old.name }}" id="name">
+                                        <input type="text" maxlength="255" placeholder="trans('form.name')" name="name" value="{{ subscriber is defined ? subscriber.name : old.name }}" id="name">
                                     </label>
 
                                     {% if errors.name %}
@@ -73,9 +73,9 @@
                                 </section>
 
                                 <section>
-                                    <label for="categoryId[]" class="label">Категория подписчиков</label>
+                                    <label for="categoryId[]" class="label">{{ trans('form.subscribers_category') }}в</label>
                                     <label class="input">
-                                        <select name="categoryId[]" multiple="multiple" id="categoryId" class="form-control custom-scroll" title="Выберите категорию">
+                                        <select name="categoryId[]" multiple="multiple" id="categoryId" class="form-control custom-scroll" title="{{ trans('form.select_category') }}">
                                             {% for o in category %}
                                                 <option value="{{ o.id }}" {% if o.id in subscriptions %}selected="selected"{% endif %}>{{ o.name }}</option>
                                             {% endfor %}
@@ -90,17 +90,16 @@
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Отправить
+                                    {{ trans('form.send') }}
                                 </button>
                                 <a class="btn btn-default" href="{{ path_for('admin.subscribers.index') }}">
-                                    Назад
+                                    {{ trans('form.back') }}
                                 </a>
                             </footer>
 
                             {{ csrf.field | raw }}
 
                         </form>
-
 
                     </div>
                     <!-- end widget content -->
@@ -117,8 +116,6 @@
     </div>
 
     <!-- END ROW -->
-
-
 
 {% endblock %}
 

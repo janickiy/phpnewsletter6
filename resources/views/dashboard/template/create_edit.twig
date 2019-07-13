@@ -45,15 +45,15 @@
                             {% if template %}<input type="hidden" name="id" value="{{ template.id }}">{% endif %}
 
                             <header>
-                                *-обязательные поля
+                                *-{{ trans('form.required_fields') }}
                             </header>
 
                             <fieldset>
 
                                 <section>
-                                    <label for="name" class="label">Название*</label>
+                                    <label for="name" class="label">{{ trans('form.name') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="Название" name="name" value="{{ template is defined ? template.name  : old.name }}" id="name">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('form.name') }}" name="name" value="{{ template is defined ? template.name  : old.name }}" id="name">
                                     </label>
 
                                     {% if errors.name %}
@@ -63,23 +63,23 @@
                                 </section>
 
                                 <section>
-                                    <label for="body" class="label">Шаблон*</label>
+                                    <label for="body" class="label">{{ trans('form.template') }}*</label>
                                     <label class="textarea textarea-resizable">
-                                        <textarea rows="3" class="custom-scroll" placeholder="Описание" name="body"  id="body">{{ template is defined ? template.body : old.body }}</textarea>
+                                        <textarea rows="3" class="custom-scroll" placeholder="{{ trans('form.template') }}" name="body"  id="body">{{ template is defined ? template.body : old.body }}</textarea>
                                     </label>
                                     {% if errors.body %}
                                         <span class="text-danger">{{ errors.body | first }}</span>
                                     {% endif %}
 
                                     <div class="note">
-                                        <strong>Персонализация:</strong> %NAME% - имя подписчика, %EMAIL% - E-mail адрес, %UNSUB% - ссылка для удаления рассылки, %SERVER_NAME% - адрес сайта, %REFERRAL:http://my_website.com/% - ссылка для статистика переходов по ссылкам
+                                        {{ trans('note.personalization') }}
                                     </div>
                                 </section>
 
                                 <section>
-                                    <label for="attachfile[]" class="label">Присоединить файлы</label>
+                                    <label for="attachfile[]" class="label">{{ trans('form.attach_files') }}</label>
                                     <div class="input input-file">
-                                        <span class="button"><input type="file" name="attachfile[]" multiple="true"  id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">Обзор</span><input type="text" placeholder="Выберите файлы" readonly="">
+                                        <span class="button"><input type="file" name="attachfile[]" multiple="true"  id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">{{ trans('form.browse') }}</span><input type="text" placeholder="{{ trans('form.select_files') }}" readonly="">
                                     </div>
 
                                     {% if errors.attachfile %}
@@ -89,10 +89,10 @@
                                 </section>
 
                                 <section>
-                                    <label for="categoryId" class="label">Категория подписчиков*</label>
+                                    <label for="categoryId" class="label">{{ trans('form.subscribers_category') }}*</label>
                                     <label class="select">
                                         <select id="category" name="categoryId">
-                                            <option>Выберите</option>
+                                            <option>{{ trans('form.select_category') }}</option>
                                             {% for o in category %}
                                                 <option value="{{ o.id }}" {{ templat.categoryId == o.id or old.categoryId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
                                             {% endfor %}
@@ -104,17 +104,20 @@
                                 </section>
 
                                 <section>
-                                    <label for="prior" class="label">Важность</label>
+                                    <label for="prior" class="label">{{ trans('form.prior') }}</label>
                                     <div class="inline-group">
                                         <label class="radio">
                                             <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or old.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
-                                            <i></i>Нормальнаяa</label>
+                                            <i></i>{{ trans('form.normal') }}
+                                        </label>
                                         <label class="radio">
                                             <input type="radio" name="prior" value="2" {{ template is defined and (templat.prior == 2 or old.prior == 2) ? 'checked="checked"' : '' }}>
-                                            <i></i>Низкая</label>
+                                            <i></i>{{ trans('form.low') }}
+                                        </label>
                                         <label class="radio">
                                             <input type="radio" name="prior" value="1" {{ template is defined and (templat.prior == 1 or old.prior == 1) ? 'checked="checked"' : '' }}>
-                                            <i></i>Высокая</label>
+                                            <i></i>{{ trans('form.high') }}
+                                        </label>
                                     </div>
                                     {% if errors.prior %}
                                         <span class="text-danger">{{ errors.prior | first }}</span>jjj
@@ -122,21 +125,18 @@
 
                                 </section>
 
-
-
                             </fieldset>
 
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Отправить
+                                    {{ trans('form.send') }}
                                 </button>
                                 <a class="btn btn-default" href="{{ path_for('admin.category.index') }}">
-                                    Назад
+                                    {{ trans('form.back') }}
                                 </a>
                             </footer>
 
                         </form>
-
 
                     </div>
                     <!-- end widget content -->
@@ -163,9 +163,7 @@
     <script>
 
         $(document).ready(function () {
-
             CKEDITOR.replace('body', {height: '380px', startupFocus: true});
-
         });
 
     </script>

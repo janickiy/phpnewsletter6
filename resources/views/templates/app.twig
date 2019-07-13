@@ -130,17 +130,19 @@ Use search to find needed section.
                 </a>
                 <ul class="dropdown-menu pull-right">
                     <li>
-                        <a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="toggleShortcut"><i class="fa fa-arrow-down"></i> <u>Свернуть</u></a>
+                        <a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="toggleShortcut"><i class="fa fa-arrow-down"></i> <u>{{ trans('str.roll_up') }}</u></a>
                     </li>
                     <li class="divider"></li>
                     <li>
                         <a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0"
-                           data-action="launchFullscreen"><i class="fa fa-arrows-alt"></i><u>Развренуть на весь экран</u></a>
+                           data-action="launchFullscreen"><i class="fa fa-arrows-alt"></i><u>{{ trans('str.expand_full_screen') }}</u>
+                        </a>
                     </li>
                     <li class="divider"></li>
                     <li>
                         <a href="{{ path_for('signout') }}" class="padding-10 padding-top-5 padding-bottom-5" data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i>
-                            <strong><u>Выйти</u></strong></a>
+                            <strong><u>{{ trans('str.signout') }}</u></strong>
+                        </a>
                     </li>
                 </ul>
             </li>
@@ -148,7 +150,7 @@ Use search to find needed section.
 
         <!-- logout button -->
         <div id="logout" class="btn-header transparent pull-right">
-            <span> <a href="{{ path_for('signout') }}" title="Выйти" data-action="userLogout"><i class="fa fa-sign-out"></i></a> </span>
+            <span> <a href="{{ path_for('signout') }}" title="{{ trans('str.signout') }}" data-action="userLogout"><i class="fa fa-sign-out"></i></a> </span>
         </div>
         <!-- end logout button -->
 
@@ -161,18 +163,18 @@ Use search to find needed section.
 
         <!-- fullscreen button -->
         <div id="fullscreen" class="btn-header transparent pull-right">
-            <span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen"><i class="fa fa-arrows-alt"></i></a> </span>
+            <span> <a href="javascript:void(0);" data-action="launchFullscreen" title="{{ trans('str.expand_full_screen') }}"><i class="fa fa-arrows-alt"></i></a> </span>
         </div>
         <!-- end fullscreen button -->
 
         <!-- multiple lang dropdown : find all flags in the flags page -->
         <ul class="header-dropdown-list hidden-xs">
             <li>
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="{{ base_url() }}/img/blank.gif" class="flag flag-gb" alt="United States">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="{{ base_url() }}/img/blank.gif" class="flag flag-gb" alt="English">
                     <span> English</span> <i class="fa fa-angle-down"></i> </a>
                 <ul class="dropdown-menu pull-right">
                     <li class="active">
-                        <a href="javascript:void(0);"><img src="{{ base_url() }}/img/blank.gif" class="flag flag-gb" alt="United States">English</a>
+                        <a href="javascript:void(0);"><img src="{{ base_url() }}/img/blank.gif" class="flag flag-gb" alt="English">English</a>
                     </li>
                     <li>
                         <a href="javascript:void(0);"><img src="{{ base_url() }}/img/blank.gif" class="flag flag-ru" alt="Russia">Русский язык</a>
@@ -213,20 +215,20 @@ Use search to find needed section.
         <ul>
 
             <li {{ is_current_path('admin.main') ? ' class="active"' : '' }}>
-                <a href="{{ path_for('admin.main') }}" title="Шаблоны">
-                    <i class="fa fa-fw fa-envelope"></i> <span class="menu-item-parent">Шаблоны</span>
+                <a href="{{ path_for('admin.main') }}" title="{{ trans('menu.templates') }}">
+                    <i class="fa fa-fw fa-envelope"></i> <span class="menu-item-parent">{{ trans('menu.templates') }}</span>
                 </a>
             </li>
 
             <li {{ is_current_path('admin.subscribers.index') ? ' class="active"' : '' }}>
-                <a href="{{ path_for('admin.subscribers.index') }}" title="Подписчики">
-                    <i class="fa fa-fw fa-users"></i> <span class="menu-item-parent">Подписчики</span>
+                <a href="{{ path_for('admin.subscribers.index') }}" title="{{ trans('menu.subscribers') }}">
+                    <i class="fa fa-fw fa-users"></i> <span class="menu-item-parent">{{ trans('menu.subscribers') }}</span>
                 </a>
             </li>
 
             <li {{ is_current_path('admin.category.index') ? ' class="active"' : '' }}>
-                <a href="{{ path_for('admin.category.index') }}" title="Категория подписчиков">
-                    <i class="fa fa-fw fa-th-list"></i> <span class="menu-item-parent">Категория подписчиков</span>
+                <a href="{{ path_for('admin.category.index') }}" title="{{ trans('menu.subscribers_category') }}">
+                    <i class="fa fa-fw fa-th-list"></i> <span class="menu-item-parent">{{ trans('menu.subscribers_category') }}</span>
                 </a>
             </li>
 
@@ -238,32 +240,32 @@ Use search to find needed section.
 
             <li class="">
                 <a href="#">
-                    <i class="fa fa-fw fa-area-chart"></i> <span class="menu-item-parent">Логи</span>
+                    <i class="fa fa-fw fa-area-chart"></i> <span class="menu-item-parent">{{ trans('menu.logs') }}</span>
                 </a>
 
                 <ul class="treeview-menu">
                     <li {{ is_current_path('admin.log.index') ? ' class="active"' : '' }}>
                         <a href="{{ path_for('admin.log.index') }}">
-                            <i class="fa fa-fw fa-list"></i> <span class="menu-item-parent">Журнал рассылки</span>
+                            <i class="fa fa-fw fa-list"></i> <span class="menu-item-parent">{{ trans('menu.mailing_log') }}</span>
                         </a>
                     </li>
                     <li {{ is_current_path('admin.log.index') ? ' class="active"' : '' }}>
                         <a href="{{ path_for('admin.log.index') }}">
-                            <i class="fa fa-fw fa-list"></i> <span class="menu-item-parent">Статистика переходов по ссылкам</span>
+                            <i class="fa fa-fw fa-list"></i> <span class="menu-item-parent">{{ trans('menu.referrens_log') }}</span>
                         </a>
                     </li>
                 </ul>
             </li>
 
             <li {{ is_current_path('admin.settings.index') ? ' class="active"' : '' }}>
-                <a href="{{ path_for('admin.settings.index') }}" title="Настройки">
-                    <i class="fa fa-fw fa-gear"></i> <span class="menu-item-parent">Настройки</span>
+                <a href="{{ path_for('admin.settings.index') }}" title="{{ trans('menu.settings') }}">
+                    <i class="fa fa-fw fa-gear"></i> <span class="menu-item-parent">{{ trans('menu.settings') }}</span>
                 </a>
             </li>
 
             <li {{ is_current_path('admin.users.index') ? ' class="active"' : '' }}>
-                <a href="{{ path_for('admin.users.index') }}" title="Пользователи">
-                    <i class="fa fa-fw fa-group"></i> <span class="menu-item-parent">Пользователи</span>
+                <a href="{{ path_for('admin.users.index') }}" title="{{ trans('menu.users') }}">
+                    <i class="fa fa-fw fa-group"></i> <span class="menu-item-parent">{{ trans('menu.users') }}</span>
                 </a>
             </li>
 
@@ -329,7 +331,7 @@ Use search to find needed section.
 <div class="page-footer">
     <div class="row">
         <div class="col-xs-12 col-sm-6">
-            <span class="txt-color-white">© 2006-{{ dateTime | date('Y') }} <a href="http:://janicky.com">PHP Newsletter</a>, Яницкий Александр</span>
+            <span class="txt-color-white">© 2006-{{ dateTime | date('Y') }} {{ trans('str.footer_copyright') }}
         </div>
 
     </div>
