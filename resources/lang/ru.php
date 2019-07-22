@@ -49,6 +49,8 @@ return [
         'roll_up' => 'Свернуть',
         'expand_full_screen' => 'Развернуть на весь экран',
         'signout' => 'Выйти',
+        'sender_name' => 'Имя отправителя',
+        'sender_email' => 'Email отправителя',
     ],
     'msg' => [
         'are_you_sure' => 'Are you sure?',
@@ -85,7 +87,7 @@ return [
         'high_secrecy' => 'высокая секретность',
         'remove' => 'Удалить',
         'add' => 'Добавить',
-        'show_admin_email_in_sent_emails' => 'Показывать e-mail администратора в отправленных письмах',
+        'show_admin_email_in_sent_emails' => 'Показывать e-mail отправителя в отправленных письмах',
         'admin_email_name' => 'Имя к E-mail администратора (from)',
         'return_path' => 'Обратный адрес (Return-path)',
         'list_owner' => 'Email адрес организатора рассылки (List-Owner)',

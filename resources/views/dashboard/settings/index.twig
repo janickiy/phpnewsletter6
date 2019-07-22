@@ -67,7 +67,7 @@
                                     <fieldset>
 
                                         <div class="form-group">
-                                            <label class="col-md-2 control-label">Email</label>
+                                            <label class="col-md-2 control-label">{{ trans('str.sender_email') }}</label>
                                             <div class="col-md-10">
                                                 <input class="form-control" placeholder="Email" name="EMAIL" value="{{ get_setting('EMAIL') }}" type="text">
 
@@ -95,7 +95,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-2 control-label">{{ trans('str.admin_email_name') }}</label>
+                                            <label class="col-md-2 control-label">{{ trans('str.sender_name') }}</label>
                                             <div class="col-md-10">
                                                 <input class="form-control" name="FROM"  value="{{ get_setting('FROM') }}"
                                                        placeholder="{{ trans('str.admin_email_name') }}" type="text">

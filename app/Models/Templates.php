@@ -21,11 +21,11 @@ class Templates extends Model
 	];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function category()
     {
-        return $this->belongsTo(Category::class, 'categoryId');
+        return $this->hasMany(TemplatesCategory::class, 'categoryId','templatesId');
     }
 
     /**
@@ -64,4 +64,6 @@ class Templates extends Model
                 return 'нормальная';
         }
     }
+
+
 }
