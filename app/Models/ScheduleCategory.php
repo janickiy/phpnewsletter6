@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TemplatesCategory extends Model
+class ScheduleCategory extends Model
 {
-    protected $table = 'templates_category';
+    protected $table = 'schedule_category';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'templateId',
+        'scheduleId',
         'categoryId'
     ];
 }

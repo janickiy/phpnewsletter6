@@ -89,21 +89,6 @@
                                 </section>
 
                                 <section>
-                                    <label for="categoryId" class="label">{{ trans('form.subscribers_category') }}*</label>
-                                    <label class="select">
-                                        <select id="category" name="categoryId">
-                                            <option>{{ trans('form.select_category') }}</option>
-                                            {% for o in category %}
-                                                <option value="{{ o.id }}" {{ templat.categoryId == o.id or old.categoryId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
-                                            {% endfor %}
-                                        </select> <i></i>
-                                    </label>
-                                    {% if errors.categoryId %}
-                                        <span class="text-danger">{{ errors.categoryId | first }}</span>
-                                    {% endif %}
-                                </section>
-
-                                <section>
                                     <label for="prior" class="label">{{ trans('form.prior') }}</label>
                                     <div class="inline-group">
                                         <label class="radio">

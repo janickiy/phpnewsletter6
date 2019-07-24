@@ -26,9 +26,7 @@ class TemplateController extends Controller
     {
         $title = "Добавление шаблона";
 
-        $category = Category::get();
-
-        return $this->view->render($response, 'dashboard/template/create_edit.twig', compact('category', 'title'));
+        return $this->view->render($response, 'dashboard/template/create_edit.twig', compact( 'title'));
     }
 
     /**
@@ -43,7 +41,6 @@ class TemplateController extends Controller
             'name' => ['rules' => v::stringType()->notEmpty()->length(1, 255), 'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
             'body' => ['rules' => v::stringType()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
             'prior' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
-            'categoryId' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Не указана категория подписчиков', 'numeric' => 'Категория подписчиков указана не верно']],
         ]);
 
         if (!$validation->isValid()) {
@@ -93,9 +90,7 @@ class TemplateController extends Controller
 
         if (!$template) return $this->view->render($response, 'errors/404.twig');
 
-        $category = Category::get();
-
-        return $this->view->render($response, 'dashboard/template/create_edit.twig', compact('category', 'template', 'title'));
+        return $this->view->render($response, 'dashboard/template/create_edit.twig', compact('template', 'title'));
     }
 
     /**
@@ -112,7 +107,6 @@ class TemplateController extends Controller
             'name' => ['rules' => v::stringType()->notEmpty()->length(1, 255), 'messages' => ['length' => 'Название должно быть от {{minValue}} до {{maxValue}} символов', 'notEmpty' => 'Это поле обязательно для заполнения']],
             'body' => ['rules' => v::stringType()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
             'prior' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
-            'categoryId' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Не указана категория подписчиков', 'numeric' => 'Категория подписчиков указана не верно']],
         ]);
 
         if (!$validation->isValid()) {
@@ -141,7 +135,6 @@ class TemplateController extends Controller
         $data['name'] = $request->getParam('name');
         $data['body'] = $request->getParam('body');
         $data['prior'] = $request->getParam('prior');
-        $data['categoryId'] = $request->getParam('categoryId');
 
         Templates::where('id', $request->getParam('id'))->update($data);
 

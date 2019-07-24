@@ -16,17 +16,8 @@ class Templates extends Model
 		'name',
         'body',
         'prior',
-        'pos',
-        'categoryId'
+        'pos'
 	];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function category()
-    {
-        return $this->hasMany(TemplatesCategory::class, 'categoryId','templatesId');
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
