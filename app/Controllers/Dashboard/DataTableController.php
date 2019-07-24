@@ -49,21 +49,19 @@ class DataTableController extends Controller
     {
         $table = 'templates';
         $primaryKey = 'id';
-        $joinQuery = "FROM templates t LEFT JOIN category c ON t.categoryId=c.id";
 
         $columns = [
-            ['db' => 't.id', 'dt' => 'id', 'field' => 'id'],
-            ['db' => 'c.name', 'dt' => 'category', 'field' => 'category', 'as' => 'category'],
-            ['db' => 't.name', 'dt' => 'name', 'formatter' => function ($d, $row) {
+            ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
+            ['db' => 'name', 'dt' => 'name', 'formatter' => function ($d, $row) {
                 $row['body'] = preg_replace('/(<.*?>)|(&.*?;)/', '', $row['body']);
                 return $d . '<br><br>' . StringHelpers::shortText($row['body'], 500);
             }, 'field' => 'name'],
-            ['db' => 't.body', 'dt' => 'body', 'field' => 'body'],
-            ['db' => 't.prior', 'dt' => 'prior', 'formatter' => function ($d, $row) {
+            ['db' => 'body', 'dt' => 'body', 'field' => 'body'],
+            ['db' => 'prior', 'dt' => 'prior', 'formatter' => function ($d, $row) {
                 return Templates::getPrior($d);
             }, 'field' => 'prior'],
-            ['db' => 't.created_at', 'dt' => 'created_at', 'field' => 'created_at'],
-            ['db' => 't.id', 'dt' => 'action', 'formatter' => function ($d, $row) {
+            ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at'],
+            ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
                 $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.template.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
                 $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
                 return $editBtn . $deleteBtn;
@@ -72,7 +70,7 @@ class DataTableController extends Controller
             ],
         ];
 
-        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, $joinQuery));
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
     }
 
     /**

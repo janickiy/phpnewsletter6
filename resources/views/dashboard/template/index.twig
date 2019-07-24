@@ -26,7 +26,6 @@
                             <tr>
                                 <th width="25px">ID</th>
                                 <th>{{ trans('str.template') }}</th>
-                                <th>{{ trans('str.category') }}</th>
                                 <th>{{ trans('str.importance') }}</th>
                                 <th>{{ trans('str.date') }}</th>
                                 <th width="20px">{{ trans('str.action') }}</th>
@@ -110,7 +109,6 @@
                 columns: [
                     {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
-                    {data: 'category', name: 'category'},
                     {data: 'prior', name: 'prior', searchable: false},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
