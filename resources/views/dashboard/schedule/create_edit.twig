@@ -1,0 +1,142 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    <!-- START ROW -->
+    <div class="row">
+
+        <!-- NEW COL START -->
+        <article class="col-sm-12 col-md-12 col-lg-12">
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false"
+                 data-widget-custombutton="false">
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
+
+                <!-- widget div-->
+                <div>
+
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+
+                    </div>
+                    <!-- end widget edit box -->
+
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+
+                        <form action="{{ category is defined ? path_for('admin.schedule.update') : path_for('admin.schedule.store') }}"  method="{{ category is defined ? 'PUT' : 'POST' }}" class="smart-form">
+
+                            <input type="hidden" name="_METHOD" value="PUT"/>
+
+                            {{ csrf.field | raw }}
+
+                            {% if category %}<input type="hidden" name="id" value="{{ category.id }}">{% endif %}
+
+                            <header>
+                                *-{{ trans('form.required_fields') }}
+                            </header>
+
+                            <fieldset>
+
+                                <section>
+                                    <label for="templateId[]" class="label">{{ trans('form.template') }}*</label>
+                                    <label class="input">
+                                        <select name="templateId" class="form-control custom-scroll" title="{{ trans('form.select') }}">
+                                            <option>{{ trans('form.select') }}</option>
+                                            {% for o in templates %}
+                                                <option value="{{ o.id }}">{{ o.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                    {% if errors.categoryId %}
+                                        <span class="text-danger">{{ errors.templateId | first }}</span>
+                                    {% endif %}
+                                </section>
+
+                                <section>
+                                    <label for="name" class="label">{{ trans('form.date_and_time') }}*</label>
+                                    <label class="input">
+                                        <input type="text" id="datepicker" placeholder="DD.MM.YYYY HH:MM" name="name"  value="{{ category is defined ? category.name : old.name }}">
+                                    </label>
+
+                                    {% if errors.name %}
+                                        <span class="text-danger">{{ errors.name | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                                <section>
+                                    <label for="categoryId[]" class="label">{{ trans('form.subscribers_category') }}*</label>
+                                    <label class="input">
+                                        <select name="categoryId[]" multiple="multiple" class="form-control custom-scroll" title="{{ trans('form.select_category') }}">
+                                            {% for o in category %}
+                                                <option value="{{ o.id }}">{{ o.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                    {% if errors.categoryId %}
+                                        <span class="text-danger">{{ errors.categoryId | first }}</span>
+                                    {% endif %}
+                                </section>
+
+                            </fieldset>
+
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    {{ trans('form.send') }}
+                                </button>
+                                <a class="btn btn-default" href="{{ path_for('admin.schedule.index') }}">
+                                    {{ trans('form.back') }}
+                                </a>
+                            </footer>
+
+                        </form>
+
+                    </div>
+                    <!-- end widget content -->
+
+                </div>
+                <!-- end widget div -->
+
+            </div>
+            <!-- end widget -->
+
+        </article>
+        <!-- END COL -->
+
+    </div>
+
+    <!-- END ROW -->
+
+{% endblock %}
+
+{% block js %}
+
+    <script type="text/javascript">
+
+        $.datetimepicker.setLocale('ru');
+
+        $(function(){
+            $("#datepicker").datetimepicker({
+                minDate: new Date(),
+                format: 'd.m.Y H:i',
+            });
+        });
+    </script>
+
+
+{% endblock %}

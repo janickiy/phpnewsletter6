@@ -1,0 +1,68 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css' />
+
+
+    <div class="row-fluid">
+
+        <div class="col">
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+
+                <!-- widget div-->
+                <div>
+
+                    <div class="box-header">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="{{ path_for('admin.schedule.create') }}" class="btn btn-info btn-sm pull-left"><span class="fa fa-plus"> &nbsp;</span>{{ trans('str.add_schedule') }}</a>
+                            </div>
+                        </div>
+                    </div><br><br>
+
+                    <div id='calendar'></div>
+
+                </div>
+                <!-- end widget content -->
+
+            </div>
+            <!-- end widget div -->
+
+        </div>
+        <!-- end widget -->
+
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script src='{{ base_url() }}/js/plugin/moment/moment.min.js'></script>
+    <script src='{{ base_url() }}/js/plugin/fullcalendar/fullcalendar.min.js'></script>
+
+    <script>
+
+$(document).ready(function() {
+            // page is now ready, initialize the calendar...
+            $('#calendar').fullCalendar({
+                // put your options and callbacks here
+                defaultView: 'agendaWeek',
+                slotLabelFormat:"HH:mm",
+                events : [
+                    {% for o in schedule %}
+                        title : '{{ o.name }}',
+                        start : '{{ o.date }}',
+                        end : '',
+                        url : '{{ path_for('admin.schedule.edit',{ 'id': o.id }) }}'
+                    ,
+                    {% endfor %}
+                ]
+            })
+        });
+
+    </script>
+
+{% endblock %}

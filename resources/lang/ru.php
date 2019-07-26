@@ -51,6 +51,7 @@ return [
         'signout' => 'Выйти',
         'sender_name' => 'Имя отправителя',
         'sender_email' => 'Email отправителя',
+        'add_schedule' => 'Добавить рассылку',
     ],
     'msg' => [
         'are_you_sure' => 'Are you sure?',
@@ -125,6 +126,7 @@ return [
         'description' => 'Описание',
         'role' => 'Роль',
         'password_again' => 'Павтор пароля',
+        'date_and_time' => 'Дата и время',
     ],
     'note' => [
         'personalization' => '<strong>Персонализация:</strong> %NAME% - имя подписчика, %EMAIL% - E-mail адрес, %UNSUB% - ссылка для удаления рассылки, %SERVER_NAME% - адрес сайта, %REFERRAL:http://my_website.com/% - ссылка для статистика переходов по ссылкам'
@@ -138,5 +140,6 @@ return [
         'referrens_log' => 'Статистика переходов по ссылкам',
         'settings' => 'Настройки',
         'users' => 'Пользователи',
+        'schedule' => 'Расписание рассылки',
     ],
 ];

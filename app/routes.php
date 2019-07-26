@@ -78,18 +78,27 @@ $app->group('', function () use ($container) {
     });
 
     $this->group('/users', function () use ($container) {
-        $this->get('/', 'UsersController:index')->setName('admin.users.index')->add(new PermissionMiddleware($container, 'moderator'));;
-        $this->get('/create', 'UsersController:create')->setName('admin.users.create')->add(new PermissionMiddleware($container, 'moderator'));;
-        $this->post('/store', 'UsersController:store')->setName('admin.users.store')->add(new PermissionMiddleware($container, 'moderator'));;
-        $this->get('/edit/{id:[0-9]+}', 'UsersController:edit')->setName('admin.users.edit')->add(new PermissionMiddleware($container, 'moderator'));;
-        $this->map(['GET', 'POST'], '/update', 'UsersController:update')->setName('admin.users.update')->add(new PermissionMiddleware($container, 'moderator'));;
-        $this->delete('/destroy/{id:[0-9]+}', 'UsersController:destroy')->setName('admin.users.destroy')->add(new PermissionMiddleware($container, 'moderator'));;
+        $this->get('/', 'UsersController:index')->setName('admin.users.index')->add(new PermissionMiddleware($container, 'moderator'));
+        $this->get('/create', 'UsersController:create')->setName('admin.users.create')->add(new PermissionMiddleware($container, 'moderator'));
+        $this->post('/store', 'UsersController:store')->setName('admin.users.store')->add(new PermissionMiddleware($container, 'moderator'));
+        $this->get('/edit/{id:[0-9]+}', 'UsersController:edit')->setName('admin.users.edit')->add(new PermissionMiddleware($container, 'moderator'));
+        $this->map(['GET', 'POST'], '/update', 'UsersController:update')->setName('admin.users.update')->add(new PermissionMiddleware($container, 'moderator'));
+        $this->delete('/destroy/{id:[0-9]+}', 'UsersController:destroy')->setName('admin.users.destroy')->add(new PermissionMiddleware($container, 'moderator'));
+    });
+
+    $this->group('/schedule', function () use ($container) {
+        $this->get('/', 'ScheduleController:index')->setName('admin.schedule.index');
+        $this->get('/create', 'ScheduleController:create')->setName('admin.schedule.create');
+        $this->post('/store', 'ScheduleController:store')->setName('admin.schedule.store');
+        $this->get('/edit/{id:[0-9]+}', 'ScheduleController:edit')->setName('admin.schedule.edit');
+        $this->map(['GET', 'POST'], '/update', 'ScheduleController:update')->setName('admin.schedule.update');
+        $this->delete('/destroy/{id:[0-9]+}', 'ScheduleController:destroy')->setName('admin.schedule.destroy');
     });
 
     $this->group('/log', function () use ($container) {
-        $this->get('/', 'UsersController:index')->setName('admin.log.index')->add(new PermissionMiddleware($container, 'moderator|editor'));;
-        $this->post('/clear', 'UsersController:store')->setName('admin.log.clear')->add(new PermissionMiddleware($container, 'moderator|editor'));;
-        $this->get('/download', 'UsersController:edit')->setName('admin.log.download')->add(new PermissionMiddleware($container, 'moderator|editor'));;
+        $this->get('/', 'UsersController:index')->setName('admin.log.index')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->post('/clear', 'UsersController:store')->setName('admin.log.clear')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/download', 'UsersController:edit')->setName('admin.log.download')->add(new PermissionMiddleware($container, 'moderator|editor'));
     });
 
     $this->group('/settings', function () use ($container) {

@@ -120,6 +120,10 @@ $container['TemplateController'] = function($container) {
     return new App\Controllers\Dashboard\TemplateController($container);
 };
 
+$container['ScheduleController'] = function($container) {
+    return new App\Controllers\Dashboard\ScheduleController($container);
+};
+
 $container['SubscribersController'] = function($container) {
     return new \App\Controllers\Dashboard\SubscribersController($container);
 };
