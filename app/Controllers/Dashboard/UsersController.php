@@ -93,7 +93,6 @@ class UsersController extends Controller
 
         if (!$user) return $this->view->render($response, 'errors/404.twig');
 
-
         return $this->view->render($response, 'dashboard/users/create_edit.twig', compact('title', 'user'));
     }
 

@@ -18,8 +18,16 @@ class Schedule extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function templates()
+    public function template()
     {
-        return $this->belongsTo(Templates::class, 'templatesId','id');
+        return $this->belongsTo(Templates::class, 'templateId','id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function categories()
+    {
+        return $this->hasManyThrough(Category::class, ScheduleCategory::class,'categoryId','id','id','scheduleId');
     }
 }

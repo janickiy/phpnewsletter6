@@ -66,7 +66,7 @@ class SubscribersController extends Controller
 
         $id = Subscribers::create(array_merge($request->getParsedBody(), ['active' => 1, 'token' => StringHelpers::token()]))->id;
 
-        if ($request->getParam('categoryId')) {
+        if ($request->getParam('categoryId') && $id) {
 
             foreach ($request->getParam('categoryId') as $categoryId) {
                 if (is_numeric($categoryId)) {

@@ -2,9 +2,10 @@
 
 namespace App\Controllers\Dashboard;
 
-use App\Models\{Category, Schedule, Templates};
+use App\Models\{Category, Schedule, Templates, ScheduleCategory};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
+use Symfony\Component\Console\Helper\Helper;
 
 class ScheduleController extends Controller
 {
@@ -41,6 +42,8 @@ class ScheduleController extends Controller
    {
        $validation = $this->validator->validate($request,[
            'templateId' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
+           'categoryId'  => ['rules' => v::arrayType()->each(v::intVal()), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'arrayType' => 'Не верно указано категория подписчиков', 'intVal' => 'Не верно указано категория подписчиков']],
+           'date' => ['rules' => v::date('Y-m-d H:i:s')->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'date' => 'Не верно указан формат датты']],
        ]);
 
        if (!$validation->isValid()) {
@@ -49,7 +52,16 @@ class ScheduleController extends Controller
            return $response->withRedirect($this->router->pathFor('admin.schedule.create'));
        }
 
-       Schedule::create($request->getParsedBody());
+       $id = Schedule::create($request->getParsedBody())->id;;
+
+       if ($request->getParam('categoryId') && $id) {
+
+           foreach ($request->getParam('categoryId') as $categoryId) {
+               if (is_numeric($categoryId)) {
+                   ScheduleCategory::create(['scheduleId' => $id, 'categoryId' => $categoryId]);
+               }
+           }
+       }
 
        $this->flash->addMessage('success','Данные успешно добавлены');
 
@@ -85,7 +97,9 @@ class ScheduleController extends Controller
        if (!is_numeric($request->getParam('id'))) return $this->view->render($response, 'errors/500.twig');
 
        $validation = $this->validator->validate($request, [
-
+           'templateId' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
+           'categoryId'  => ['rules' => v::arrayType()->each(v::intVal()), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'arrayType' => 'Не верно указано категория подписчиков', 'intVal' => 'Не верно указано категория подписчиков']],
+           'date' => ['rules' => v::date('Y-m-d H:i:s')->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'date' => 'Не верно указан формат датты']],
        ]);
 
        if (!$validation->isValid()) {
@@ -97,6 +111,16 @@ class ScheduleController extends Controller
        $data['name'] = $request->getParam('name');
 
        Schedule::where('id', $request->getParam('id'))->update($data);
+       ScheduleCategory::where('id', $request->getParam('id'))->delete();
+
+       if ($request->getParam('categoryId')) {
+
+           foreach ($request->getParam('categoryId') as $categoryId) {
+               if (is_numeric($categoryId)) {
+                   Subscriptions::create(['subscriberId' => $request->getParam('id'), 'categoryId' => $categoryId]);
+               }
+           }
+       }
 
        $this->flash->addMessage('success', 'Данные успешно обновлены');
 

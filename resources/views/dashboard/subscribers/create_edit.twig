@@ -38,7 +38,7 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
 
-                        <form id="tmplForm"  action="{{ subscriber is defined ? path_for('admin.subscribers.import_subscribers') : path_for('admin.subscribers.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
+                        <form action="{{ subscriber is defined ? path_for('admin.subscribers.update') : path_for('admin.subscribers.store') }}" method="{{ subscriber is defined ? 'put' : 'post' }}" class="smart-form">
 
                             {% if subscriber %}<input type="hidden" name="id" value="{{ subscriber.id }}">{% endif %}
 

@@ -38,13 +38,11 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
 
-                        <form action="{{ category is defined ? path_for('admin.schedule.update') : path_for('admin.schedule.store') }}"  method="{{ category is defined ? 'PUT' : 'POST' }}" class="smart-form">
-
-                            <input type="hidden" name="_METHOD" value="PUT"/>
+                        <form action="{{ schedule is defined ? path_for('admin.schedule.update') : path_for('admin.schedule.store') }}"  method="{{ schedule is defined ? 'PUT' : 'POST' }}" class="smart-form">
 
                             {{ csrf.field | raw }}
 
-                            {% if category %}<input type="hidden" name="id" value="{{ category.id }}">{% endif %}
+                            {% if schedule %}<input type="hidden" name="id" value="{{ schedule.id }}">{% endif %}
 
                             <header>
                                 *-{{ trans('form.required_fields') }}
@@ -62,15 +60,15 @@
                                             {% endfor %}
                                         </select>
                                     </label>
-                                    {% if errors.categoryId %}
+                                    {% if errors.scheduleId %}
                                         <span class="text-danger">{{ errors.templateId | first }}</span>
                                     {% endif %}
                                 </section>
 
                                 <section>
-                                    <label for="name" class="label">{{ trans('form.date_and_time') }}*</label>
+                                    <label for="date" class="label">{{ trans('form.date_and_time') }}*</label>
                                     <label class="input">
-                                        <input type="text" id="datepicker" placeholder="DD.MM.YYYY HH:MM" name="name"  value="{{ category is defined ? category.name : old.name }}">
+                                        <input type="text" id="datepicker" placeholder="DD.MM.YYYY HH:MM" name="date"  value="{{ schedule is defined ? schedule.name : old.name }}">
                                     </label>
 
                                     {% if errors.name %}

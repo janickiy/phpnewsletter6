@@ -38,7 +38,7 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
 
-                        <form id="tmplForm"  action="{{ user is defined ? path_for('admin.users.update') : path_for('admin.users.store') }}" method="{{ user is defined ? 'PUT' : 'POST' }}" class="smart-form">
+                        <form  action="{{ user is defined ? path_for('admin.users.update') : path_for('admin.users.store') }}" method="{{ user is defined ? 'PUT' : 'POST' }}" class="smart-form">
 
                             {{ csrf.field | raw }}
 

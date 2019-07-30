@@ -53,10 +53,11 @@ $(document).ready(function() {
                 slotLabelFormat:"HH:mm",
                 events : [
                     {% for o in schedule %}
-                        title : '{{ o.name }}',
-                        start : '{{ o.date }}',
-                        end : '',
-                        url : '{{ path_for('admin.schedule.edit',{ 'id': o.id }) }}'
+                    {
+                        title: '{{ o.template.name }}',
+                        start: '{{ o.date }}',
+                        url: '{{ path_for('admin.schedule.edit',{ 'id': o.id }) }}'
+                    }
                     ,
                     {% endfor %}
                 ]
