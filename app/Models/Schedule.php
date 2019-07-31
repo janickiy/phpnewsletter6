@@ -12,7 +12,7 @@ class Schedule extends Model
 
 	protected $fillable = [
         'date',
-        'templatesId'
+        'templateId'
 	];
 
     /**

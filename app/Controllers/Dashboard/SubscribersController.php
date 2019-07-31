@@ -94,10 +94,11 @@ class SubscribersController extends Controller
         if (!$subscriber) return $this->view->render($response, 'errors/404.twig');
 
         $category = Category::get();
+
         $subscriptions = [];
 
-        foreach (Subscriptions::where('subscriberId',$id)->get() as $subscription) {
-            $subscriptions[] = $subscription->categoryId;
+        foreach ($subscriber->categories as $row) {
+            $subscriptions[] = $row->id;
         }
 
         return $this->view->render($response, 'dashboard/subscribers/create_edit.twig', compact('subscriber', 'title', 'category', 'subscriptions'));

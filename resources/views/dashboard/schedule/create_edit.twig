@@ -56,7 +56,7 @@
                                         <select name="templateId" class="form-control custom-scroll" title="{{ trans('form.select') }}">
                                             <option>{{ trans('form.select') }}</option>
                                             {% for o in templates %}
-                                                <option value="{{ o.id }}">{{ o.name }}</option>
+                                                <option value="{{ o.id }}" {{ schedule.templateId == o.id or old.templateId == o.id ? 'selected="selected"' : '' }}>{{ o.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </label>
@@ -68,7 +68,7 @@
                                 <section>
                                     <label for="date" class="label">{{ trans('form.date_and_time') }}*</label>
                                     <label class="input">
-                                        <input type="text" id="datepicker" placeholder="DD.MM.YYYY HH:MM" name="date"  value="{{ schedule is defined ? schedule.name : old.name }}">
+                                        <input type="text" id="datepicker" placeholder="DD.MM.YYYY HH:MM" name="date"  value="{{ schedule is defined ? schedule.date : old.date }}">
                                     </label>
 
                                     {% if errors.name %}
@@ -82,7 +82,7 @@
                                     <label class="input">
                                         <select name="categoryId[]" multiple="multiple" class="form-control custom-scroll" title="{{ trans('form.select_category') }}">
                                             {% for o in category %}
-                                                <option value="{{ o.id }}">{{ o.name }}</option>
+                                                <option value="{{ o.id }}" {% if (o.id in subscriptions or o.id in old.categoryId) %}selected="selected"{% endif %}}}>{{ o.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </label>

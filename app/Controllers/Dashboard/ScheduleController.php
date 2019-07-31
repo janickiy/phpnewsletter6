@@ -5,7 +5,6 @@ namespace App\Controllers\Dashboard;
 use App\Models\{Category, Schedule, Templates, ScheduleCategory};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
-use Symfony\Component\Console\Helper\Helper;
 
 class ScheduleController extends Controller
 {
@@ -43,7 +42,7 @@ class ScheduleController extends Controller
        $validation = $this->validator->validate($request,[
            'templateId' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
            'categoryId'  => ['rules' => v::arrayType()->each(v::intVal()), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'arrayType' => 'Не верно указано категория подписчиков', 'intVal' => 'Не верно указано категория подписчиков']],
-           'date' => ['rules' => v::date('Y-m-d H:i:s')->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'date' => 'Не верно указан формат датты']],
+           'date' => ['rules' => v::date('d.m.Y H:i')->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'date' => 'Не верно указан формат даты']],
        ]);
 
        if (!$validation->isValid()) {
@@ -52,7 +51,7 @@ class ScheduleController extends Controller
            return $response->withRedirect($this->router->pathFor('admin.schedule.create'));
        }
 
-       $id = Schedule::create($request->getParsedBody())->id;;
+       $id = Schedule::create(array_merge($request->getParsedBody(),['date' => date("Y-m-d H:i:s", strtotime($request->getParam('date')))]))->id;
 
        if ($request->getParam('categoryId') && $id) {
 
@@ -84,7 +83,13 @@ class ScheduleController extends Controller
        $templates = Templates::get();
        $category = Category::get();
 
-       return $this->view->render($response, 'dashboard/schedule/create_edit.twig', compact('templates', 'category', 'schedule', 'title'));
+       $subscriptions = [];
+
+       foreach ($schedule->categories as $row) {
+           $subscriptions[] = $row->id;
+       }
+
+       return $this->view->render($response, 'dashboard/schedule/create_edit.twig', compact('templates', 'category', 'schedule', 'subscriptions', 'title'));
    }
 
     /**
@@ -99,7 +104,7 @@ class ScheduleController extends Controller
        $validation = $this->validator->validate($request, [
            'templateId' => ['rules' => v::numeric()->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']],
            'categoryId'  => ['rules' => v::arrayType()->each(v::intVal()), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'arrayType' => 'Не верно указано категория подписчиков', 'intVal' => 'Не верно указано категория подписчиков']],
-           'date' => ['rules' => v::date('Y-m-d H:i:s')->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'date' => 'Не верно указан формат датты']],
+           'date' => ['rules' => v::date('d.m.Y H:i')->notEmpty(), 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'date' => 'Не верно указан формат даты']],
        ]);
 
        if (!$validation->isValid()) {
@@ -108,7 +113,8 @@ class ScheduleController extends Controller
            return $response->withRedirect($this->router->pathFor('admin.schedule.edit',['id' => $request->getParam('id')]));
        }
 
-       $data['name'] = $request->getParam('name');
+       $data['date'] = date("Y-m-d H:i:s", strtotime($request->getParam('date')));
+       $date['templateId'] = $request->getParam('templateId');
 
        Schedule::where('id', $request->getParam('id'))->update($data);
        ScheduleCategory::where('id', $request->getParam('id'))->delete();

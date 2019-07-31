@@ -77,7 +77,7 @@
                                     <label class="input">
                                         <select name="categoryId[]" multiple="multiple" id="categoryId" class="form-control custom-scroll" title="{{ trans('form.select_category') }}">
                                             {% for o in category %}
-                                                <option value="{{ o.id }}" {% if o.id in subscriptions %}selected="selected"{% endif %}>{{ o.name }}</option>
+                                                <option value="{{ o.id }}" {% if (o.id in subscriptions or o.id in old.categoryId) %}selected="selected"{% endif %}>{{ o.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </label>
