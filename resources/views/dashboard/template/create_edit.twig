@@ -38,88 +38,108 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
 
-                        <form id="tmplForm" enctype="multipart/form-data" action="{{ template is defined ? path_for('admin.template.update') : path_for('admin.template.store') }}" method="{{ template is defined ? 'put' : 'post' }}" class="smart-form">
+                        <form id="tmplForm" enctype="multipart/form-data"
+                              action="{{ template is defined ? path_for('admin.template.update') : path_for('admin.template.store') }}"
+                              method="{{ template is defined ? 'put' : 'post' }}">
 
-                            {{ csrf.field | raw }}
+                            <div class="smart-form">
+                                {{ csrf.field | raw }}
 
-                            {% if template %}<input type="hidden" name="id" value="{{ template.id }}">{% endif %}
+                                {% if template %}<input type="hidden" name="id" value="{{ template.id }}">{% endif %}
 
-                            <header>
-                                *-{{ trans('form.required_fields') }}
-                            </header>
+                                <header>
+                                    *-{{ trans('form.required_fields') }}
+                                </header>
 
-                            <fieldset>
+                                <fieldset>
 
-                                <section>
-                                    <label for="name" class="label">{{ trans('form.name') }}*</label>
-                                    <label class="input">
-                                        <input type="text" maxlength="255" placeholder="{{ trans('form.name') }}" name="name" value="{{ template is defined ? template.name  : old.name }}" id="name">
-                                    </label>
-
-                                    {% if errors.name %}
-                                        <span class="text-danger">{{ errors.name | first }}</span>
-                                    {% endif %}
-
-                                </section>
-
-                                <section>
-                                    <label for="body" class="label">{{ trans('form.template') }}*</label>
-                                    <label class="textarea textarea-resizable">
-                                        <textarea rows="3" class="custom-scroll" placeholder="{{ trans('form.template') }}" name="body"  id="body">{{ template is defined ? template.body : old.body }}</textarea>
-                                    </label>
-                                    {% if errors.body %}
-                                        <span class="text-danger">{{ errors.body | first }}</span>
-                                    {% endif %}
-
-                                    <div class="note">
-                                        {{ trans('note.personalization') }}
-                                    </div>
-                                </section>
-
-                                <section>
-                                    <label for="attachfile[]" class="label">{{ trans('form.attach_files') }}</label>
-                                    <div class="input input-file">
-                                        <span class="button"><input type="file" name="attachfile[]" multiple="true"  id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">{{ trans('form.browse') }}</span><input type="text" placeholder="{{ trans('form.select_files') }}" readonly="">
-                                    </div>
-
-                                    {% if errors.attachfile %}
-                                        <span class="text-danger">{{ errors.attachfile | first }}</span>
-                                    {% endif %}
-
-                                </section>
-
-                                <section>
-                                    <label for="prior" class="label">{{ trans('form.prior') }}</label>
-                                    <div class="inline-group">
-                                        <label class="radio">
-                                            <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or old.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
-                                            <i></i>{{ trans('form.normal') }}
+                                    <section>
+                                        <label for="name" class="label">{{ trans('form.name') }}*</label>
+                                        <label class="input">
+                                            <input type="text" maxlength="255" placeholder="{{ trans('form.name') }}" name="name" value="{{ template is defined ? template.name  : old.name }}" id="name">
                                         </label>
-                                        <label class="radio">
-                                            <input type="radio" name="prior" value="2" {{ template is defined and (templat.prior == 2 or old.prior == 2) ? 'checked="checked"' : '' }}>
-                                            <i></i>{{ trans('form.low') }}
+
+                                        {% if errors.name %}
+                                            <span class="text-danger">{{ errors.name | first }}</span>
+                                        {% endif %}
+
+                                    </section>
+
+                                    <section>
+                                        <label for="body" class="label">{{ trans('form.template') }}*</label>
+                                        <label class="textarea textarea-resizable">
+                                            <textarea rows="3" class="custom-scroll" placeholder="{{ trans('form.template') }}" name="body" id="body">{{ template is defined ? template.body : old.body }}</textarea>
                                         </label>
-                                        <label class="radio">
-                                            <input type="radio" name="prior" value="1" {{ template is defined and (templat.prior == 1 or old.prior == 1) ? 'checked="checked"' : '' }}>
-                                            <i></i>{{ trans('form.high') }}
-                                        </label>
+                                        {% if errors.body %}
+                                            <span class="text-danger">{{ errors.body | first }}</span>
+                                        {% endif %}
+
+                                        <div class="note">
+                                            {{ trans('note.personalization') }}
+                                        </div>
+                                    </section>
+
+                                    <section>
+                                        <label for="attachfile[]" class="label">{{ trans('form.attach_files') }}</label>
+                                        <div class="input input-file">
+                                            <span class="button"><input type="file" name="attachfile[]" multiple="true" id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">{{ trans('form.browse') }}</span>
+                                            <input type="text" placeholder="{{ trans('form.select_files') }}" readonly="">
+                                        </div>
+
+                                        {% if errors.attachfile %}
+                                            <span class="text-danger">{{ errors.attachfile | first }}</span>
+                                        {% endif %}
+
+                                    </section>
+
+                                    <section>
+                                        <label for="prior" class="label">{{ trans('form.prior') }}</label>
+                                        <div class="inline-group">
+                                            <label class="radio">
+                                                <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or old.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
+                                                <i></i>{{ trans('form.normal') }}
+                                            </label>
+                                            <label class="radio">
+                                                <input type="radio" name="prior"  value="2" {{ template is defined and (templat.prior == 2 or old.prior == 2) ? 'checked="checked"' : '' }}>
+                                                <i></i>{{ trans('form.low') }}
+                                            </label>
+                                            <label class="radio">
+                                                <input type="radio" name="prior"
+                                                       value="1" {{ template is defined and (templat.prior == 1 or old.prior == 1) ? 'checked="checked"' : '' }}>
+                                                <i></i>{{ trans('form.high') }}
+                                            </label>
+                                        </div>
+                                        {% if errors.prior %}
+                                            <span class="text-danger">{{ errors.prior | first }}</span>jjj
+                                        {% endif %}
+
+                                    </section>
+
+                                </fieldset>
+
+                                <footer>
+                                    <button type="submit" class="btn btn-primary">
+                                        {{ trans('form.send') }}
+                                    </button>
+                                    <a class="btn btn-default" href="{{ path_for('admin.category.index') }}">
+                                        {{ trans('form.back') }}
+                                    </a>
+                                </footer>
+
+                            </div>
+
+                            <div class="well bg-color-blueLight">
+                                <h3>Отправить себе тестовое письмо</h3>
+                                <div class="input-group">
+
+                                    <input class="form-control" type="text" placeholder="Search...">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-default" type="button">
+                                            <i class="fa fa-send"></i> Отправить
+                                        </button>
                                     </div>
-                                    {% if errors.prior %}
-                                        <span class="text-danger">{{ errors.prior | first }}</span>jjj
-                                    {% endif %}
-
-                                </section>
-
-                            </fieldset>
-
-                            <footer>
-                                <button type="submit" class="btn btn-primary">
-                                    {{ trans('form.send') }}
-                                </button>
-                                <a class="btn btn-default" href="{{ path_for('admin.category.index') }}">
-                                    {{ trans('form.back') }}
-                                </a>
-                            </footer>
+                                </div>
+                            </div>
 
                         </form>
 

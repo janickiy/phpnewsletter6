@@ -3,10 +3,8 @@
 namespace App\Controllers\Dashboard;
 
 use App\Controllers\Controller;
-use App\Helper\Ssp;
-use App\Helper\StringHelpers;
-use App\Models\Templates;
-use App\Models\{Attach};
+use App\Helper\{StringHelpers,Ssp};
+use App\Models\{Attach,Templates};
 
 class DataTableController extends Controller
 {

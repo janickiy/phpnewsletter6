@@ -138,7 +138,7 @@ class StringHelpers
      */
     public static function isEmail($email)
     {
-        if (preg_match("/^([a-z0-9_\.\-]{1,70})@([a-z0-9\.\-]{1,70})\.([a-z]{2,6})$/i", $email))
+        if (preg_match("/^([a-z0-9_\.\-]{1,70})@([a-z0-9\.\-]{1,70})\.([a-z]{2,12})$/i", $email))
             return true;
         else
             return false;
@@ -541,5 +541,53 @@ class StringHelpers
         } else {
             return "application/force-download";
         }
+    }
+
+    /**
+     * @param $str
+     * @return string
+     */
+    static public function encodeString($str)
+    {
+        $replace = [
+            "А"=>"A",
+            "В"=>"B",
+            "Е"=>"E",
+            "К"=>"K",
+            "М"=>"M",
+            "Н"=>"H",
+            "О"=>"O",
+            "Р"=>"P",
+            "С"=>"C",
+            "Т"=>"T",
+            "Х"=>"X",
+            "х"=>"x",
+            "а"=>"a",
+            "е"=>"e",
+            "о"=>"o",
+            "с"=>"c",
+            "у"=>"y"];
+
+        $text = [];
+        $quotes = [];
+        $quotes[] = 'cyrillic';
+        $quotes[] = 'latin';
+
+        $array = preg_split('//u',$str,-1,PREG_SPLIT_NO_EMPTY);
+
+        foreach($array as $char){
+
+            srand ((double) microtime() * 1000000);
+            $random_number = rand(0,count($quotes)-1);
+
+            if($quotes[$random_number] == 'latin')
+                $text[] = strtr($char, $replace);
+            else
+                $text[] = $char;
+        }
+
+        $str = implode("", $text);
+
+        return $str;
     }
 }
