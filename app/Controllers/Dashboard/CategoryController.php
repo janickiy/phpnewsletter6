@@ -6,10 +6,14 @@ use App\Models\Category;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 
+use App\Helper\SettingsHelpers;
+
 class CategoryController extends Controller
 {
    public function index($request,$response)
    {
+
+       echo SettingsHelpers::getSetting('EMAIL');
        $title = "Категория подписчиков";
 
        return $this->view->render($response,'dashboard/category/index.twig', compact('title'));
