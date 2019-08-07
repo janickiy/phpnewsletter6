@@ -2,18 +2,27 @@
 
 namespace App\Controllers\Dashboard;
 
-use App\Models\Category;
+use App\Models\{Category,Subscribers,Smtp};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 
 use App\Helper\SettingsHelpers;
+use PHPMailer\PHPMailer;
 
 class CategoryController extends Controller
 {
    public function index($request,$response)
    {
 
-       echo SettingsHelpers::getSetting('EMAIL');
+     $s = Smtp::query();
+      $q = $s->limit(4)->get();
+
+          $t = $q->toArray();
+     var_dump($t[0]['host']);
+     exit;
+
+
+
        $title = "Категория подписчиков";
 
        return $this->view->render($response,'dashboard/category/index.twig', compact('title'));
