@@ -7,8 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use App\Helper\{SettingsHelpers,StringHelpers};
-use App\Models\{Schedule, Subscribers, Smtp};
-
+use App\Models\{Schedule, Subscribers, Smtp, Attach};
 use PHPMailer\PHPMailer;
 
 
@@ -28,12 +27,19 @@ class EmailSend extends Command
             ->setHelp('This command allows you send out emails to subscribers.');
     }
 
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws PHPMailer\Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = SettingsHelpers::getSetting('EMAIL');
-        $shedule = Schedule::get();
+        $schedule = Schedule::get();
 
-        foreach ($shedule as $row) {
+        foreach ($schedule as $row) {
 
             $order = SettingsHelpers::getSetting('RANDOM_SEND') == 1 ? 'ORDER BY RAND()' : 'subscribers.id';
             $limit = SettingsHelpers::getSetting('LIMIT_SEND') == 1 ? "LIMIT " . SettingsHelpers::getSetting('LIMIT_NUMBER') : null;
@@ -173,6 +179,56 @@ class EmailSend extends Command
 
                 $msg = SettingsHelpers::getSetting('RANDOM_REPLACEMENT_BODY') == 1 ? StringHelpers::encodeString($msg) : $msg;
 
+                if (isset($row->template->attach)) {
+                    foreach ($row->template->attach as $f) {
+
+                        $path = 'attach/' . $f->name;
+
+                        if (file_exists($path)) {
+                            if (SettingsHelpers::getSetting('CHARSET') != 'utf-8') $row['name'] = iconv('utf-8', SettingsHelpers::getSetting('CHARSET'), $f->name);
+
+                            $ext = strrchr($path, ".");
+                            $mime_type = StringHelpers::getMimeType($ext);
+
+                            $m->AddAttachment($path, $f->name, 'base64', $mime_type);
+                        }
+                    }
+                }
+
+                if (SettingsHelpers::getSetting('CHARSET') != 'utf-8') $msg = iconv('utf-8', SettingsHelpers::getSetting('CHARSET'), $msg);
+
+                if (SettingsHelpers::getSetting('CONTENT_TYPE') == 2){
+                    $msg .= $IMG;
+                } else {
+                    $msg = preg_replace('/<br(\s\/)?>/i', "\n", $msg);
+                    $msg = StringHelpers::removeHtmlTags($msg);
+                }
+
+                $m->Body = $msg;
+
+                if (!$m->Send()){
+                    $errormsg = $m->ErrorInfo;
+                    $insert = "INSERT INTO " . $ConfigDB["prefix"] . "ready_send (`id_ready_send`,`id_user`, `email`, `id_template`,`success`,`errormsg`,`readmail`,`time`,`id_log`) VALUES (0,".$user['id'].",'".$user['email']."',".$send['id_template'].",'no','".$errormsg."','no', NOW(),".$id_log.")";
+                    $dbh->query($insert);
+                    $mailcountno = $mailcountno + 1;
+                } else {
+                    $insert = "INSERT INTO " . $ConfigDB["prefix"] . "ready_send (`id_ready_send`,`id_user`, `email`, `id_template`,`success`,`errormsg`,`readmail`,`time`,`id_log`) VALUES (0,".$user['id'].",'".$user['email']."',".$send['id_template'].",'yes','','no', NOW(),".$id_log.")";
+                    $dbh->query($insert);
+
+                    $update = "UPDATE " . $ConfigDB["prefix"] . "users SET time_send = NOW() WHERE id_user=" . $user['id'];
+                    $dbh->query($update);
+
+                    $mailcount = $mailcount + 1;
+                }
+
+                $m->ClearCustomHeaders();
+                $m->ClearAllRecipients();
+                $m->ClearAttachments();
+
+                if ($settings['make_limit_send'] == "yes" && $settings['limit_number'] == $mailcount){
+                    if ($settings['how_to_send'] == 2) $m->SmtpClose();
+                    break;
+                }
             }
 
 

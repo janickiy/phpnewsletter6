@@ -9,8 +9,7 @@
         <article class="col-sm-12 col-md-12 col-lg-12">
 
             <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false"
-                 data-widget-custombutton="false">
+            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false"  data-widget-custombutton="false">
                 <!-- widget options:
                 usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
 
@@ -38,9 +37,7 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
 
-                        <form id="tmplForm" enctype="multipart/form-data"
-                              action="{{ template is defined ? path_for('admin.template.update') : path_for('admin.template.store') }}"
-                              method="{{ template is defined ? 'put' : 'post' }}">
+                        <form id="tmplForm" enctype="multipart/form-data" action="{{ template is defined ? path_for('admin.template.update') : path_for('admin.template.store') }}" method="{{ template is defined ? 'put' : 'post' }}">
 
                             <div class="smart-form">
                                 {{ csrf.field | raw }}
@@ -82,8 +79,7 @@
                                     <section>
                                         <label for="attachfile[]" class="label">{{ trans('form.attach_files') }}</label>
                                         <div class="input input-file">
-                                            <span class="button"><input type="file" name="attachfile[]" multiple="true" id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">{{ trans('form.browse') }}</span>
-                                            <input type="text" placeholder="{{ trans('form.select_files') }}" readonly="">
+                                            <span class="button"><input type="file" name="attachfile[]" id="attachfile" multiple="true" onchange="this.parentNode.nextSibling.value = this.value">{{ trans('form.browse') }}</span><input type="text" placeholder="{{ trans('form.select_files') }}" readonly="">
                                         </div>
 
                                         {% if errors.attachfile %}
@@ -96,22 +92,23 @@
                                         <label for="prior" class="label">{{ trans('form.prior') }}</label>
                                         <div class="inline-group">
                                             <label class="radio">
-                                                <input type="radio" name="prior" value="3" {{ ((template is defined and (templat.prior == 3 or old.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
+                                                <input type="radio" name="prior" value="3" {{ ((template is defined and (template.prior == 3 or old.prior == 3)) or (template is not defined)) ? 'checked="checked"' : '' }}>
                                                 <i></i>{{ trans('form.normal') }}
                                             </label>
                                             <label class="radio">
-                                                <input type="radio" name="prior"  value="2" {{ template is defined and (templat.prior == 2 or old.prior == 2) ? 'checked="checked"' : '' }}>
+                                                <input type="radio" name="prior"  value="2" {{ template is defined and (template.prior == 2 or old.prior == 2) ? 'checked="checked"' : '' }}>
                                                 <i></i>{{ trans('form.low') }}
                                             </label>
                                             <label class="radio">
-                                                <input type="radio" name="prior"
-                                                       value="1" {{ template is defined and (templat.prior == 1 or old.prior == 1) ? 'checked="checked"' : '' }}>
+                                                <input type="radio" name="prior"   value="1" {{ template is defined and (template.prior == 1 or old.prior == 1) ? 'checked="checked"' : '' }}>
                                                 <i></i>{{ trans('form.high') }}
                                             </label>
+
+                                            {% if errors.prior %}
+                                                <span class="text-danger">{{ errors.prior | first }}</span>jjj
+                                            {% endif %}
+
                                         </div>
-                                        {% if errors.prior %}
-                                            <span class="text-danger">{{ errors.prior | first }}</span>jjj
-                                        {% endif %}
 
                                     </section>
 

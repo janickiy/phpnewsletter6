@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Dashboard;
 
-use App\Models\{Category,Subscribers,Smtp};
+use App\Models\{Category, Schedule, Subscribers, Smtp, Templates};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 
@@ -14,12 +14,17 @@ class CategoryController extends Controller
    public function index($request,$response)
    {
 
-     $s = Smtp::query();
-      $q = $s->limit(4)->get();
+       $schedule = Schedule::get();
 
-          $t = $q->toArray();
-     var_dump($t[0]['host']);
-     exit;
+       foreach ($schedule as $row)  {
+
+               var_dump($row->template->attach);
+               exit;
+
+
+       }
+
+
 
 
 

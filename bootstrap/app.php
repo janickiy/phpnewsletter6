@@ -102,8 +102,6 @@ $view->getEnvironment()->addGlobal('url', function ($url) {
 $container['upload_directory'] = __DIR__ . '/../attach';
 
 $container['validator'] = function ($container) {
-	//return new App\Validation\Validator;
-
     return new Awurth\SlimValidation\Validator();
 };
 

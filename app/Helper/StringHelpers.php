@@ -591,5 +591,15 @@ class StringHelpers
         return $str;
     }
 
+    /**
+     * @param $str
+     * @return string
+     */
+    static public function removeHtmlTags($str)
+    {
+        $str = strip_tags($str);
+        $str = html_entity_decode($str);
 
+        return $str;
+    }
 }

@@ -24,7 +24,7 @@ class Templates extends Model
      */
     public function attach()
     {
-        return $this->belongsTo(Attach::class, 'templateId');
+        return $this->hasMany(Attach::class, 'templateId', 'id');
     }
 
     /**
@@ -55,6 +55,5 @@ class Templates extends Model
                 return 'нормальная';
         }
     }
-
 
 }

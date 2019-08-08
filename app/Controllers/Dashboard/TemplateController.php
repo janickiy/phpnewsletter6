@@ -116,10 +116,13 @@ class TemplateController extends Controller
         }
 
         $directory = $this->upload_directory;
+
         $uploadedFiles = $request->getUploadedFiles();
+
 
         // handle single input with multiple file uploads
         foreach ($uploadedFiles['attachfile'] as $uploadedFile) {
+
             if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
                 $filename = $this->moveUploadedFile($directory, $uploadedFile);
 
@@ -129,7 +132,7 @@ class TemplateController extends Controller
                 ];
 
                 Attach::create($attach);
-            }
+            } else die('we');
         }
 
         $data['name'] = $request->getParam('name');
