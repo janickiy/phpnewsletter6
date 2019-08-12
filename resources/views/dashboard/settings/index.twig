@@ -248,6 +248,32 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label class="col-md-2 control-label">{{ trans('form.interval_number') }}</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" value="{{ get_setting('INTERVAL_NUMBER') }}" name="INTERVAL_NUMBER" type="text">
+                                                {% if errors.INTERVAL_NUMBER %}
+                                                    <span class="text-danger">{{ errors.INTERVAL_NUMBER | first }}</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-2">
+                                                <select name="INTERVAL_TYPE" class="form-control">
+                                                    <option value="no" {{ get_setting('INTERVAL_TYPE') == 'no' or get_setting('interval_type') == '' ? 'selected="selected"' : '' }}>
+                                                        {{ trans('str.no') }}
+                                                    </option>
+                                                    <option value="minute" {{ get_setting('INTERVAL_TYPE') == 'minute' ? 'selected="selected"' : '' }} selected="selected">
+                                                        {{ trans('form.minute') }}
+                                                    </option>
+                                                    <option value="hour" {{ get_setting('INTERVAL_TYPE') == 'hour' ? 'selected="selected"' : '' }}>
+                                                        {{ trans('form.hour') }}
+                                                    </option>
+                                                    <option value="day" {{ get_setting('INTERVAL_TYPE') == 'day' ? 'selected="selected"' : '' }}>
+                                                        {{ trans('form.day') }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label class="col-md-2 control-label">{{ trans('form.limit_number') }}</label>
                                             <div class="col-md-8">
                                                 <input class="form-control" value="{{ get_setting('LIMIT_NUMBER') }}" name="LIMIT_NUMBER" placeholder="{{ trans('form.limit_number') }}" type="text">
@@ -342,7 +368,7 @@
                                             <div class="col-md-10">
                                                 <select name="PRECEDENCE" class="form-control">
                                                     <option value="no" {{ get_setting('PRECEDENCE') == 'no' or get_setting('PRECEDENCE') == '' ? 'selected="selected"' : '' }}>
-                                                        нет
+                                                        {{ trans('str.no') }}
                                                     </option>
                                                     <option value="bulk" {{ get_setting('PRECEDENCE') == 'bulk' ? 'selected="selected"' : '' }}
                                                             selected="selected">bulk

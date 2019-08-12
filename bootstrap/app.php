@@ -110,6 +110,11 @@ $container['ErrosController'] = function($container) {
 	return new \App\Controllers\ErrosController($container);
 };
 
+$container['FrontendController'] = function($container) {
+    return new \App\Controllers\FrontendController($container);
+};
+
+
 $container['AuthController'] = function($container) {
 	return new \App\Controllers\Auth\AuthController($container);
 };

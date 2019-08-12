@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.2
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Июн 27 2019 г., 18:43
--- Версия сервера: 10.1.34-MariaDB
--- Версия PHP: 7.2.7
+-- Время создания: Авг 12 2019 г., 03:41
+-- Версия сервера: 10.1.36-MariaDB
+-- Версия PHP: 7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -36,6 +36,14 @@ CREATE TABLE `attach` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Дамп данных таблицы `attach`
+--
+
+INSERT INTO `attach` (`id`, `name`, `templateId`, `created_at`, `updated_at`) VALUES
+(1, 'ryuoiup io[p', 2, NULL, NULL),
+(2, 'yiupo o[o]o', 2, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -55,7 +63,8 @@ CREATE TABLE `category` (
 
 INSERT INTO `category` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (1, 'Категория 1', NULL, '2019-06-25 08:45:21'),
-(2, 'Категория 3', NULL, '2019-06-10 15:17:09');
+(2, 'Категория 1113', NULL, '2019-07-29 22:23:37'),
+(3, 'erewrwe', '2019-07-29 22:23:42', '2019-07-29 22:23:42');
 
 -- --------------------------------------------------------
 
@@ -139,6 +148,88 @@ CREATE TABLE `log` (
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `ready_sent`
+--
+
+CREATE TABLE `ready_sent` (
+  `id` int(11) NOT NULL,
+  `subscriberId` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `templateId` int(11) NOT NULL,
+  `success` tinyint(1) NOT NULL,
+  `errorMsg` text,
+  `readMail` tinyint(1) DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
+  `scheduleId` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `redirect_log`
+--
+
+CREATE TABLE `redirect_log` (
+  `id` int(11) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `time` timestamp NULL DEFAULT NULL,
+  `email` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `schedule`
+--
+
+CREATE TABLE `schedule` (
+  `id` int(11) NOT NULL,
+  `date` timestamp NULL DEFAULT NULL,
+  `templateId` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `schedule`
+--
+
+INSERT INTO `schedule` (`id`, `date`, `templateId`, `created_at`, `updated_at`) VALUES
+(1, '2019-07-31 21:25:00', 2, '2019-07-31 20:25:51', '2019-07-31 20:25:51'),
+(2, '2019-07-31 23:00:00', 4, '2019-07-31 20:42:47', '2019-07-31 20:42:47'),
+(3, '2019-08-02 09:00:00', 2, '2019-07-31 20:59:12', '2019-07-31 20:59:12');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `schedule_category`
+--
+
+CREATE TABLE `schedule_category` (
+  `scheduleId` int(11) NOT NULL,
+  `categoryId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `schedule_category`
+--
+
+INSERT INTO `schedule_category` (`scheduleId`, `categoryId`) VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 2),
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 2),
+(3, 3);
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `settings`
 --
 
@@ -154,38 +245,68 @@ CREATE TABLE `settings` (
 
 INSERT INTO `settings` (`id`, `name`, `value`) VALUES
 (1, 'EMAIL', 'info@trust-signal.com'),
-(2, 'SHOW_EMAIL', 'on'),
+(2, 'SHOW_EMAIL', '1'),
 (3, 'FROM', 'wwwwwwww'),
 (4, 'RETURN_PATH', ''),
 (5, 'LIST_OWNER', ''),
 (6, 'ORGANIZATION', ''),
 (7, 'SUBJECT_TEXT_CONFIRM', 'Подписка на рассылку'),
 (8, 'TEXT_CONFIRMATION', 'Здравствуйте, %NAME%\r\n\r\nПолучение рассылки возможно после завершения этапа активации подписки. Чтобы активировать подписку, перейдите по следующей ссылке: %CONFIRM%\r\n\r\nЕсли Вы не производили подписку на данный email, просто проигнорируйте это письмо или перейдите по ссылке: %UNSUB%\r\n\r\nС уважением, \r\nадминистратор сайта %SERVER_NAME%'),
-(9, 'REQUIRE_SUB_CONFIRMATION', 'on'),
+(9, 'REQUIRE_SUB_CONFIRMATION', '0'),
 (10, 'UNSUBLINK', 'Отписаться от рассылки: <a href=%UNSUB%>%UNSUB%</a>'),
-(11, 'SHOW_UNSUBSCRIBE_LINK', 'on'),
-(12, 'REQUEST_REPLY', 'on'),
-(15, 'NEW_SUBSCRIBER_NOTIFY', 'on'),
+(11, 'SHOW_UNSUBSCRIBE_LINK', '1'),
+(12, 'REQUEST_REPLY', '0'),
+(15, 'NEW_SUBSCRIBER_NOTIFY', '0'),
 (16, 'SLEEP', '0'),
 (17, 'LIMIT_NUMBER', '300'),
-(18, 'LIMIT_SEND', 'on'),
+(18, 'LIMIT_SEND', '0'),
 (19, 'DAYS_FOR_REMOVE_SUBSCRIBER', '7'),
-(20, 'REMOVE_SUBSCRIBER', 'on'),
-(21, 'RANDOM_SEND', 'on'),
-(22, 'RENDOM_REPLACEMENT_SUBJECT', 'on'),
-(23, 'RANDOM_REPLACEMENT_BODY', 'on'),
-(24, 'PRECEDENCE', 'bulk'),
+(20, 'REMOVE_SUBSCRIBER', '0'),
+(21, 'RANDOM_SEND', '0'),
+(22, 'RENDOM_REPLACEMENT_SUBJECT', '0'),
+(23, 'RANDOM_REPLACEMENT_BODY', '0'),
+(24, 'PRECEDENCE', 'list'),
 (25, 'CHARSET', 'utf-8'),
 (26, 'CONTENT_TYPE', 'html'),
-(27, 'HOW_TO_SEND', ''),
+(27, 'HOW_TO_SEND', 'smtp'),
 (28, 'SENDMAIL_PATH', '/usr/sbin/sendmail'),
-(29, 'URL', 'http://subdomain.site2.loc'),
-(30, 'ADD_DKIM', 'on'),
+(29, 'URL', 'http://subdomain.site2.loc/'),
+(30, 'ADD_DKIM', '0'),
 (31, 'DKIM_DOMAIN', 'my-domain.com'),
 (32, 'DKIM_SELECTOR', 'phpnewsletter'),
 (33, 'DKIM_PRIVATE', '.htkeyprivate'),
 (34, 'DKIM_PASSPHRASE', 'password'),
-(35, 'DKIM_IDENTITY', '1');
+(35, 'DKIM_IDENTITY', ''),
+(36, 'INTERVAL_TYPE', 'minute'),
+(37, 'INTERVAL_NUMBER', '1');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `smtp`
+--
+
+CREATE TABLE `smtp` (
+  `id` int(11) NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `port` int(6) NOT NULL,
+  `authentication` varchar(20) NOT NULL,
+  `secure` varchar(20) NOT NULL,
+  `timeout` int(6) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `smtp`
+--
+
+INSERT INTO `smtp` (`id`, `host`, `username`, `password`, `port`, `authentication`, `secure`, `timeout`, `active`, `created_at`, `updated_at`) VALUES
+(2, 'mail.adm.tools', 'support@trust-signal.com', 'wer12Dwer', 25, 'login', 'ssl', 5, 1, '2019-07-02 20:42:02', '2019-07-02 21:02:38'),
+(3, 'mail.adm2.tools', 'janic', 'wer12Dwer', 25, 'login', 'no', 5, 1, '2019-08-06 23:40:43', '2019-08-06 23:40:43');
 
 -- --------------------------------------------------------
 
@@ -200,6 +321,7 @@ CREATE TABLE `subscribers` (
   `ip` varchar(100) DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `token` varchar(32) NOT NULL,
+  `timeSent` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -208,9 +330,9 @@ CREATE TABLE `subscribers` (
 -- Дамп данных таблицы `subscribers`
 --
 
-INSERT INTO `subscribers` (`id`, `name`, `email`, `ip`, `active`, `token`, `created_at`, `updated_at`) VALUES
-(1, 'Вася', 'mail1@mail.ru', NULL, 1, '7f80608935902f5ba9f79025243ecefb', '2019-06-17 11:29:42', '2019-06-17 13:59:24'),
-(2, 'Петя', 'mail2@mail.ru', NULL, 1, '81c1c7f16765f9e90c797df20eb794e6', '2019-06-17 11:29:42', '2019-06-17 13:59:24');
+INSERT INTO `subscribers` (`id`, `name`, `email`, `ip`, `active`, `token`, `timeSent`, `created_at`, `updated_at`) VALUES
+(1, 'Вася', 'mail1@mail.ru', NULL, 1, '7f80608935902f5ba9f79025243ecefb', NULL, '2019-06-17 11:29:42', '2019-06-17 13:59:24'),
+(2, 'Петя', 'mail2@mail.ru', NULL, 1, '81c1c7f16765f9e90c797df20eb794e6', NULL, '2019-06-17 11:29:42', '2019-06-17 13:59:24');
 
 -- --------------------------------------------------------
 
@@ -244,7 +366,6 @@ CREATE TABLE `templates` (
   `body` mediumtext NOT NULL,
   `prior` tinyint(1) NOT NULL,
   `pos` int(11) NOT NULL,
-  `categoryId` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -253,14 +374,14 @@ CREATE TABLE `templates` (
 -- Дамп данных таблицы `templates`
 --
 
-INSERT INTO `templates` (`id`, `name`, `body`, `prior`, `pos`, `categoryId`, `created_at`, `updated_at`) VALUES
-(1, 'dsf', 'ewrtew', 3, 0, 1, '2019-06-05 08:08:24', '2019-06-05 08:08:24'),
-(2, 'шаблон 1', 'dsgs dsg', 3, 0, 1, '2019-06-05 08:10:39', '2019-06-05 08:10:39'),
-(3, 'dfg', 'dfg', 3, 0, 2, '2019-06-05 10:35:02', '2019-06-05 10:35:02'),
-(4, 'dfg', 'fdg ', 3, 0, 2, '2019-06-05 10:35:20', '2019-06-05 10:35:20'),
-(5, 'p[]', '<p>p[]p[</p>\r\n', 3, 0, 1, '2019-06-07 15:02:19', '2019-06-07 15:02:19'),
-(6, 'jklkj', '<p>jklj</p>\r\n', 3, 0, 1, '2019-06-07 15:03:46', '2019-06-07 15:03:46'),
-(7, 'lkj', '<p>kjlkj</p>\r\n', 3, 0, 1, '2019-06-07 15:04:51', '2019-06-07 15:04:51');
+INSERT INTO `templates` (`id`, `name`, `body`, `prior`, `pos`, `created_at`, `updated_at`) VALUES
+(1, 'dsf', 'ewrtew', 3, 0, '2019-06-05 08:08:24', '2019-06-05 08:08:24'),
+(2, 'шаблон 1', '<p>dsgs dsg</p>\r\n', 3, 0, '2019-06-05 08:10:39', '2019-08-08 00:33:47'),
+(3, 'dfg', 'dfg', 3, 0, '2019-06-05 10:35:02', '2019-06-05 10:35:02'),
+(4, 'dfg', 'fdg ', 3, 0, '2019-06-05 10:35:20', '2019-06-05 10:35:20'),
+(5, 'p[]', '<p>p[]p[</p>\r\n', 3, 0, '2019-06-07 15:02:19', '2019-06-07 15:02:19'),
+(6, 'jklkj', '<p>jklj</p>\r\n', 3, 0, '2019-06-07 15:03:46', '2019-06-07 15:03:46'),
+(7, 'lkj', '<p>kjlkj</p>\r\n', 3, 0, '2019-06-07 15:04:51', '2019-06-07 15:04:51');
 
 -- --------------------------------------------------------
 
@@ -326,9 +447,46 @@ ALTER TABLE `log`
   ADD KEY `template` (`template`);
 
 --
+-- Индексы таблицы `ready_sent`
+--
+ALTER TABLE `ready_sent`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `subscriberId` (`subscriberId`),
+  ADD KEY `templateId` (`templateId`),
+  ADD KEY `scheduleId` (`scheduleId`),
+  ADD KEY `success` (`success`),
+  ADD KEY `readmail` (`readMail`);
+
+--
+-- Индексы таблицы `redirect_log`
+--
+ALTER TABLE `redirect_log`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `schedule`
+--
+ALTER TABLE `schedule`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `templates` (`templateId`);
+
+--
+-- Индексы таблицы `schedule_category`
+--
+ALTER TABLE `schedule_category`
+  ADD KEY `categoryId` (`categoryId`),
+  ADD KEY `scheduleId` (`scheduleId`);
+
+--
 -- Индексы таблицы `settings`
 --
 ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `smtp`
+--
+ALTER TABLE `smtp`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -365,13 +523,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `attach`
 --
 ALTER TABLE `attach`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT для таблицы `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `charset`
@@ -392,10 +550,34 @@ ALTER TABLE `log`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT для таблицы `ready_sent`
+--
+ALTER TABLE `ready_sent`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `redirect_log`
+--
+ALTER TABLE `redirect_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `schedule`
+--
+ALTER TABLE `schedule`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT для таблицы `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+
+--
+-- AUTO_INCREMENT для таблицы `smtp`
+--
+ALTER TABLE `smtp`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `subscribers`

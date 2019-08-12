@@ -9,16 +9,21 @@ use Respect\Validation\Validator as v;
 use App\Helper\SettingsHelpers;
 use PHPMailer\PHPMailer;
 
+
+
 class CategoryController extends Controller
 {
    public function index($request,$response)
    {
 
-       $schedule = Schedule::get();
+       $re = ["'date'", "'<'", '"NOW() - INTERVAL \'2\' MINUTE"'];
+
+       $schedule = Schedule::where(null)
+           ->get();
 
        foreach ($schedule as $row)  {
 
-               var_dump($row->template->attach);
+               var_dump($row->template->id);
                exit;
 
 

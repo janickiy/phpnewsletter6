@@ -98,7 +98,7 @@ return [
         'require_subscription_confirmation' => 'Требовать подтверждение подписки',
         'unsublink_text' => 'Текст ссылки отписки от рассылки',
         'show_unsubscribe_link' => 'Показывать форму отписки от  рассылки',
-        'request_reply' => '>Запрашивать уведомления о прочтении писем',
+        'request_reply' => 'Запрашивать уведомления о прочтении писем',
         'new_subscriber_notify' => 'Уведомлять о новом подписчике',
         'limit_number' => 'Отправлять не более писем за раз',
         'sleep' => 'Задержка между отправки писем (сек.)',
@@ -127,6 +127,10 @@ return [
         'role' => 'Роль',
         'password_again' => 'Павтор пароля',
         'date_and_time' => 'Дата и время',
+        'interval_number' => 'Интервал отправки писем подписчику',
+        'minute' => 'минут',
+        'hour' => 'часов',
+        'day' => 'дней',
     ],
     'note' => [
         'personalization' => '<strong>Персонализация:</strong> %NAME% - имя подписчика, %EMAIL% - E-mail адрес, %UNSUB% - ссылка для удаления рассылки, %SERVER_NAME% - адрес сайта, %REFERRAL:http://my_website.com/% - ссылка для статистика переходов по ссылкам'

@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use App\Helper\{SettingsHelpers,StringHelpers};
-use App\Models\{Schedule, Subscribers, Smtp, Attach};
+use App\Models\{ReadySent, Schedule, Subscribers, Smtp, Attach};
 use PHPMailer\PHPMailer;
 
 
@@ -36,28 +36,64 @@ class EmailSend extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $mailcountno = 0;
+        $mailcount = 0;
+
         $name = SettingsHelpers::getSetting('EMAIL');
-        $schedule = Schedule::get();
+        $schedule = Schedule::where('date', '<=', date('Y-m-d H:i:s'))->get();
 
         foreach ($schedule as $row) {
 
             $order = SettingsHelpers::getSetting('RANDOM_SEND') == 1 ? 'ORDER BY RAND()' : 'subscribers.id';
             $limit = SettingsHelpers::getSetting('LIMIT_SEND') == 1 ? "LIMIT " . SettingsHelpers::getSetting('LIMIT_NUMBER') : null;
 
-            $subscribers = Subscribers::select('subscribers.email')
-                ->join('subscriptions', 'subscribers.id', '=', 'subscriptions.subscriberId')
-                ->join('schedule_category', 'subscriptions.categoryId', '=', 'schedule_category.categoryId')
-                ->leftJoin('ready_sent', function ($join) use ($row) {
-                    $join->on('subscribers.id', '=', 'ready_sent.subscriberId')
-                        ->where('ready_sent.templateId', '=', $row->templateId)
-                        ->where('ready_sent.success', '=', 1);
-                })
-                ->whereNull('ready_sent.subscriberId')
-                ->where('subscribers.active', 1)
-                ->groupBy('subscribers.id')
-                ->orderByRaw($order)
-                ->limit($limit)
-                ->get();
+            switch (SettingsHelpers::getSetting('INTERVAL_TYPE')) {
+                case "minute":
+                    $interval = "timeSent < NOW() - INTERVAL '" . SettingsHelpers::getSetting('INTERVAL_NUMBER') . "' MINUTE";
+                    break;
+                case "hour":
+                    $interval = "timeSent < NOW() - INTERVAL '" . SettingsHelpers::getSetting('INTERVAL_NUMBER') . "' HOUR";
+                    break;
+                case "day":
+                    $interval = "timeSent < NOW() - INTERVAL '" . SettingsHelpers::getSetting('INTERVAL_NUMBER') . "' DAY";
+                    break;
+                default:
+                    $interval = null;
+            }
+
+            if ($interval) {
+                $subscribers = Subscribers::select('subscribers.email')
+                    ->join('subscriptions', 'subscribers.id', '=', 'subscriptions.subscriberId')
+                    ->join('schedule_category', 'subscriptions.categoryId', '=', 'schedule_category.categoryId')
+                    ->leftJoin('ready_sent', function ($join) use ($row) {
+                        $join->on('subscribers.id', '=', 'ready_sent.subscriberId')
+                            ->where('ready_sent.templateId', '=', $row->templateId)
+                            ->where('ready_sent.success', '=', 1);
+                    })
+                    ->whereNull('ready_sent.subscriberId')
+                    ->where('subscribers.active', 1)
+                    ->whereRaw($interval)
+                    ->groupBy('subscribers.id')
+                    ->orderByRaw($order)
+                    ->limit($limit)
+                    ->get();
+            } else {
+                $subscribers = Subscribers::select('subscribers.email')
+                    ->join('subscriptions', 'subscribers.id', '=', 'subscriptions.subscriberId')
+                    ->join('schedule_category', 'subscriptions.categoryId', '=', 'schedule_category.categoryId')
+                    ->leftJoin('ready_sent', function ($join) use ($row) {
+                        $join->on('subscribers.id', '=', 'ready_sent.subscriberId')
+                            ->where('ready_sent.templateId', '=', $row->templateId)
+                            ->where('ready_sent.success', '=', 1);
+                    })
+                    ->whereNull('ready_sent.subscriberId')
+                    ->where('subscribers.active', 1)
+                    ->groupBy('subscribers.id')
+                    ->orderByRaw($order)
+                    ->limit($limit)
+                    ->get();
+            }
+
 
             foreach ($subscribers as $subscriber) {
                 $m = new PHPMailer\PHPMailer();
@@ -119,7 +155,7 @@ class EmailSend extends Command
                 else $m->Priority = 3;
 
                 if (SettingsHelpers::getSetting('SHOW_EMAIL') == 0)
-                    $m->From = "noreply@" . $_SERVER['SERVER_NAME'];
+                    $m->From = "noreply@" . StringHelpers::getDomain(SettingsHelpers::getSetting('URL'));
                 else
                     $m->From = SettingsHelpers::getSetting('EMAIL');
 
@@ -144,13 +180,13 @@ class EmailSend extends Command
 
                 if (SettingsHelpers::getSetting('SLEEP') > 0) sleep(SettingsHelpers::getSetting('SLEEP'));
                 if (SettingsHelpers::getSetting('ORGANIZATION') != '') $m->addCustomHeader("Organization: " . SettingsHelpers::getSetting('ORGANIZATION'));
-                if (SettingsHelpers::getSetting('URL') != '') $IMG = '<img border="0" src="' . SettingsHelpers::getSetting('URL') . '?t=pic&id_user=' . $subscriber->id . '&id_template=' . $row->template->id . '" width="1" height="1">';
+                if (SettingsHelpers::getSetting('URL') != '') $IMG = '<img border="0" src="' . SettingsHelpers::getSetting('URL') . '/pic/' . $subscriber->id . '/' . $row->templateId . '" width="1" height="1">';
 
                 $m->AddAddress($subscriber->email);
 
-                if (SettingsHelpers::getSetting('REQUEST_REPLY') == 1 && SettingsHelpers::getSetting('EAMIL') != ''){
-                    $m->addCustomHeader("Disposition-Notification-To: " . SettingsHelpers::getSetting('EAMIL'));
-                    $m->ConfirmReadingTo = SettingsHelpers::getSetting('EAMIL');
+                if (SettingsHelpers::getSetting('REQUEST_REPLY') == 1 && SettingsHelpers::getSetting('EMAIL') != ''){
+                    $m->addCustomHeader("Disposition-Notification-To: " . SettingsHelpers::getSetting('EMAIL'));
+                    $m->ConfirmReadingTo = SettingsHelpers::getSetting('EMAIL');
                 }
 
                 if (SettingsHelpers::getSetting('PRECEDENCE') == 'bulk')
@@ -160,7 +196,7 @@ class EmailSend extends Command
                 elseif (SettingsHelpers::getSetting('PRECEDENCE') == 'list')
                     $m->addCustomHeader("Precedence: list");
 
-                if (SettingsHelpers::getSetting('URL') != '') $UNSUB = SettingsHelpers::getSetting('URL') . "?t=unsubscribe&id=" . $subscriber->id . "&token=" . $subscriber->token;
+                if (SettingsHelpers::getSetting('URL') != '') $UNSUB = SettingsHelpers::getSetting('URL') . "/unsubscribe/" . $subscriber->id . "/token_" . $subscriber->token;
                 $unsublink = str_replace('%UNSUB%', $UNSUB, SettingsHelpers::getSetting('UNSUBLINK'));
 
                 if (SettingsHelpers::getSetting('SHOW_UNSUBSCRIBE_LINK') == 1 && SettingsHelpers::getSetting('UNSUBLINK') != '') {
@@ -207,16 +243,30 @@ class EmailSend extends Command
                 $m->Body = $msg;
 
                 if (!$m->Send()){
-                    $errormsg = $m->ErrorInfo;
-                    $insert = "INSERT INTO " . $ConfigDB["prefix"] . "ready_send (`id_ready_send`,`id_user`, `email`, `id_template`,`success`,`errormsg`,`readmail`,`time`,`id_log`) VALUES (0,".$user['id'].",'".$user['email']."',".$send['id_template'].",'no','".$errormsg."','no', NOW(),".$id_log.")";
-                    $dbh->query($insert);
-                    $mailcountno = $mailcountno + 1;
-                } else {
-                    $insert = "INSERT INTO " . $ConfigDB["prefix"] . "ready_send (`id_ready_send`,`id_user`, `email`, `id_template`,`success`,`errormsg`,`readmail`,`time`,`id_log`) VALUES (0,".$user['id'].",'".$user['email']."',".$send['id_template'].",'yes','','no', NOW(),".$id_log.")";
-                    $dbh->query($insert);
+                    $data['subscriberId'] = $subscriber->id;
+                    $data['email'] = $subscriber->email;
+                    $data['templateId'] = $row->templateId;
+                    $data['success'] = 0;
+                    $data['errorMsg'] = $m->ErrorInfo;
+                    $data['date'] = date('Y-m-d H:i:s');
+                    $data['scheduleId'] = $row->id;
 
-                    $update = "UPDATE " . $ConfigDB["prefix"] . "users SET time_send = NOW() WHERE id_user=" . $user['id'];
-                    $dbh->query($update);
+                    ReadySent::create($data);
+
+                    $mailcountno = $mailcountno + 1;
+
+                } else {
+
+                    $data['subscriberId'] = $subscriber->id;
+                    $data['email'] = $subscriber->email;
+                    $data['templateId'] = $row->templateId;
+                    $data['success'] = 1;
+                    $data['date'] = date('Y-m-d H:i:s');
+                    $data['scheduleId'] = $row->id;
+
+                    ReadySent::create($data);
+
+                    Subscribers::where('id', $subscriber->id)->update(['timeSent' => date('Y-m-d H:i:s')]);
 
                     $mailcount = $mailcount + 1;
                 }
@@ -225,18 +275,16 @@ class EmailSend extends Command
                 $m->ClearAllRecipients();
                 $m->ClearAttachments();
 
-                if ($settings['make_limit_send'] == "yes" && $settings['limit_number'] == $mailcount){
-                    if ($settings['how_to_send'] == 2) $m->SmtpClose();
+                if (SettingsHelpers::getSetting('LIMIT_SEND') == 1 && SettingsHelpers::getSetting('LIMIT_NUMBER') == $mailcount){
+                    if (SettingsHelpers::getSetting('HOW_TO_SEND') == 2) $m->SmtpClose();
                     break;
                 }
             }
 
-
+            if (SettingsHelpers::getSetting('LIMIT_SEND') == 1 && SettingsHelpers::getSetting('LIMIT_NUMBER') == $mailcount){
+                break;
+            }
         }
-
-
-        //   }
-
 
         // $text = 'Hi '.$input->getArgument('name');
         // Example code

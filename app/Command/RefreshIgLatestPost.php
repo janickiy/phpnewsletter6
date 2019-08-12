@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
+
+
 class RefreshIgLatestPost extends Command
 {
     protected function configure()
@@ -29,7 +31,11 @@ class RefreshIgLatestPost extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $text = 'Hi '.$input->getArgument('name');
+        $app = new \Slim\App();
+        $router = $app->router();
+
+
+        $text = 'Hi '. $app->urlFor('400');
         // Example code
         $output->writeLn("Fetched records from Algolia 3" . $text);
 

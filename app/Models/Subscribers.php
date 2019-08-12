@@ -15,6 +15,7 @@ class Subscribers extends Model
         'email',
         'ip',
         'active',
+        'timeSent',
         'token'
 	];
 

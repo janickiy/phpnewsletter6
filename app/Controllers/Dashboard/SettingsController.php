@@ -36,6 +36,7 @@ class SettingsController extends Controller
             'LIMIT_NUMBER' => ['rules' => v::numeric(), 'messages' => ['numeric' => 'Значение должно быть числом']],
             'SLEEP' => ['rules' => v::numeric(), 'messages' => ['numeric' => 'Значение должно быть числом']],
             'DAYS_FOR_REMOVE_SUBSCRIBER' => ['rules' => v::numeric(), 'messages' => ['numeric' => 'Значение должно быть числом']],
+            'INTERVAL_NUMBER' => ['rules' => v::numeric(), 'messages' => ['numeric' => 'Значение должно быть числом']],
         ]);
 
         if (!$validation->isValid()) {

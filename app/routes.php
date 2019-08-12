@@ -10,8 +10,8 @@ $app->get('/403', 'ErrosController:error403')->setName('403');
 $app->get('/404', 'ErrosController:error404')->setName('404');
 $app->get('/500', 'ErrosController:error500')->setName('500');
 
-
-$app->get('/temlates', 'TemlatesController:list');
+$app->get('/pic/{subscriber:[0-9]+}/{template:[0-9]+}', 'FrontendController:pic')->setName('frontend.pic');
+$app->get('/referral/{ref}/{subscriber:[0-9]+}', 'FrontendController:redirectLog')->setName('frontend.referral');
 
 $app->group('', function () {
 
@@ -22,6 +22,8 @@ $app->group('', function () {
     $this->post('/signin', 'AuthController:postSignIn')->setName('signin');
 
     $this->get('/auth/confirm', 'AuthController:confirmEmail');
+
+
 })->add(new GuestMiddleware($container));
 
 $app->group('', function () use ($container) {
