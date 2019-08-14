@@ -2,38 +2,15 @@
 
 namespace App\Controllers\Dashboard;
 
-use App\Models\{Category, Schedule, Subscribers, Smtp, Templates};
+use App\Models\{Category};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
-
-use App\Helper\SettingsHelpers;
-use PHPMailer\PHPMailer;
-
-
 
 class CategoryController extends Controller
 {
    public function index($request,$response)
    {
-
-       $re = ["'date'", "'<'", '"NOW() - INTERVAL \'2\' MINUTE"'];
-
-       $schedule = Schedule::where(null)
-           ->get();
-
-       foreach ($schedule as $row)  {
-
-               var_dump($row->template->id);
-               exit;
-
-
-       }
-
-
-
-
-
-       $title = "Категория подписчиков";
+      $title = "Категория подписчиков";
 
        return $this->view->render($response,'dashboard/category/index.twig', compact('title'));
    }

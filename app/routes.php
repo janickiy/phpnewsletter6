@@ -12,6 +12,8 @@ $app->get('/500', 'ErrosController:error500')->setName('500');
 
 $app->get('/pic/{subscriber:[0-9]+}/{template:[0-9]+}', 'FrontendController:pic')->setName('frontend.pic');
 $app->get('/referral/{ref}/{subscriber:[0-9]+}', 'FrontendController:redirectLog')->setName('frontend.referral');
+$app->get('/unsubscribe/{subscriber:[0-9]+}/{token:[a-z0-9]+}', 'FrontendController:unsubscribe')->setName('frontend.unsubscribe');
+$app->get('/subscribe/{subscriber:[0-9]+}/{token:[a-z0-9]+}', 'FrontendController:subscribe')->setName('frontend.subscribe');
 
 $app->group('', function () {
 

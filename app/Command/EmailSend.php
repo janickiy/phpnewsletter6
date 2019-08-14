@@ -180,7 +180,7 @@ class EmailSend extends Command
 
                 if (SettingsHelpers::getSetting('SLEEP') > 0) sleep(SettingsHelpers::getSetting('SLEEP'));
                 if (SettingsHelpers::getSetting('ORGANIZATION') != '') $m->addCustomHeader("Organization: " . SettingsHelpers::getSetting('ORGANIZATION'));
-                if (SettingsHelpers::getSetting('URL') != '') $IMG = '<img border="0" src="' . SettingsHelpers::getSetting('URL') . '/pic/' . $subscriber->id . '/' . $row->templateId . '" width="1" height="1">';
+                if (SettingsHelpers::getSetting('URL') != '') $IMG = '<img border="0" src="http://' . StringHelpers::getDomain(SettingsHelpers::getSetting('URL')) . '/pic/' . $subscriber->id . '/' . $row->templateId . '" width="1" height="1">';
 
                 $m->AddAddress($subscriber->email);
 
@@ -196,7 +196,7 @@ class EmailSend extends Command
                 elseif (SettingsHelpers::getSetting('PRECEDENCE') == 'list')
                     $m->addCustomHeader("Precedence: list");
 
-                if (SettingsHelpers::getSetting('URL') != '') $UNSUB = SettingsHelpers::getSetting('URL') . "/unsubscribe/" . $subscriber->id . "/token_" . $subscriber->token;
+                if (SettingsHelpers::getSetting('URL') != '') $UNSUB = "http://" . StringHelpers::getDomain(SettingsHelpers::getSetting('URL')) . "/unsubscribe/" . $subscriber->id . "/" . $subscriber->token;
                 $unsublink = str_replace('%UNSUB%', $UNSUB, SettingsHelpers::getSetting('UNSUBLINK'));
 
                 if (SettingsHelpers::getSetting('SHOW_UNSUBSCRIBE_LINK') == 1 && SettingsHelpers::getSetting('UNSUBLINK') != '') {
@@ -207,7 +207,7 @@ class EmailSend extends Command
 
                 $url_info = parse_url(SettingsHelpers::getSetting('URL'));
 
-                $msg = preg_replace_callback("/%REFERRAL\:(.+)%/isU", function($matches) { return "http://%URL_PATH%?t=referral&ref=" . base64_encode($matches[1]) . "&id=%USERID%"; }, $msg);
+                $msg = preg_replace_callback("/%REFERRAL\:(.+)%/isU", function($matches) { return "http://%URL_PATH%/referral/" . base64_encode($matches[1]) . "/ %USERID%"; }, $msg);
                 $msg = str_replace('%NAME%', $subscriber->name, $msg);
                 $msg = str_replace('%UNSUB%', $UNSUB, $msg);
                 $msg = str_replace('%SERVER_NAME%', $url_info['host'], $msg);
