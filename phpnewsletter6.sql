@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Авг 12 2019 г., 03:41
--- Версия сервера: 10.1.36-MariaDB
--- Версия PHP: 7.2.10
+-- Время создания: Авг 21 2019 г., 16:57
+-- Версия сервера: 10.3.16-MariaDB
+-- Версия PHP: 7.3.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -157,7 +157,7 @@ CREATE TABLE `ready_sent` (
   `email` varchar(255) NOT NULL,
   `templateId` int(11) NOT NULL,
   `success` tinyint(1) NOT NULL,
-  `errorMsg` text,
+  `errorMsg` text DEFAULT NULL,
   `readMail` tinyint(1) DEFAULT NULL,
   `date` timestamp NULL DEFAULT NULL,
   `scheduleId` int(11) NOT NULL,
@@ -230,6 +230,29 @@ INSERT INTO `schedule_category` (`scheduleId`, `categoryId`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `id` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `token` varchar(100) NOT NULL,
+  `expiry` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `sessions`
+--
+
+INSERT INTO `sessions` (`id`, `userId`, `token`, `expiry`, `created_at`, `updated_at`) VALUES
+(1, 1, '412ff5af8c0d9a71d46ae64a333fa324', '2020-08-20 10:35:46', '2019-08-21 10:35:46', '2019-08-21 10:35:46'),
+(2, 1, '019cd7bffad653427315717c83367bce', '2020-08-20 10:42:41', '2019-08-21 10:42:41', '2019-08-21 10:42:41');
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `settings`
 --
 
@@ -278,7 +301,8 @@ INSERT INTO `settings` (`id`, `name`, `value`) VALUES
 (34, 'DKIM_PASSPHRASE', 'password'),
 (35, 'DKIM_IDENTITY', ''),
 (36, 'INTERVAL_TYPE', 'minute'),
-(37, 'INTERVAL_NUMBER', '1');
+(37, 'INTERVAL_NUMBER', '1'),
+(38, 'LANGUAGE', 'ru');
 
 -- --------------------------------------------------------
 
@@ -295,7 +319,7 @@ CREATE TABLE `smtp` (
   `authentication` varchar(20) NOT NULL,
   `secure` varchar(20) NOT NULL,
   `timeout` int(6) NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -305,8 +329,7 @@ CREATE TABLE `smtp` (
 --
 
 INSERT INTO `smtp` (`id`, `host`, `username`, `password`, `port`, `authentication`, `secure`, `timeout`, `active`, `created_at`, `updated_at`) VALUES
-(2, 'mail.adm.tools', 'support@trust-signal.com', 'wer12Dwer', 25, 'login', 'ssl', 5, 1, '2019-07-02 20:42:02', '2019-07-02 21:02:38'),
-(3, 'mail.adm2.tools', 'janic', 'wer12Dwer', 25, 'login', 'no', 5, 1, '2019-08-06 23:40:43', '2019-08-06 23:40:43');
+(4, 'smtp.yandex.ru', 'yanack@yandex.ru', 'larafabian', 465, 'login', 'ssl', 5, 1, '2019-08-21 07:26:20', '2019-08-21 07:26:20');
 
 -- --------------------------------------------------------
 
@@ -319,7 +342,7 @@ CREATE TABLE `subscribers` (
   `name` varchar(100) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `ip` varchar(100) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT 1,
   `token` varchar(32) NOT NULL,
   `timeSent` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -392,7 +415,7 @@ INSERT INTO `templates` (`id`, `name`, `body`, `prior`, `pos`, `created_at`, `up
 CREATE TABLE `users` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `role` varchar(20) NOT NULL,
   `login` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL DEFAULT '',
@@ -405,8 +428,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `description`, `role`, `login`, `password`, `created_at`, `updated_at`) VALUES
-(1, 'janickiy', 'janickiy', 'admin', 'janickiy', '$2y$10$mlxprWviwwCT.6fbTX0mm.8VXRtwzyRDKdjQtMytg1uRK/c1G/UNK', '2019-05-21 11:30:54', '2019-06-25 14:00:54'),
-(2, 'yanack', 'yanack', 'moderator', 'yanack', '$2y$10$bUAvSmFC/vyugMQ/2nSPLOCX7V.P72sKC4tM9Q4ORmewKjwikijNa', '2019-05-24 11:52:52', '2019-06-25 14:00:07');
+(1, 'janickiy', 'janickiy', 'admin', 'janickiy', '$2y$10$eJwI.FaYENMU7YulbOqKYuO4i0qusBnfaAvzJnsj.P9yJoyG.fKfG', '2019-05-21 11:30:54', '2019-08-21 08:31:37'),
+(0, 'yanack', '', 'admin', 'yanack', '$2y$10$0ig2G8GtpF6YoXd6x8AfduksLTIp8vAgOFc.VP0fOSJhcJuC//y5.', '2019-08-21 08:32:39', '2019-08-21 08:32:39');
 
 --
 -- Индексы сохранённых таблиц
@@ -476,6 +499,12 @@ ALTER TABLE `schedule`
 ALTER TABLE `schedule_category`
   ADD KEY `categoryId` (`categoryId`),
   ADD KEY `scheduleId` (`scheduleId`);
+
+--
+-- Индексы таблицы `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `settings`
@@ -568,16 +597,22 @@ ALTER TABLE `schedule`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT для таблицы `sessions`
+--
+ALTER TABLE `sessions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT для таблицы `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT для таблицы `smtp`
 --
 ALTER TABLE `smtp`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `subscribers`

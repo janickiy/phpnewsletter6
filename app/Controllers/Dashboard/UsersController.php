@@ -142,6 +142,10 @@ class UsersController extends Controller
             'role' => $request->getParam('role'),
         ];
 
+        if (!empty($request->getParam('password')) && !empty($request->getParam('password_again'))) {
+            $data['password'] = password_hash($request->getParam('password'),PASSWORD_DEFAULT);
+        }
+
         Users::where('id', $request->getParam('id'))->update($data);
 
         $this->flash->addMessage('success', 'Данные успешно обновлены');

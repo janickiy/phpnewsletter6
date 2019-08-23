@@ -79,11 +79,13 @@ $container['view'] = function ($container) {
 
     $view->getEnvironment()->addFunction($getSetting);
 
-
-    $translator = new Translator("en");
-    $translator->setFallbackLocales(['en']);
+    $lng = \App\Models\Settings::where('name', 'LANGUAGE')->first();
+    $setLng = $lng ? $lng->value : 'en';
+    $view->getEnvironment()->addGlobal('lng', $setLng);
+    $translator = new Translator($setLng);
+    $translator->setFallbackLocales([$setLng]);
     $translator->addLoader('php', new PhpFileLoader());
-    $translator->addResource('php', __DIR__ . '/../resources/lang/en.php', 'en');
+    $translator->addResource('php', __DIR__ . '/../resources/lang/' . $setLng . '.php', $setLng);
 
     $getTrans = new \Twig\TwigFunction('trans', function ($name) use ($translator) {
         return $translator->trans($name);
@@ -105,7 +107,6 @@ $container['validator'] = function ($container) {
     return new Awurth\SlimValidation\Validator();
 };
 
-
 $container['ErrosController'] = function($container) {
 	return new \App\Controllers\ErrosController($container);
 };
@@ -113,7 +114,6 @@ $container['ErrosController'] = function($container) {
 $container['FrontendController'] = function($container) {
     return new \App\Controllers\FrontendController($container);
 };
-
 
 $container['AuthController'] = function($container) {
 	return new \App\Controllers\Auth\AuthController($container);
@@ -155,12 +155,11 @@ $container['DataTableController'] = function($container) {
     return new \App\Controllers\Dashboard\DataTableController($container);
 };
 
-$container['PasswordController'] = function($container) {
-	return new \App\Controllers\Auth\PasswordController($container);
+$container['AjaxController'] = function($container) {
+	return new \App\Controllers\Dashboard\AjaxController($container);
 };
 
 $container['csrf'] = function($container) {
-
 	return new \Slim\Csrf\Guard;
 };
 

@@ -52,6 +52,12 @@ return [
         'sender_name' => 'Имя отправителя',
         'sender_email' => 'Email отправителя',
         'add_schedule' => 'Добавить рассылку',
+        'enter_login' => 'Введите логин',
+        'enter_password' => 'Введите пароль',
+        'singin' => 'ВОЙТИ',
+        'send_test_email' => 'Отправить себе тестовое письмо',
+        'send' => 'Отправить',
+
     ],
     'msg' => [
         'are_you_sure' => 'Are you sure?',
@@ -131,6 +137,7 @@ return [
         'minute' => 'минут',
         'hour' => 'часов',
         'day' => 'дней',
+
     ],
     'note' => [
         'personalization' => '<strong>Персонализация:</strong> %NAME% - имя подписчика, %EMAIL% - E-mail адрес, %UNSUB% - ссылка для удаления рассылки, %SERVER_NAME% - адрес сайта, %REFERRAL:http://my_website.com/% - ссылка для статистика переходов по ссылкам'
@@ -145,5 +152,11 @@ return [
         'settings' => 'Настройки',
         'users' => 'Пользователи',
         'schedule' => 'Расписание рассылки',
+    ],
+    'error' => [
+        'empty_subject' => '',
+        'empty_content' => '',
+        'empty_email' => '',
+        'wrong_email' => '',
     ],
 ];

@@ -30,6 +30,9 @@ $app->group('', function () {
 
 $app->group('', function () use ($container) {
 
+    $this->any('/ajax', 'AjaxController:action')->setName('admin.ajax.action');
+
+
     $this->get('/signout', 'AuthController:getSignOut')->setName('signout');
 
     $this->get('/auth/password/change', 'PasswordController:getChangePassword')->setName('auth.password.change')->add(new PermissionMiddleware($container, 'moderator'));

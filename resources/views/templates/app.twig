@@ -16,6 +16,7 @@
 
     <meta name="csrf_value" content="{{ csrf.attribute.value | raw }}">
 
+
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/bootstrap.min.css">
 
     <link rel="stylesheet" type="text/css" media="screen" href="{{ base_url() }}/css/font-awesome.min.css">
@@ -172,14 +173,23 @@ Use search to find needed section.
         <!-- multiple lang dropdown : find all flags in the flags page -->
         <ul class="header-dropdown-list hidden-xs">
             <li>
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="{{ base_url() }}/img/blank.gif" class="flag flag-gb" alt="English">
-                    <span> English</span> <i class="fa fa-angle-down"></i> </a>
-                <ul class="dropdown-menu pull-right">
-                    <li class="active">
-                        <a href="javascript:void(0);"><img src="{{ base_url() }}/img/blank.gif" class="flag flag-gb" alt="English">English</a>
+
+                {% if lng == 'ru' %}
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="{{ base_url() }}/img/blank.gif" class="flag flag-ru" alt="Русский">
+                        <span> Русский</span> <i class="fa fa-angle-down"></i>
+                    </a>
+                {% else %}
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="{{ base_url() }}/img/blank.gif" class="flag flag-gb" alt="English">
+                        <span> English</span> <i class="fa fa-angle-down"></i>
+                    </a>
+                {% endif %}
+
+                <ul id="select-lang" class="dropdown-menu pull-right">
+                    <li data-id="en" class="{{ lng == 'en' ? 'active' : '' }}">
+                        <a  href="javascript:void(0);"><img src="{{ base_url() }}/img/blank.gif" class="flag flag-gb" alt="English">English</a>
                     </li>
-                    <li>
-                        <a href="javascript:void(0);"><img src="{{ base_url() }}/img/blank.gif" class="flag flag-ru" alt="Russia">Русский язык</a>
+                    <li data-id="ru" class="{{ lng == 'ru' ? 'active' : '' }}">
+                        <a  href="javascript:void(0);"><img src="{{ base_url() }}/img/blank.gif" class="flag flag-ru" alt="Russia">Русский (Russian)</a>
                     </li>
                 </ul>
             </li>
@@ -323,7 +333,7 @@ Use search to find needed section.
 
         {% if title is defined %} <h2>{{ title }}</h2> {% endif %}
 
-        {% include 'templates/partials/flash.twig' %}
+
 
         {% block content %}
 
@@ -345,7 +355,6 @@ Use search to find needed section.
     </div>
 </div>
 <!-- END PAGE FOOTER -->
-
 
 <!--================================================== -->
 
@@ -396,6 +405,39 @@ Use search to find needed section.
 
 <script src="{{ base_url() }}/js/plugin/datetimepicker/jquery.datetimepicker.full.js"></script>
 
+<script>
+
+    $(function() {
+        $('ul.dropdown-menu li').on('click', function() {
+            $(this).parent().find('li.active').removeClass('active');
+            $(this).addClass('active');
+
+            var Lng = $(this).attr('data-id');
+
+            var request = $.ajax({
+
+                url: '{{ path_for('admin.ajax.action') }}',
+                method: "POST",
+                data: {
+                    action: "change_lng",
+                    lng: Lng,
+                    csrf_name: "{{ csrf.attribute.name | raw }}",
+                    csrf_value: "{{ csrf.attribute.value | raw }}",
+                },
+
+                dataType: "json"
+            });
+
+            request.done(function (data) {
+                if (data.result != null && data.result == true) {
+                    location.reload();
+                }
+            });
+
+        });
+    });
+
+</script>
 
 {% block js %}
 

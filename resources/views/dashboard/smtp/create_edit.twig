@@ -90,7 +90,7 @@
                                 <section>
                                     <label for="port" class="label">{{ trans('form.port') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="{{ trans('trans.port') }}а" name="port"  value="{{ smtp is defined ? smtp.port : old.port }}" id="port">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('form.port') }}" name="port"  value="{{ smtp is defined ? smtp.port : 25 }}" id="port">
                                     </label>
 
                                     {% if errors.port %}
@@ -102,7 +102,7 @@
                                 <section>
                                     <label for="timeout" class="label">{{ trans('form.connection_timeout') }}*</label>
                                     <label class="input">
-                                        <input type="text" maxlength="255" placeholder="{{ trans('form.connection_timeout') }}" name="timeout"  value="{{ smtp is defined ? smtp.timeout : old.timeout }}" id="timeout">
+                                        <input type="text" maxlength="255" placeholder="{{ trans('form.connection_timeout') }}" name="timeout"  value="{{ smtp is defined ? smtp.timeout : 5 }}" id="timeout">
                                     </label>
 
                                     {% if errors.timeout %}

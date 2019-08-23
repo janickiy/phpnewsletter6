@@ -2,9 +2,12 @@
 
 namespace App\Helper;
 
+use \App\Models\Settings;
+use Symfony\Component\Translation\Loader\PhpFileLoader;
+use Symfony\Component\Translation\Translator;
+
 class StringHelpers
 {
-
     /**
      * @param $data
      * @return array
@@ -617,5 +620,20 @@ class StringHelpers
         }
 
         return false;
+    }
+
+    /**
+     * @param $str
+     * @return string
+     */
+    static public function trans($str)
+    {
+        $lng = Settings::where('name', 'LANGUAGE')->first();
+        $setLng = $lng ? $lng->value : 'en';
+        $translator = new Translator($setLng);
+        $translator->setFallbackLocales([$setLng]);
+        $translator->addLoader('php', new PhpFileLoader());
+        $translator->addResource('php', __DIR__ . '/../resources/lang/' . $setLng . '.php', $setLng);
+        return $translator->trans($str);
     }
 }
