@@ -3,8 +3,8 @@
 namespace App\Controllers\Dashboard;
 
 use App\Controllers\Controller;
-use App\Models\{Settings};
-use App\Helper\{StringHelpers,ActionHelpers};
+use App\Models\{Attach, Settings};
+use App\Helper\{StringHelpers, ActionHelpers};
 
 class AjaxController extends Controller
 {
@@ -19,6 +19,18 @@ class AjaxController extends Controller
 
                     return $response->withJson(
                         ['result' => $setting->save()]
+                    );
+
+                    break;
+
+                case 'remove_attach':
+
+                    $id = $request->getParam('id');
+
+                    $result = $id ? Attach::Remove($id, $this->upload_directory) : false;
+
+                    return $response->withJson(
+                        ['result' => $result]
                     );
 
                     break;
@@ -40,7 +52,7 @@ class AjaxController extends Controller
 
                     if (count($errors) == 0) {
 
-                        ActionHelpers::sendEmail($email, $subject, $body, $prior);
+                        ActionHelpers::sendEmail($subject, $body, $email, 'USERNAME', $prior);
 
 
                     } else {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Attach extends Model
 {
@@ -12,6 +13,22 @@ class Attach extends Model
 
 	protected $fillable = [
         'name',
+        'file_name',
         'templateId'
 	];
+
+	public function scopeRemove(Builder $query, $id, $directory)
+    {
+        $q = $query->where('id', $id);
+
+        if ($q->exists()) {
+            $attach = $q->first();
+            if (file_exists($directory . '/' . $attach->name)) unlink($directory . '/' . $attach->name);
+            return $q->delete();
+        }
+
+        return false;
+    }
+
+
 }

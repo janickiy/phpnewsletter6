@@ -24,9 +24,10 @@
                         <table id="itemList" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>
                             <tr>
-                                <th width="25px">ID</th>
-                                <th>{{ trans('str.template') }}</th>
+                                <th width="15px">ID</th>
+                                <th width="50%">{{ trans('str.template') }}</th>
                                 <th>{{ trans('str.importance') }}</th>
+                                <th>{{ trans('str.attachments') }}</th>
                                 <th>{{ trans('str.date') }}</th>
                                 <th width="20px">{{ trans('str.action') }}</th>
                             </tr>
@@ -110,6 +111,7 @@
                     {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
                     {data: 'prior', name: 'prior', searchable: false},
+                    {data: 'attachment', name: 'attachment', searchable: false},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ],

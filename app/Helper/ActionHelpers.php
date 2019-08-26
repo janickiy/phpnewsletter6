@@ -3,139 +3,194 @@
 namespace App\Helper;
 
 use PHPMailer\PHPMailer;
+use App\Models\{Smtp};
 
 class ActionHelpers
 {
-    public static function sendEmail($email, $subject, $body, $prior)
+    public static function sendEmail($subject, $body, $email, $name = '', $prior )
     {
-        $user = 'USERNAME';
-        $subject = str_replace('%NAME%', $user, $subject);
-        $subject = core::getSetting('replacement_chars_subject') == 'yes' ? Pnl::encodeString($subject) : $subject;
-
         $m = new PHPMailer\PHPMailer();
 
-        if (core::getSetting('how_to_send') == 2){
-            $m->IsSMTP();
+        if (SettingsHelpers::getSetting('ADD_DKIM') == 1 && file_exists('' . SettingsHelpers::getSetting('DKIM_PRIVATE'))) {
+            $m->DKIM_domain = SettingsHelpers::getSetting('DKIM_DOMAIN');
+            $m->DKIM_private = SettingsHelpers::getSetting('DKIM_PRIVATE');
+            $m->DKIM_selector = SettingsHelpers::getSetting('DKIM_SELECTOR');
+            $m->DKIM_passphrase = SettingsHelpers::getSetting('DKIM_PASSPHRASE');
+            $m->DKIM_identity = SettingsHelpers::getSetting('DKIM_IDENTITY');
+        }
 
+        if (SettingsHelpers::getSetting('HOW_TO_SEND') == 'smtp') {
+            $m->IsSMTP();
             $m->SMTPAuth = true;
             $m->SMTPKeepAlive = true;
-            $m->Host = core::getSetting('smtp_host');
-            $m->Port = core::getSetting('smtp_port');
-            $m->Username = core::getSetting('smtp_username');
-            $m->Password = core::getSetting('smtp_password');
 
-            if (core::getSetting('smtp_secure') == 'ssl')
-                $m->SMTPSecure  = 'ssl';
-            elseif (core::getSetting('smtp_secure') == 'tls')
-                $m->SMTPSecure  = 'tls';
+            $smtp_q = Smtp::query();
 
-            if (core::getSetting('smtp_aut') == 'plain')
-                $m->AuthType = 'PLAIN';
-            elseif (core::getSetting('smtp_aut') == 'cram-md5')
-                $m->AuthType = 'CRAM-MD5';
+            if ($smtp_q->count() > 1) {
+                $smtp_r = $smtp_q->orderBy()->limit(1)->get();
+            } else {
+                $smtp_r = $smtp_q->limit(1)->get();
+            }
 
-            $m->Timeout =  core::getSetting('smtp_timeout');
-        } elseif (core::getSetting('how_to_send') == 3 && core::getSetting('sendmail') != ''){
+            if ($smtp_r) $smtp = $smtp_r->toArray();
+
+            if (isset($smtp[0]['host']) && isset($smtp[0]['port']) && isset($smtp[0]['port']) && isset($smtp[0]['username']) && isset($smtp[0]['password'])) {
+                $m->Host = $smtp[0]['host'];
+                $m->Port = $smtp[0]['port'];
+                $m->Username = $smtp[0]['username'];
+                $m->Password = $smtp[0]['password'];
+
+                if ($smtp[0]['secure'] == 'ssl')
+                    $m->SMTPSecure = 'ssl';
+                elseif ($smtp[0]['secure'] == 'tls')
+                    $m->SMTPSecure = 'tls';
+
+                if ($smtp[0]['authentication'] == 'plain')
+                    $m->AuthType = 'PLAIN';
+                elseif ($smtp[0]['authentication'] == 'cram-md5')
+                    $m->AuthType = 'CRAM-MD5';
+
+                $m->Timeout = $smtp[0]['timeout'];
+            }
+        } elseif (SettingsHelpers::getSetting('HOW_TO_SEND') == 'sendmail' && SettingsHelpers::getSetting('SENDMAIL_PATH') != '') {
             $m->IsSendmail();
-            $m->Sendmail = core::getSetting('sendmail');
+            $m->Sendmail = SettingsHelpers::getSetting('SENDMAIL_PATH');
         } else {
             $m->IsMail();
         }
 
-        $query = "SELECT * FROM " . core::database()->getTableName('charset') . " WHERE id_charset=" . core::getSetting('id_charset');
-        $result = core::database()->querySQL($query);
-        $char = core::database()->getRow($result);
-        $charset = $char['charset'];
+        $m->CharSet = SettingsHelpers::getSetting('CHARSET');
 
-        $m->CharSet = $charset;
-
-        if (core::getSetting('email_name') == '')
-            $from = $_SERVER["SERVER_NAME"];
-        else
-            $from = core::getSetting('email_name');
-
-        $organization = core::getSetting('organization');
-
-        if ($charset != 'utf-8') {
-            $from = iconv('utf-8', $charset, $from);
-            $subject = iconv('utf-8', $charset, $subject);
-            if (!empty($organization)) $organization = iconv('utf-8', $charset, $organization);
-        }
-
-        $m->Subject = $subject;
-        if (core::getSetting('organization') != '') $m->addCustomHeader("Organization: " . core::getSetting('organization'));
-
-        if ($prior == 1)
+        if ($row->template->prior == 1)
             $m->Priority = 1;
-        elseif ($prior == 2)
-            $m->Priority = 2;
+        elseif ($row->template->prior == 2)
+            $m->Priority = 5;
+        else $m->Priority = 3;
+
+        if (SettingsHelpers::getSetting('SHOW_EMAIL') == 0)
+            $m->From = "noreply@" . StringHelpers::getDomain(SettingsHelpers::getSetting('URL'));
         else
-            $m->Priority = 3;
+            $m->From = SettingsHelpers::getSetting('EMAIL');
 
-        if (core::getSetting('show_email') == "no")
-            $m->From = "noreply@" . $_SERVER['SERVER_NAME'];
-        else
-            $m->From = core::getSetting('email');
+        $m->FromName = SettingsHelpers::getSetting('FROM');
 
-        $m->FromName = $from;
-
-        if (core::getSetting('content_type') == 2)
+        if (SettingsHelpers::getSetting('LIST_OWNER') == '') $m->addCustomHeader("List-Owner: <" . SettingsHelpers::getSetting('LIST_OWNER') . ">");
+        if (SettingsHelpers::getSetting('RETURN_PATH') != '') $m->addCustomHeader("Return-Path: <" . SettingsHelpers::getSetting('RETURN_PATH') . ">");
+        if (SettingsHelpers::getSetting('CONTENT_TYPE') == 'html')
             $m->isHTML(true);
         else
             $m->isHTML(false);
 
-        $m->AddAddress($email);
+        $subject = $row->template->name;
+        $subject = str_replace('%NAME%', $subscriber->name, $subject);
+        $subject = SettingsHelpers::getSetting('RENDOM_REPLACEMENT_SUBJECT') == 1 ? StringHelpers::encodeString($subject) : $subject;
 
-        if (core::getSetting('request_reply') == "yes" && core::getSetting('email_reply') != ''){
-            $m->addCustomHeader("Disposition-Notification-To: " . core::getSetting('email_reply'));
-            $m->ConfirmReadingTo = core::getSetting('email_reply');
+        if (SettingsHelpers::getSetting('CHARSET') != 'utf-8'){
+            $subject = iconv('utf-8', SettingsHelpers::getSetting('CHARSET'), $subject);
         }
 
-        foreach($this->getCustomHeaders() as $row) {
-            if (!empty($row['name']) && !empty($row['value'])) $m->addCustomHeader($row['name'] . ":" . $row['value']);
+        $m->Subject = $subject;
+
+        if (SettingsHelpers::getSetting('SLEEP') > 0) sleep(SettingsHelpers::getSetting('SLEEP'));
+        if (SettingsHelpers::getSetting('ORGANIZATION') != '') $m->addCustomHeader("Organization: " . SettingsHelpers::getSetting('ORGANIZATION'));
+        if (SettingsHelpers::getSetting('URL') != '') $IMG = '<img border="0" src="http://' . StringHelpers::getDomain(SettingsHelpers::getSetting('URL')) . '/pic/' . $subscriber->id . '/' . $row->templateId . '" width="1" height="1">';
+
+        $m->AddAddress($subscriber->email);
+
+        if (SettingsHelpers::getSetting('REQUEST_REPLY') == 1 && SettingsHelpers::getSetting('EMAIL') != ''){
+            $m->addCustomHeader("Disposition-Notification-To: " . SettingsHelpers::getSetting('EMAIL'));
+            $m->ConfirmReadingTo = SettingsHelpers::getSetting('EMAIL');
         }
 
-        if (core::getSetting('precedence') == 'bulk')
+        if (SettingsHelpers::getSetting('PRECEDENCE') == 'bulk')
             $m->addCustomHeader("Precedence: bulk");
-        elseif (core::getSetting('precedence') == 'junk')
+        elseif (SettingsHelpers::getSetting('PRECEDENCE') == 'junk')
             $m->addCustomHeader("Precedence: junk");
-        elseif (core::getSetting('precedence') == 'list')
+        elseif (SettingsHelpers::getSetting('PRECEDENCE') == 'list')
             $m->addCustomHeader("Precedence: list");
-        if (core::getSetting('list_owner') != '') $m->addCustomHeader("List-Owner: <" . core::getSetting('list_owner') . ">");
-        if (core::getSetting('return_path') != '') $m->addCustomHeader("Return-Path: <" . core::getSetting('return_path') . ">");
 
-        $UNSUB = "http://" . $_SERVER["SERVER_NAME"] . Pnl::root() . "?t=unsubscribe&id=test&token=test";
-        $unsublink = str_replace('%UNSUB%', $UNSUB, core::getSetting('unsublink'));
+        if (SettingsHelpers::getSetting('URL') != '') $UNSUB = "http://" . StringHelpers::getDomain(SettingsHelpers::getSetting('URL')) . "/unsubscribe/" . $subscriber->id . "/" . $subscriber->token;
+        $unsublink = str_replace('%UNSUB%', $UNSUB, SettingsHelpers::getSetting('UNSUBLINK'));
 
-        if (core::getSetting('show_unsubscribe_link') == "yes" && core::getSetting('unsublink') != '') {
-            $msg = "" . $body . "<br><br>" . $unsublink;
+        if (SettingsHelpers::getSetting('SHOW_UNSUBSCRIBE_LINK') == 1 && SettingsHelpers::getSetting('UNSUBLINK') != '') {
+            $msg = $row->template->body . "<br><br>" . $unsublink;
             $m->addCustomHeader("List-Unsubscribe: " . $UNSUB);
         } else
-            $msg = $body;
+            $msg = $row->template->body;
 
-        $msg = preg_replace_callback("/%REFERRAL\:(.+)%/isU", function($matches) { return "http://%URL_PATH%?t=referral&ref=" . base64_encode($matches[1]) . "&id=%USERID%"; }, $msg);
-        $msg = str_replace('%NAME%', $user, $msg);
-        $msg = str_replace('%EMAIL%', $email, $msg);
+        $url_info = parse_url(SettingsHelpers::getSetting('URL'));
+
+        $msg = preg_replace_callback("/%REFERRAL\:(.+)%/isU", function($matches) { return "http://%URL_PATH%/referral/" . base64_encode($matches[1]) . "/ %USERID%"; }, $msg);
+        $msg = str_replace('%NAME%', $subscriber->name, $msg);
         $msg = str_replace('%UNSUB%', $UNSUB, $msg);
-        $msg = str_replace('%SERVER_NAME%', $_SERVER['SERVER_NAME'], $msg);
-        $msg = str_replace('%USERID%', 0, $msg);
-        $msg = str_replace('%URL_PATH%', $_SERVER["SERVER_NAME"] . Pnl::root(), $msg);
-        $msg = core::getSetting('replacement_chars_body') == 'yes' ? Pnl::encodeString($msg) : $msg;
+        $msg = str_replace('%SERVER_NAME%', $url_info['host'], $msg);
+        $msg = str_replace('%USERID%',$subscriber->id, $msg);
 
-        if ($charset != 'utf-8') $msg = iconv('utf-8', $charset, $msg);
-        if (core::getSetting('content_type') == 1) {
+        $msg = SettingsHelpers::getSetting('RANDOM_REPLACEMENT_BODY') == 1 ? StringHelpers::encodeString($msg) : $msg;
+
+        if (isset($row->template->attach)) {
+            foreach ($row->template->attach as $f) {
+
+                $path = 'attach/' . $f->name;
+
+                if (file_exists($path)) {
+                    if (SettingsHelpers::getSetting('CHARSET') != 'utf-8') $row['name'] = iconv('utf-8', SettingsHelpers::getSetting('CHARSET'), $f->name);
+
+                    $ext = strrchr($path, ".");
+                    $mime_type = StringHelpers::getMimeType($ext);
+
+                    $m->AddAttachment($path, $f->name, 'base64', $mime_type);
+                }
+            }
+        }
+
+        if (SettingsHelpers::getSetting('CHARSET') != 'utf-8') $msg = iconv('utf-8', SettingsHelpers::getSetting('CHARSET'), $msg);
+
+        if (SettingsHelpers::getSetting('CONTENT_TYPE') == 2){
+            $msg .= $IMG;
+        } else {
             $msg = preg_replace('/<br(\s\/)?>/i', "\n", $msg);
-            $msg = Pnl::remove_html_tags($msg);
+            $msg = StringHelpers::removeHtmlTags($msg);
         }
 
         $m->Body = $msg;
 
         if (!$m->Send()){
-            if (core::getSetting('how_to_send') == 2) $m->SmtpClose();
-            return false;
+            $data['subscriberId'] = $subscriber->id;
+            $data['email'] = $subscriber->email;
+            $data['templateId'] = $row->templateId;
+            $data['success'] = 0;
+            $data['errorMsg'] = $m->ErrorInfo;
+            $data['date'] = date('Y-m-d H:i:s');
+            $data['scheduleId'] = $row->id;
+
+            ReadySent::create($data);
+
+            $mailcountno = $mailcountno + 1;
+
         } else {
-            if (core::getSetting('how_to_send') == 2) $m->SmtpClose();
-            return true;
+
+            $data['subscriberId'] = $subscriber->id;
+            $data['email'] = $subscriber->email;
+            $data['templateId'] = $row->templateId;
+            $data['success'] = 1;
+            $data['date'] = date('Y-m-d H:i:s');
+            $data['scheduleId'] = $row->id;
+
+            ReadySent::create($data);
+
+            Subscribers::where('id', $subscriber->id)->update(['timeSent' => date('Y-m-d H:i:s')]);
+
+            $mailcount = $mailcount + 1;
+        }
+
+        $m->ClearCustomHeaders();
+        $m->ClearAllRecipients();
+        $m->ClearAttachments();
+
+        if (SettingsHelpers::getSetting('LIMIT_SEND') == 1 && SettingsHelpers::getSetting('LIMIT_NUMBER') == $mailcount){
+            if (SettingsHelpers::getSetting('HOW_TO_SEND') == 2) $m->SmtpClose();
+            break;
         }
     }
 }

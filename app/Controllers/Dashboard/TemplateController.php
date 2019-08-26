@@ -5,7 +5,6 @@ namespace App\Controllers\Dashboard;
 use App\Models\{Templates,Attach};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
-use App\Models\Category;
 use Slim\Http\UploadedFile;
 
 class TemplateController extends Controller
@@ -61,6 +60,7 @@ class TemplateController extends Controller
 
                 $attach = [
                     'name' => $filename,
+                    'file_name' => $uploadedFile->getClientFilename(),
                     'templateId' => $id
                 ];
 
@@ -90,7 +90,9 @@ class TemplateController extends Controller
 
         if (!$template) return $this->view->render($response, 'errors/404.twig');
 
-        return $this->view->render($response, 'dashboard/template/create_edit.twig', compact('template', 'title'));
+        $attachment = $template->attach;
+
+        return $this->view->render($response, 'dashboard/template/create_edit.twig', compact('template', 'attachment', 'title'));
     }
 
     /**
@@ -116,9 +118,7 @@ class TemplateController extends Controller
         }
 
         $directory = $this->upload_directory;
-
         $uploadedFiles = $request->getUploadedFiles();
-
 
         // handle single input with multiple file uploads
         foreach ($uploadedFiles['attachfile'] as $uploadedFile) {
@@ -128,11 +128,12 @@ class TemplateController extends Controller
 
                 $attach = [
                     'name' => $filename,
+                    'file_name' => $uploadedFile->getClientFilename(),
                     'templateId' => $request->getParam('id')
                 ];
 
                 Attach::create($attach);
-            } else die('we');
+            };
         }
 
         $data['name'] = $request->getParam('name');
@@ -153,39 +154,15 @@ class TemplateController extends Controller
      */
     public function destroy($request, $response, $id)
     {
-        Templates::where('id', $id)->delete();
+        $q = Templates::where('id', $id);
 
-        $attach = Attach::where('templateId',$id);
-
-        if ($attach) {
-            $directory = $this->upload_directory;
-            foreach ($attach->get() as $f) {
-                if (file_exists($directory . '/' . $f->name)) unlink($directory . '/' . $f->name);
+        if ($q->exists()) {
+            foreach ($q->first()->attach as $a) {
+                if (isset($a->id) && $a->id) Attach::Remove($a->id, $this->upload_directory);
             }
 
-            $attach->delete();
+            $q->delete();
         }
-    }
-
-    /**
-     * @param $request
-     * @param $response
-     * @param $id
-     * @return mixed
-     */
-    public function removeAttach($request, $response, $id)
-    {
-        $directory = $this->upload_directory;
-        $attach = Attach::where('id', $id);
-        $f = $attach->first();
-
-        if ($f && file_exists($directory . '/' . $f->name)) {
-            unlink($directory . '/' . $f->name);
-        }
-
-        $attach->delete();
-
-        return $response->withRedirect($this->router->pathFor('admin.template.edit',['id' => $request->getParam('id')]));
     }
 
     /**

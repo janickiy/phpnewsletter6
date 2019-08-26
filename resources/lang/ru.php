@@ -23,6 +23,7 @@ return [
         'remove' => 'Удалить',
         'apply' => 'Применить',
         'no' => 'нет',
+        'yes' => 'да',
         'add_category' => 'Добавить категорию',
         'interface_settings' => 'Настройки интерфейса',
         'mailing_options' => 'Параметры рассылки',
@@ -57,6 +58,8 @@ return [
         'singin' => 'ВОЙТИ',
         'send_test_email' => 'Отправить себе тестовое письмо',
         'send' => 'Отправить',
+        'attachments' => 'Вложения',
+        'send_test_letter' => 'Отправить себе тестовое письмо',
 
     ],
     'msg' => [

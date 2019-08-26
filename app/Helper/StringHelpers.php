@@ -633,7 +633,7 @@ class StringHelpers
         $translator = new Translator($setLng);
         $translator->setFallbackLocales([$setLng]);
         $translator->addLoader('php', new PhpFileLoader());
-        $translator->addResource('php', __DIR__ . '/../resources/lang/' . $setLng . '.php', $setLng);
+        $translator->addResource('php', __DIR__ . '/../../resources/lang/' . $setLng . '.php', $setLng);
         return $translator->trans($str);
     }
 }

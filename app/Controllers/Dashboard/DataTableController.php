@@ -58,6 +58,9 @@ class DataTableController extends Controller
             ['db' => 'prior', 'dt' => 'prior', 'formatter' => function ($d, $row) {
                 return Templates::getPrior($d);
             }, 'field' => 'prior'],
+            ['db' => 'id', 'dt' => 'attachment', 'formatter' => function ($d, $row) {
+                return Attach::where('templateId',$d)->count() > 0 ? StringHelpers::trans('str.yes'):StringHelpers::trans('str.no');
+            }, 'field' => 'attachment', 'as' => 'attachment'],
             ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at'],
             ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
                 $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.template.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
