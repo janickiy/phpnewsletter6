@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Dashboard;
 
-use App\Models\{Attach, Category,Templates};
+use App\Models\{Category};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 
@@ -12,24 +12,6 @@ class CategoryController extends Controller
     {
         $title = "Категория подписчиков";
 
-     //   $q = Attach::Remove(1,$this->upload_directory);
-
-
-        $q = Templates::where('id', 1);
-
-        if ($q->exists()) {
-            foreach ($q->first()->attach as $a){
-                var_dump($a->id);
-            }
-        }
-
-
-
-      //  var_dump($q);
-        exit;
-
-        var_dump($q->exists());
-        exit;
 
         return $this->view->render($response, 'dashboard/category/index.twig', compact('title'));
     }

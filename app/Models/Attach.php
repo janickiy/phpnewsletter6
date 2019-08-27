@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Attach extends Model
 {
+
+
+
 	protected $table = 'attach';
 
     protected $primaryKey = 'id';
@@ -16,6 +19,11 @@ class Attach extends Model
         'file_name',
         'templateId'
 	];
+
+    protected $attributes = [
+        'name' => 'user',
+    ];
+
 
 	public function scopeRemove(Builder $query, $id, $directory)
     {

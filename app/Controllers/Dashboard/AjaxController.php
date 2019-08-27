@@ -4,7 +4,7 @@ namespace App\Controllers\Dashboard;
 
 use App\Controllers\Controller;
 use App\Models\{Attach, Settings};
-use App\Helper\{StringHelpers, ActionHelpers};
+use App\Helper\{SettingsHelpers, StringHelpers, SendEmailHelpers};
 
 class AjaxController extends Controller
 {
@@ -44,24 +44,23 @@ class AjaxController extends Controller
 
                     $errors = [];
 
-
                     if (empty($subject)) $errors[] = StringHelpers::trans('error.empty_subject');
                     if (empty($body)) $errors[] = StringHelpers::trans('error.empty_content');
                     if (empty($email)) $errors[] = StringHelpers::trans('error.empty_email');
                     if (!empty($email) && StringHelpers::isEmail($email)) $errors[] = StringHelpers::trans('error.empty_email');
 
                     if (count($errors) == 0) {
-
-                        ActionHelpers::sendEmail($subject, $body, $email, 'USERNAME', $prior);
-
-
+                        SendEmailHelpers::setBody($body);
+                        SendEmailHelpers::setSubject($subject);
+                        SendEmailHelpers::setPrior($prior);
+                        SendEmailHelpers::setEmail($email);
+                        SendEmailHelpers::sendEmail();
                     } else {
                         $result_send = 'errors';
                         $msg = implode(",", $errors);
                     }
 
                     $content = ['result' => $result_send, 'msg' => $msg];
-
 
                     break;
 

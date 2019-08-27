@@ -3,12 +3,168 @@
 namespace App\Helper;
 
 use PHPMailer\PHPMailer;
-use App\Models\{Smtp};
+use App\Models\{Attach,Smtp};
 
-class ActionHelpers
+class SendEmailHelpers
 {
-    public static function sendEmail($subject, $body, $email, $name = '', $prior )
+
+    private static $subject;
+
+    private static $body;
+
+    private static $email;
+
+    private static $prior;
+
+    private static $name = 'USERNAME';
+
+    private static $templateId = 0;
+
+    private static $subscriberId = 0;
+
+    private static $token = '';
+
+    /**
+     * @return mixed
+     */
+    public static function getSubject() {
+        return self::$subject;
+    }
+
+    public static function getToken() {
+        return self::$token;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getBody() {
+        return self::$body;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getEmail() {
+        return self::$email;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getPrior() {
+        return self::$prior;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getName() {
+        return self::$name;
+    }
+
+    /**
+     * @return int
+     */
+    public static function getTemplateId() {
+        return self::$templateId;
+    }
+
+    /**
+     * @return int
+     */
+    public static function getSubscriberId() {
+        return self::$subscriberId;
+    }
+
+    /**
+     * @param $subject
+     * @return mixed
+     */
+    public static function setSubject($subject)
     {
+        return self::$subject = $subject;
+    }
+
+    /**
+     * @param $body
+     * @return mixed
+     */
+    public static function setBody($body)
+    {
+        return self::$body = $body;
+    }
+
+    /**
+     * @param $token
+     * @return mixed
+     */
+    public static function setToken($token)
+    {
+        return self::$token = $token;
+    }
+
+    /**
+     * @param $email
+     * @return mixed
+     */
+    public static function setEmail($email)
+    {
+        return self::$email = $email;
+    }
+
+    /**
+     * @param $prior
+     * @return mixed
+     */
+    public static function setPrior($prior)
+    {
+        return self::$prior = $prior;
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    public static function setName($name)
+    {
+        return self::$name = $name;
+    }
+
+    /**
+     * @param $templateId
+     * @return mixed
+     */
+    public static function setTemplateId($templateId)
+    {
+        return self::$templateId = $templateId;
+    }
+
+    /**
+     * @param $subscriberId
+     * @return mixed
+     */
+    public static function setSubscriberId($subscriberId)
+    {
+        return self::$subscriberId = $subscriberId;
+    }
+
+    /**
+     * @param Attach|null $attach
+     * @return bool
+     * @throws PHPMailer\Exception
+     */
+    public static function sendEmail(Attach $attach = null)
+    {
+        $subject = self::getSubject();
+        $body = self::getBody();
+        $email = self::getEmail();
+        $prior = self::getPrior();
+        $name = self::getName();
+        $templateId = self::getTemplateId();
+        $subscriberId = self::getSubscriberId();
+        $token = self::getToken();
+
         $m = new PHPMailer\PHPMailer();
 
         if (SettingsHelpers::getSetting('ADD_DKIM') == 1 && file_exists('' . SettingsHelpers::getSetting('DKIM_PRIVATE'))) {
@@ -61,9 +217,9 @@ class ActionHelpers
 
         $m->CharSet = SettingsHelpers::getSetting('CHARSET');
 
-        if ($row->template->prior == 1)
+        if ($prior == 1)
             $m->Priority = 1;
-        elseif ($row->template->prior == 2)
+        elseif ($prior == 2)
             $m->Priority = 5;
         else $m->Priority = 3;
 
@@ -81,8 +237,7 @@ class ActionHelpers
         else
             $m->isHTML(false);
 
-        $subject = $row->template->name;
-        $subject = str_replace('%NAME%', $subscriber->name, $subject);
+        $subject = str_replace('%NAME%', $name, $subject);
         $subject = SettingsHelpers::getSetting('RENDOM_REPLACEMENT_SUBJECT') == 1 ? StringHelpers::encodeString($subject) : $subject;
 
         if (SettingsHelpers::getSetting('CHARSET') != 'utf-8'){
@@ -93,9 +248,9 @@ class ActionHelpers
 
         if (SettingsHelpers::getSetting('SLEEP') > 0) sleep(SettingsHelpers::getSetting('SLEEP'));
         if (SettingsHelpers::getSetting('ORGANIZATION') != '') $m->addCustomHeader("Organization: " . SettingsHelpers::getSetting('ORGANIZATION'));
-        if (SettingsHelpers::getSetting('URL') != '') $IMG = '<img border="0" src="http://' . StringHelpers::getDomain(SettingsHelpers::getSetting('URL')) . '/pic/' . $subscriber->id . '/' . $row->templateId . '" width="1" height="1">';
+        if (SettingsHelpers::getSetting('URL') != '') $IMG = '<img border="0" src="http://' . StringHelpers::getDomain(SettingsHelpers::getSetting('URL')) . '/pic/' . $subscriberId . '/' . $templateId . '" width="1" height="1">';
 
-        $m->AddAddress($subscriber->email);
+        $m->AddAddress($email);
 
         if (SettingsHelpers::getSetting('REQUEST_REPLY') == 1 && SettingsHelpers::getSetting('EMAIL') != ''){
             $m->addCustomHeader("Disposition-Notification-To: " . SettingsHelpers::getSetting('EMAIL'));
@@ -109,27 +264,27 @@ class ActionHelpers
         elseif (SettingsHelpers::getSetting('PRECEDENCE') == 'list')
             $m->addCustomHeader("Precedence: list");
 
-        if (SettingsHelpers::getSetting('URL') != '') $UNSUB = "http://" . StringHelpers::getDomain(SettingsHelpers::getSetting('URL')) . "/unsubscribe/" . $subscriber->id . "/" . $subscriber->token;
+        if (SettingsHelpers::getSetting('URL') != '') $UNSUB = "http://" . StringHelpers::getDomain(SettingsHelpers::getSetting('URL')) . "/unsubscribe/" . $subscriberId . "/" . $token;
         $unsublink = str_replace('%UNSUB%', $UNSUB, SettingsHelpers::getSetting('UNSUBLINK'));
 
         if (SettingsHelpers::getSetting('SHOW_UNSUBSCRIBE_LINK') == 1 && SettingsHelpers::getSetting('UNSUBLINK') != '') {
-            $msg = $row->template->body . "<br><br>" . $unsublink;
+            $msg = $body . "<br><br>" . $unsublink;
             $m->addCustomHeader("List-Unsubscribe: " . $UNSUB);
         } else
-            $msg = $row->template->body;
+            $msg = $body;
 
         $url_info = parse_url(SettingsHelpers::getSetting('URL'));
 
         $msg = preg_replace_callback("/%REFERRAL\:(.+)%/isU", function($matches) { return "http://%URL_PATH%/referral/" . base64_encode($matches[1]) . "/ %USERID%"; }, $msg);
-        $msg = str_replace('%NAME%', $subscriber->name, $msg);
+        $msg = str_replace('%NAME%', $name, $msg);
         $msg = str_replace('%UNSUB%', $UNSUB, $msg);
         $msg = str_replace('%SERVER_NAME%', $url_info['host'], $msg);
-        $msg = str_replace('%USERID%',$subscriber->id, $msg);
+        $msg = str_replace('%USERID%',$subscriberId, $msg);
 
         $msg = SettingsHelpers::getSetting('RANDOM_REPLACEMENT_BODY') == 1 ? StringHelpers::encodeString($msg) : $msg;
 
-        if (isset($row->template->attach)) {
-            foreach ($row->template->attach as $f) {
+        if ($attach) {
+            foreach ($attach as $f) {
 
                 $path = 'attach/' . $f->name;
 
@@ -156,41 +311,18 @@ class ActionHelpers
         $m->Body = $msg;
 
         if (!$m->Send()){
-            $data['subscriberId'] = $subscriber->id;
-            $data['email'] = $subscriber->email;
-            $data['templateId'] = $row->templateId;
-            $data['success'] = 0;
-            $data['errorMsg'] = $m->ErrorInfo;
-            $data['date'] = date('Y-m-d H:i:s');
-            $data['scheduleId'] = $row->id;
-
-            ReadySent::create($data);
-
-            $mailcountno = $mailcountno + 1;
+            $result =  false;
 
         } else {
-
-            $data['subscriberId'] = $subscriber->id;
-            $data['email'] = $subscriber->email;
-            $data['templateId'] = $row->templateId;
-            $data['success'] = 1;
-            $data['date'] = date('Y-m-d H:i:s');
-            $data['scheduleId'] = $row->id;
-
-            ReadySent::create($data);
-
-            Subscribers::where('id', $subscriber->id)->update(['timeSent' => date('Y-m-d H:i:s')]);
-
-            $mailcount = $mailcount + 1;
+            $result = true;
         }
 
         $m->ClearCustomHeaders();
         $m->ClearAllRecipients();
         $m->ClearAttachments();
 
-        if (SettingsHelpers::getSetting('LIMIT_SEND') == 1 && SettingsHelpers::getSetting('LIMIT_NUMBER') == $mailcount){
-            if (SettingsHelpers::getSetting('HOW_TO_SEND') == 2) $m->SmtpClose();
-            break;
-        }
+        if (SettingsHelpers::getSetting('HOW_TO_SEND') == 2) $m->SmtpClose();
+
+        return $result;
     }
 }
