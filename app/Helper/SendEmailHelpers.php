@@ -311,7 +311,7 @@ class SendEmailHelpers
         $m->Body = $msg;
 
         if (!$m->Send()){
-            $result =  false;
+            $result =  $m->ErrorInfo;
 
         } else {
             $result = true;

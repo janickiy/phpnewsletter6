@@ -54,7 +54,7 @@ class AjaxController extends Controller
                         SendEmailHelpers::setSubject($subject);
                         SendEmailHelpers::setPrior($prior);
                         SendEmailHelpers::setEmail($email);
-                        SendEmailHelpers::sendEmail();
+                        $result_send = SendEmailHelpers::sendEmail();
                     } else {
                         $result_send = 'errors';
                         $msg = implode(",", $errors);

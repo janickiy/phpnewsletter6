@@ -5,6 +5,8 @@ namespace App\Controllers\Dashboard;
 use App\Models\{Category};
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
+use App\Helper\{SettingsHelpers, StringHelpers, SendEmailHelpers};
+
 
 class CategoryController extends Controller
 {
@@ -13,7 +15,16 @@ class CategoryController extends Controller
         $title = "Категория подписчиков";
 
 
-        return $this->view->render($response, 'dashboard/category/index.twig', compact('title'));
+        //return $this->view->render($response, 'dashboard/category/index.twig', compact('title'));
+
+
+        SendEmailHelpers::setBody('rrr');
+        SendEmailHelpers::setSubject('dttyu io');
+        SendEmailHelpers::setPrior(1);
+        SendEmailHelpers::setEmail('janickiy@mail.ru');
+        $result_send = SendEmailHelpers::sendEmail();
+
+        var_dump($result_send);
     }
 
     /**
