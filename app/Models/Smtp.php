@@ -12,6 +12,7 @@ class Smtp extends Model
 
 	protected $fillable = [
 		'host',
+        'email',
         'username',
         'password',
         'port',

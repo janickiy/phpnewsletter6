@@ -207,10 +207,11 @@ class DataTableController extends Controller
 
         $columns = [
             ['db' => 'id', 'dt' => 'checkbox', 'formatter' => function ($d, $row) {
-                return '<input type="checkbox" title="Отметить/Снять отметку" value="' . $d . '" name="activate[]">';
+                return '<input type="checkbox" value="' . $d . '" name="activate[]">';
             }, 'field' => 'checkbox', 'as' => 'checkbox'],
             ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
             ['db' => 'host', 'dt' => 'host', 'field' => 'host'],
+            ['db' => 'email', 'dt' => 'email', 'field' => 'email'],
             ['db' => 'username', 'dt' => 'username', 'field' => 'username'],
             ['db' => 'port', 'dt' => 'port', 'field' => 'port'],
             ['db' => 'authentication', 'dt' => 'authentication', 'field' => 'authentication'],

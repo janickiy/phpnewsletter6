@@ -153,9 +153,9 @@
                             </div>
 
                             <div class="well bg-color-blueLight">
+                                <div id="resultSend"></div>
                                 <h3>{{ trans('str.send_test_letter') }}</h3>
                                 <div class="input-group">
-
                                     <input class="form-control" name="email" id="email" type="text" placeholder="Email">
                                     <div class="input-group-btn">
                                         <button class="btn btn-default" id="send_test" type="button">
@@ -247,12 +247,39 @@
                 });
 
                 request.done(function (data) {
-                    if (data.result != null && data.result == true) {
-                        $("#attach_" + idAttach).remove();
+                    if (data.result != null) {
+                        var alert_msg = '';
+
+                        if (data.result == 'success'){
+                            alert_msg += '<div class="alert alert-success alert-dismissable">';
+                            alert_msg += '<button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>';
+                            alert_msg += data.msg;
+                            alert_msg += '</div>';
+                        } else if (data.result == 'error'){
+                            alert_msg += '<div class="alert alert-danger alert-dismissable">';
+                            alert_msg += '<button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>';
+                            alert_msg += '<strong>${STR_ERROR}!</strong>';
+                            alert_msg += data.msg;
+                            alert_msg += '</div>';
+                        } else if (data.result == 'errors'){
+                            alert_msg += '<div class="alert alert-danger alert-dismissable">';
+                            alert_msg += '<button class="close" aria-hidden="true" data-dismiss="alert">×</button>';
+                            alert_msg += '<strong><h4 class="alert-heading">${STR_IDENTIFIED_FOLLOWING_ERRORS}:</h4></strong>';
+                            alert_msg += '<ul>';
+
+                            var arr = data.msg.split(',');
+
+                            for (var i = 0; i < arr.length; i++){
+                                alert_msg += '<li> ' + arr[i] + '</li>';
+                            }
+
+                            alert_msg += '</ul>';
+                            alert_msg += '</div>';
+                        }
+
+                        $("#resultSend").html(alert_msg);
                     }
                 });
-
-
             });
         });
 

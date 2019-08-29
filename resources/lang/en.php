@@ -69,6 +69,8 @@ return [
         'data_successfully_deleted' => 'Данные успешно удалены!',
         'error_eleting' => 'Ошибка при удалении!',
         'try_again' => 'Попробуйте еще раз',
+        'email_sent' => 'Письмо отправлено',
+        'email_wasnt_sent' => 'Письмо не было отправлено'
     ],
     'form' => [
         'required_fields' => 'обязательные поля',

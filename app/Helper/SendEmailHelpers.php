@@ -193,6 +193,7 @@ class SendEmailHelpers
             if (isset($smtp[0]['host']) && isset($smtp[0]['port']) && isset($smtp[0]['port']) && isset($smtp[0]['username']) && isset($smtp[0]['password'])) {
                 $m->Host = $smtp[0]['host'];
                 $m->Port = $smtp[0]['port'];
+                $m->From = $smtp[0]['email'];
                 $m->Username = $smtp[0]['username'];
                 $m->Password = $smtp[0]['password'];
 
@@ -223,10 +224,12 @@ class SendEmailHelpers
             $m->Priority = 5;
         else $m->Priority = 3;
 
-        if (SettingsHelpers::getSetting('SHOW_EMAIL') == 0)
-            $m->From = "noreply@" . StringHelpers::getDomain(SettingsHelpers::getSetting('URL'));
-        else
-            $m->From = SettingsHelpers::getSetting('EMAIL');
+        if (SettingsHelpers::getSetting('HOW_TO_SEND') != 'smtp') {
+            if (SettingsHelpers::getSetting('SHOW_EMAIL') == 0)
+                $m->From = "noreply@" . StringHelpers::getDomain(SettingsHelpers::getSetting('URL'));
+            else
+                $m->From = SettingsHelpers::getSetting('EMAIL');
+        }
 
         $m->FromName = SettingsHelpers::getSetting('FROM');
 
@@ -311,10 +314,10 @@ class SendEmailHelpers
         $m->Body = $msg;
 
         if (!$m->Send()){
-            $result =  $m->ErrorInfo;
+            $result =  ['result' => false, 'error' => $m->ErrorInfo];
 
         } else {
-            $result = true;
+            $result = ['result' => true, 'error' => null];
         }
 
         $m->ClearCustomHeaders();

@@ -64,6 +64,18 @@
                                 </section>
 
                                 <section>
+                                    <label for="username" class="label">E-mail*</label>
+                                    <label class="input">
+                                        <input type="email" maxlength="255" placeholder="E-mail" name="email"  value="{{ smtp is defined ? smtp.email : old.email }}" id="email">
+                                    </label>
+
+                                    {% if errors.username %}
+                                        <span class="text-danger">{{ errors.username | first }}</span>
+                                    {% endif %}
+
+                                </section>
+
+                                <section>
                                     <label for="username" class="label">{{ trans('form.login') }}*</label>
                                     <label class="input">
                                         <input type="text" maxlength="255" placeholder="{{ trans('form.login') }}" name="username"  value="{{ smtp is defined ? smtp.username : old.username }}" id="username">

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Авг 21 2019 г., 16:57
--- Версия сервера: 10.3.16-MariaDB
--- Версия PHP: 7.3.7
+-- Время создания: Авг 29 2019 г., 05:18
+-- Версия сервера: 10.1.36-MariaDB
+-- Версия PHP: 7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -31,6 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `attach` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
   `templateId` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -40,9 +41,8 @@ CREATE TABLE `attach` (
 -- Дамп данных таблицы `attach`
 --
 
-INSERT INTO `attach` (`id`, `name`, `templateId`, `created_at`, `updated_at`) VALUES
-(1, 'ryuoiup io[p', 2, NULL, NULL),
-(2, 'yiupo o[o]o', 2, NULL, NULL);
+INSERT INTO `attach` (`id`, `name`, `file_name`, `templateId`, `created_at`, `updated_at`) VALUES
+(1, '1c365d540e69c948.jpeg', '001.jpeg', 1, '2019-08-26 22:40:34', '2019-08-26 22:40:34');
 
 -- --------------------------------------------------------
 
@@ -157,7 +157,7 @@ CREATE TABLE `ready_sent` (
   `email` varchar(255) NOT NULL,
   `templateId` int(11) NOT NULL,
   `success` tinyint(1) NOT NULL,
-  `errorMsg` text DEFAULT NULL,
+  `errorMsg` text,
   `readMail` tinyint(1) DEFAULT NULL,
   `date` timestamp NULL DEFAULT NULL,
   `scheduleId` int(11) NOT NULL,
@@ -248,7 +248,8 @@ CREATE TABLE `sessions` (
 
 INSERT INTO `sessions` (`id`, `userId`, `token`, `expiry`, `created_at`, `updated_at`) VALUES
 (1, 1, '412ff5af8c0d9a71d46ae64a333fa324', '2020-08-20 10:35:46', '2019-08-21 10:35:46', '2019-08-21 10:35:46'),
-(2, 1, '019cd7bffad653427315717c83367bce', '2020-08-20 10:42:41', '2019-08-21 10:42:41', '2019-08-21 10:42:41');
+(2, 1, '019cd7bffad653427315717c83367bce', '2020-08-20 10:42:41', '2019-08-21 10:42:41', '2019-08-21 10:42:41'),
+(3, 1, '17b9ecdc7e1146e8838fcbbb8a198690', '2020-08-22 00:05:11', '2019-08-23 00:05:12', '2019-08-23 00:05:12');
 
 -- --------------------------------------------------------
 
@@ -267,7 +268,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `name`, `value`) VALUES
-(1, 'EMAIL', 'info@trust-signal.com'),
+(1, 'EMAIL', 'yanack@yandex.ru'),
 (2, 'SHOW_EMAIL', '1'),
 (3, 'FROM', 'wwwwwwww'),
 (4, 'RETURN_PATH', ''),
@@ -314,12 +315,13 @@ CREATE TABLE `smtp` (
   `id` int(11) NOT NULL,
   `host` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `port` int(6) NOT NULL,
   `authentication` varchar(20) NOT NULL,
   `secure` varchar(20) NOT NULL,
   `timeout` int(6) NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -328,8 +330,8 @@ CREATE TABLE `smtp` (
 -- Дамп данных таблицы `smtp`
 --
 
-INSERT INTO `smtp` (`id`, `host`, `username`, `password`, `port`, `authentication`, `secure`, `timeout`, `active`, `created_at`, `updated_at`) VALUES
-(4, 'smtp.yandex.ru', 'yanack@yandex.ru', 'larafabian', 465, 'login', 'ssl', 5, 1, '2019-08-21 07:26:20', '2019-08-21 07:26:20');
+INSERT INTO `smtp` (`id`, `host`, `username`, `email`, `password`, `port`, `authentication`, `secure`, `timeout`, `active`, `created_at`, `updated_at`) VALUES
+(4, 'smtp.yandex.ru', 'yanack@yandex.ru', '', 'larafabian', 465, 'login', 'ssl', 5, 1, '2019-08-21 07:26:20', '2019-08-21 07:26:20');
 
 -- --------------------------------------------------------
 
@@ -342,7 +344,7 @@ CREATE TABLE `subscribers` (
   `name` varchar(100) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `ip` varchar(100) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   `token` varchar(32) NOT NULL,
   `timeSent` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -398,7 +400,7 @@ CREATE TABLE `templates` (
 --
 
 INSERT INTO `templates` (`id`, `name`, `body`, `prior`, `pos`, `created_at`, `updated_at`) VALUES
-(1, 'dsf', 'ewrtew', 3, 0, '2019-06-05 08:08:24', '2019-06-05 08:08:24'),
+(1, 'dsf', '<p>ewrtew</p>\r\n', 3, 0, '2019-06-05 08:08:24', '2019-08-26 22:40:34'),
 (2, 'шаблон 1', '<p>dsgs dsg</p>\r\n', 3, 0, '2019-06-05 08:10:39', '2019-08-08 00:33:47'),
 (3, 'dfg', 'dfg', 3, 0, '2019-06-05 10:35:02', '2019-06-05 10:35:02'),
 (4, 'dfg', 'fdg ', 3, 0, '2019-06-05 10:35:20', '2019-06-05 10:35:20'),
@@ -415,7 +417,7 @@ INSERT INTO `templates` (`id`, `name`, `body`, `prior`, `pos`, `created_at`, `up
 CREATE TABLE `users` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL,
+  `description` text,
   `role` varchar(20) NOT NULL,
   `login` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL DEFAULT '',
@@ -552,7 +554,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `attach`
 --
 ALTER TABLE `attach`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `category`
@@ -600,7 +602,7 @@ ALTER TABLE `schedule`
 -- AUTO_INCREMENT для таблицы `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `settings`

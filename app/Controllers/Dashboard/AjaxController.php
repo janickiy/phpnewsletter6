@@ -47,20 +47,24 @@ class AjaxController extends Controller
                     if (empty($subject)) $errors[] = StringHelpers::trans('error.empty_subject');
                     if (empty($body)) $errors[] = StringHelpers::trans('error.empty_content');
                     if (empty($email)) $errors[] = StringHelpers::trans('error.empty_email');
-                    if (!empty($email) && StringHelpers::isEmail($email)) $errors[] = StringHelpers::trans('error.empty_email');
+                    if (!empty($email) && StringHelpers::isEmail($email) === false) $errors[] = StringHelpers::trans('error.empty_email');
 
                     if (count($errors) == 0) {
                         SendEmailHelpers::setBody($body);
                         SendEmailHelpers::setSubject($subject);
                         SendEmailHelpers::setPrior($prior);
                         SendEmailHelpers::setEmail($email);
-                        $result_send = SendEmailHelpers::sendEmail();
+                        $result = SendEmailHelpers::sendEmail();
+                        $result_send = ['result' => $result['result'] === true ? 'success':'error', 'msg' => $result['error'] ? StringHelpers::trans('msg.email_wasnt_sent') : StringHelpers::trans('msg.email_sent') ];
+
                     } else {
-                        $result_send = 'errors';
                         $msg = implode(",", $errors);
+                        $result_send = ['result' => 'errors', 'msg' => $msg];
                     }
 
-                    $content = ['result' => $result_send, 'msg' => $msg];
+                    return $response->withJson(
+                        $result_send
+                    );
 
                     break;
 

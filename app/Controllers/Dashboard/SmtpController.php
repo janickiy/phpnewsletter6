@@ -49,6 +49,9 @@ class SmtpController extends Controller
             'username' => ['rules' => v::notEmpty(),
                 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']
             ],
+            'email' => ['rules' => v::email()->notEmpty(),
+                'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']
+            ],
             'port' => ['rules' => v::notEmpty()->numeric(),
                 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'numeric' => 'Значение должно быть числом']
             ],
@@ -110,6 +113,9 @@ class SmtpController extends Controller
             'username' => ['rules' => v::notEmpty(),
                 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения'],
             ],
+            'email' => ['rules' => v::email()->notEmpty(),
+                'messages' => ['notEmpty' => 'Это поле обязательно для заполнения']
+            ],
             'port' => ['rules' => v::notEmpty()->numeric(),
                 'messages' => ['notEmpty' => 'Это поле обязательно для заполнения', 'numeric' => 'Значение должно быть числом']
             ],
@@ -125,6 +131,7 @@ class SmtpController extends Controller
         }
 
         $data['host'] = $request->getParam('host');
+        $data['email'] = $request->getParam('email');
         $data['username'] = $request->getParam('username');
         $data['password'] = $request->getParam('password');
         $data['port'] = $request->getParam('port');
