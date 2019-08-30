@@ -4,7 +4,7 @@ namespace App\Controllers\Dashboard;
 
 use App\Controllers\Controller;
 use App\Models\{Attach, Settings};
-use App\Helper\{SettingsHelpers, StringHelpers, SendEmailHelpers};
+use App\Helper\{StringHelpers, SendEmailHelpers};
 
 class AjaxController extends Controller
 {
@@ -54,6 +54,9 @@ class AjaxController extends Controller
                         SendEmailHelpers::setSubject($subject);
                         SendEmailHelpers::setPrior($prior);
                         SendEmailHelpers::setEmail($email);
+                        SendEmailHelpers::setAttach($this->attach);
+                        SendEmailHelpers::setKeyprivater($this->keyprivate);
+                        SendEmailHelpers::setToken(md5($email));
                         $result = SendEmailHelpers::sendEmail();
                         $result_send = ['result' => $result['result'] === true ? 'success':'error', 'msg' => $result['error'] ? StringHelpers::trans('msg.email_wasnt_sent') : StringHelpers::trans('msg.email_sent') ];
 

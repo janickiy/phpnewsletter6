@@ -24,6 +24,42 @@ class SendEmailHelpers
 
     private static $token = '';
 
+    private static $keyprivate;
+
+    private static $attach;
+
+    /**
+     * @return mixed
+     */
+    public static function getAttach()
+    {
+        return self::$attach;
+    }
+
+    /**
+     * @param $tmp
+     * @return mixed
+     */
+    public static function setAttach($attach)
+    {
+        return self::$attach = $attach;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getKeyprivate() {
+        return self::$keyprivate;
+    }
+
+    /**
+     * @param $keyprivate
+     * @return mixed
+     */
+    public static function setKeyprivater($keyprivate) {
+        return self::$keyprivate = $keyprivate;
+    }
+
     /**
      * @return mixed
      */
@@ -167,7 +203,7 @@ class SendEmailHelpers
 
         $m = new PHPMailer\PHPMailer();
 
-        if (SettingsHelpers::getSetting('ADD_DKIM') == 1 && file_exists('' . SettingsHelpers::getSetting('DKIM_PRIVATE'))) {
+        if (SettingsHelpers::getSetting('ADD_DKIM') == 1 && file_exists(self::getKeyprivate() . '/' . SettingsHelpers::getSetting('DKIM_PRIVATE'))) {
             $m->DKIM_domain = SettingsHelpers::getSetting('DKIM_DOMAIN');
             $m->DKIM_private = SettingsHelpers::getSetting('DKIM_PRIVATE');
             $m->DKIM_selector = SettingsHelpers::getSetting('DKIM_SELECTOR');
@@ -288,8 +324,7 @@ class SendEmailHelpers
 
         if ($attach) {
             foreach ($attach as $f) {
-
-                $path = 'attach/' . $f->name;
+                $path = self::getAttach() . '/' . $f->name;
 
                 if (file_exists($path)) {
                     if (SettingsHelpers::getSetting('CHARSET') != 'utf-8') $row['name'] = iconv('utf-8', SettingsHelpers::getSetting('CHARSET'), $f->name);

@@ -109,7 +109,6 @@ class FrontendController extends Controller
 
             if (!$subscriber) return $this->view->render($response, 'errors/404.twig');
 
-
             if ($subscriber->token == $token) {
                 $result->update(['active' => 1]);
 

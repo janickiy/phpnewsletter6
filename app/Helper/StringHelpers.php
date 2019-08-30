@@ -613,13 +613,7 @@ class StringHelpers
     static public function getDomain($url)
     {
         $pieces = parse_url($url);
-        $domain = isset($pieces['host']) ? $pieces['host'] : $pieces['path'];
-
-        if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,12})$/i', $domain, $regs)) {
-            return $regs['domain'];
-        }
-
-        return false;
+        return isset($pieces['host']) ? $pieces['host'] : $pieces['path'];
     }
 
     /**
