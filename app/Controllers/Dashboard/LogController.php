@@ -4,26 +4,55 @@ namespace App\Controllers\Dashboard;
 
 use App\Models\Log;
 use App\Controllers\Controller;
+use App\Models\ReadySent;
 use Respect\Validation\Validator as v;
-use Psr\Http\Message\RequestInterface as Resquest;
-use Psr\Http\Message\ResponseInterface as Response;
+
 
 class LogController extends Controller
 {
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
    public function index($request,$response)
    {
-       return $this->view->render($response,'dashboard/log/index.twig');
+       $title =  "Журнал рассылки";
+
+       return $this->view->render($response,'dashboard/log/index.twig',compact('title'));
    }
 
-   public function clear()
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
+   public function clear($request,$response)
+   {
+       ReadySent::truncate();
+
+       $this->flash->addMessage('success', 'Данные успешно удалены');
+
+       return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
+   }
+
+   public function download($request,$response)
    {
 
    }
 
-   public function download()
+    /**
+     * @param $request
+     * @param $response
+     * @param $parametr
+     * @return mixed
+     */
+   public function info($request,$response,$parametr)
    {
+       $title = "Журнал рассылки";
+       $id = $parametr['id'];
 
+       return $this->view->render($response,'dashboard/log/info.twig',compact('title','id'));
    }
-
 	
 }

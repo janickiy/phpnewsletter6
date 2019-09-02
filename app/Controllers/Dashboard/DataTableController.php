@@ -3,8 +3,8 @@
 namespace App\Controllers\Dashboard;
 
 use App\Controllers\Controller;
-use App\Helper\{StringHelpers,Ssp};
-use App\Models\{Attach,Templates};
+use App\Helper\{StringHelpers, Ssp};
+use App\Models\{Attach, Templates};
 
 class DataTableController extends Controller
 {
@@ -59,7 +59,7 @@ class DataTableController extends Controller
                 return Templates::getPrior($d);
             }, 'field' => 'prior'],
             ['db' => 'id', 'dt' => 'attachment', 'formatter' => function ($d, $row) {
-                return Attach::where('templateId',$d)->count() > 0 ? StringHelpers::trans('str.yes'):StringHelpers::trans('str.no');
+                return Attach::where('templateId', $d)->count() > 0 ? StringHelpers::trans('str.yes') : StringHelpers::trans('str.no');
             }, 'field' => 'attachment', 'as' => 'attachment'],
             ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at'],
             ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
@@ -125,7 +125,7 @@ class DataTableController extends Controller
             ['db' => 'ip', 'dt' => 'ip', 'field' => 'ip'],
             ['db' => 'active', 'dt' => 'active', 'formatter' => function ($d, $row) {
                 return $d == 1 ? 'да' : 'нет';
-            },  'field' => 'active'],
+            }, 'field' => 'active'],
             ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
                 $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.subscribers.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
                 $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
@@ -222,7 +222,7 @@ class DataTableController extends Controller
             }, 'field' => 'activeStatus'],
             ['db' => 'active', 'dt' => 'active', 'formatter' => function ($d, $row) {
                 return $d == 1 ? 'да' : 'нет';
-            },  'field' => 'active'],
+            }, 'field' => 'active'],
             ['db' => 'id', 'dt' => 'action', 'formatter' => function ($d, $row) {
                 $editBtn = '<a title="Редактировать" class="btn btn-xs btn-primary"  href="' . $this->router->pathFor('admin.smtp.edit', ['id' => $d]) . '"><span  class="fa fa-edit"></span></a> &nbsp;';
                 $deleteBtn = '<a class="btn btn-xs btn-danger deleteRow" id="' . $d . '"><span class="fa fa-remove"></span></a>';
@@ -231,6 +231,68 @@ class DataTableController extends Controller
                 'field' => 'action', 'as' => 'action'
             ],
             ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at']
+        ];
+
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+    }
+
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
+    public function getLog($request, $response)
+    {
+        $table = 'schedule';
+        $primaryKey = 'id';
+        $joinQuery = "FROM schedule s INNER JOIN ready_sent r ON s.id=r.scheduleId";
+        $groupBy = 's.id';
+
+        $columns = [
+            ['db' => 's.id', 'dt' => 'id', 'field' => 'id'],
+            ['db' => 's.date', 'dt' => 'date', 'field' => 'date'],
+            ['db' => 'count(r.id)', 'dt' => 'count', 'formatter' => function ($d, $row) {
+                return '<a href="' . $this->router->pathFor('admin.log.info', ['id' => $d]) . '">' . $row['count'] . '</a>';
+            }, 'field' => 'count', 'as' => 'count'],
+            ['db' => 'sum(r.success=1)', 'dt' => 'sent', 'field' => 'sent', 'as' => 'sent'],
+            ['db' => 'sum(r.readMail=1)', 'dt' => 'read_mail', 'field' => 'read_mail', 'as' => 'read_mail'],
+            ['db' => 'r.id', 'dt' => 'unsent', 'formatter' => function ($d, $row) {
+                return $row['count'] - $row['sent'];
+            }, 'field' => 'unsent', 'as' => 'unsent'],
+            ['db' => 'r.id', 'dt' => 'report', 'formatter' => function ($d, $row) {
+                return '<a href="' . $this->router->pathFor('admin.log.download', ['id' => $d]) . '">скачать</a>';
+            },
+                'field' => 'report', 'as' => 'report'
+            ],
+        ];
+
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, $joinQuery, null, $groupBy));
+    }
+
+    /**
+     * @param $request
+     * @param $response
+     * @param $id
+     * @return mixed
+     */
+    public function getInfoLog($request, $response, $id)
+    {
+        $table = 'ready_sent';
+        $primaryKey = 'id';
+
+        $columns = [
+            ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
+            ['db' => 'success', 'dt' => 'success', 'field' => 'success'],
+            ['db' => 'template', 'dt' => 'template', 'field' => 'template'],
+            ['db' => 'email', 'dt' => 'email', 'field' => 'email'],
+            ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at'],
+            ['db' => 'success', 'dt' => 'status', 'formatter' => function ($d, $row) {
+                return $row['success'] == 1 ? 'отправлено':'не отправлено';
+            }, 'field' => 'status', 'as' => 'status'],
+            ['db' => 'readMail', 'dt' => 'readMail', 'formatter' => function ($d, $row) {
+                return $row['success'] == 1 ? 'прочитано':'не прочитано';
+            }, 'field' => 'readMail'],
+            ['db' => 'errorMsg', 'dt' => 'errorMsg', 'field' => 'errorMsg'],
         ];
 
         return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));

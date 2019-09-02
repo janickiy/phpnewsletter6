@@ -5,8 +5,6 @@ namespace App\Controllers\Dashboard;
 use App\Models\Users;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
-use Psr\Http\Message\RequestInterface as Resquest;
-use Psr\Http\Message\ResponseInterface as Response;
 
 class UsersController extends Controller
 {
@@ -15,7 +13,7 @@ class UsersController extends Controller
      * @param Response $response
      * @return mixed
      */
-    public function index(Resquest $request, Response $response)
+    public function index($request,$response)
     {
         $title = "Пользователи";
 

@@ -103,9 +103,11 @@ $app->group('', function () use ($container) {
     });
 
     $this->group('/log', function () use ($container) {
-        $this->get('/', 'UsersController:index')->setName('admin.log.index')->add(new PermissionMiddleware($container, 'moderator|editor'));
-        $this->post('/clear', 'UsersController:store')->setName('admin.log.clear')->add(new PermissionMiddleware($container, 'moderator|editor'));
-        $this->get('/download', 'UsersController:edit')->setName('admin.log.download')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/', 'LogController:index')->setName('admin.log.index')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->post('/clear', 'LogController:clear')->setName('admin.log.clear')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/download/{id:[0-9]+}', 'LogController:download')->setName('admin.log.download')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/info/{id:[0-9]+}', 'LogController:info')->setName('admin.log.info')->add(new PermissionMiddleware($container, 'moderator|editor'));
+
     });
 
     $this->group('/settings', function () use ($container) {
@@ -120,6 +122,11 @@ $app->group('', function () use ($container) {
         $this->get('/settings', 'DataTableController:getSettings')->setName('admin.datatable.settings');
         $this->get('/users', 'DataTableController:getUsers')->setName('admin.datatable.users');
         $this->get('/smtp', 'DataTableController:getSmtp')->setName('admin.datatable.smtp');
+        $this->get('/log', 'DataTableController:getLog')->setName('admin.datatable.log');
+
+
+        $this->get('/info_log/{id:[0-9]+}', 'DataTableController:getInfoLog')->setName('admin.datatable.info_log');
+
     });
 
 })->add(new AuthMiddleware($container));

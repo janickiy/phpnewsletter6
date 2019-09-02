@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Авг 29 2019 г., 05:18
+-- Время создания: Сен 02 2019 г., 04:26
 -- Версия сервера: 10.1.36-MariaDB
 -- Версия PHP: 7.2.10
 
@@ -132,22 +132,6 @@ CREATE TABLE `customheaders` (
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `log`
---
-
-CREATE TABLE `log` (
-  `id` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `template` varchar(255) NOT NULL,
-  `sendStatusId` tinyint(1) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `ready_sent`
 --
 
@@ -156,14 +140,21 @@ CREATE TABLE `ready_sent` (
   `subscriberId` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
   `templateId` int(11) NOT NULL,
+  `template` varchar(255) NOT NULL,
   `success` tinyint(1) NOT NULL,
   `errorMsg` text,
   `readMail` tinyint(1) DEFAULT NULL,
-  `date` timestamp NULL DEFAULT NULL,
   `scheduleId` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `ready_sent`
+--
+
+INSERT INTO `ready_sent` (`id`, `subscriberId`, `email`, `templateId`, `template`, `success`, `errorMsg`, `readMail`, `scheduleId`, `created_at`, `updated_at`) VALUES
+(1, 1, 'ewqre@qweqw.ru', 1, '', 1, NULL, 1, 1, '2019-08-31 21:00:00', '2019-08-31 21:00:00');
 
 -- --------------------------------------------------------
 
@@ -197,7 +188,7 @@ CREATE TABLE `schedule` (
 --
 
 INSERT INTO `schedule` (`id`, `date`, `templateId`, `created_at`, `updated_at`) VALUES
-(1, '2019-07-31 21:25:00', 2, '2019-07-31 20:25:51', '2019-07-31 20:25:51'),
+(1, '2019-07-31 21:25:00', 1, '2019-07-31 20:25:51', '2019-07-31 20:25:51'),
 (2, '2019-07-31 23:00:00', 4, '2019-07-31 20:42:47', '2019-07-31 20:42:47'),
 (3, '2019-08-02 09:00:00', 2, '2019-07-31 20:59:12', '2019-07-31 20:59:12');
 
@@ -356,7 +347,7 @@ CREATE TABLE `subscribers` (
 --
 
 INSERT INTO `subscribers` (`id`, `name`, `email`, `ip`, `active`, `token`, `timeSent`, `created_at`, `updated_at`) VALUES
-(1, 'Вася', 'mail1@mail.ru', NULL, 1, '7f80608935902f5ba9f79025243ecefb', NULL, '2019-06-17 11:29:42', '2019-06-17 13:59:24'),
+(1, 'Вася', 'mail1@mail.ru', NULL, 0, '7f80608935902f5ba9f79025243ecefb', NULL, '2019-06-17 11:29:42', '2019-08-29 21:45:02'),
 (2, 'Петя', 'mail2@mail.ru', NULL, 1, '81c1c7f16765f9e90c797df20eb794e6', NULL, '2019-06-17 11:29:42', '2019-06-17 13:59:24');
 
 -- --------------------------------------------------------
@@ -463,15 +454,6 @@ ALTER TABLE `customheaders`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индексы таблицы `log`
---
-ALTER TABLE `log`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `userId` (`userId`),
-  ADD KEY `email` (`email`),
-  ADD KEY `template` (`template`);
-
---
 -- Индексы таблицы `ready_sent`
 --
 ALTER TABLE `ready_sent`
@@ -575,16 +557,10 @@ ALTER TABLE `customheaders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT для таблицы `log`
---
-ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT для таблицы `ready_sent`
 --
 ALTER TABLE `ready_sent`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `redirect_log`

@@ -60,7 +60,8 @@ return [
         'send' => 'Отправить',
         'attachments' => 'Вложения',
         'send_test_letter' => 'Отправить себе тестовое письмо',
-
+        'log_clear' => 'Очистить журнал',
+        'want_to_log_clear' => 'Вы действительно желаете очистить журнал рассылки?',
     ],
     'msg' => [
         'are_you_sure' => 'Are you sure?',

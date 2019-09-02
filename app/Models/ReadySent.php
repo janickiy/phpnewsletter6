@@ -14,6 +14,7 @@ class ReadySent extends Model
         'subscriberId',
         'email',
         'templateId',
+        'template',
         'success',
         'errorMsg',
         'readMail',

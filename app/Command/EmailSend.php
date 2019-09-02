@@ -106,12 +106,11 @@ class EmailSend extends Command
                 $data = [];
 
                 if ($result['result'] === true) {
-
                     $data['subscriberId'] = $subscriber->id;
                     $data['email'] = $subscriber->email;
                     $data['templateId'] = $row->templateId;
+                    $data['template'] = $row->template->name;
                     $data['success'] = 1;
-                    $data['date'] = date('Y-m-d H:i:s');
                     $data['scheduleId'] = $row->id;
 
                     Subscribers::where('id', $subscriber->id)->update(['timeSent' => date('Y-m-d H:i:s')]);
@@ -121,9 +120,9 @@ class EmailSend extends Command
                     $data['subscriberId'] = $subscriber->id;
                     $data['email'] = $subscriber->email;
                     $data['templateId'] = $row->templateId;
+                    $data['template'] = $row->template->name;
                     $data['success'] = 0;
                     $data['errorMsg'] = $result['error'];
-                    $data['date'] = date('Y-m-d H:i:s');
                     $data['scheduleId'] = $row->id;
 
                     $mailcountno++;
@@ -134,7 +133,6 @@ class EmailSend extends Command
                 unset($data);
 
                 if (SettingsHelpers::getSetting('LIMIT_SEND') == 1 && SettingsHelpers::getSetting('LIMIT_NUMBER') == $mailcount){
-                    if (SettingsHelpers::getSetting('HOW_TO_SEND') == 2) $m->SmtpClose();
                     break;
                 }
             }
