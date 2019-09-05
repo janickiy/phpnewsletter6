@@ -145,6 +145,10 @@ $container['LogController'] = function($container) {
     return new \App\Controllers\Dashboard\LogController($container);
 };
 
+$container['RedirectLogController'] = function($container) {
+    return new \App\Controllers\Dashboard\RedirectLogController($container);
+};
+
 $container['SettingsController'] = function($container) {
     return new \App\Controllers\Dashboard\SettingsController($container);
 };

@@ -260,7 +260,7 @@ class DataTableController extends Controller
                 return $row['count'] - $row['sent'];
             }, 'field' => 'unsent', 'as' => 'unsent'],
             ['db' => 'r.id', 'dt' => 'report', 'formatter' => function ($d, $row) {
-                return '<a href="' . $this->router->pathFor('admin.log.download', ['id' => $d]) . '">скачать</a>';
+                return '<a href="' . $this->router->pathFor('admin.log.report', ['id' => $d]) . '">скачать</a>';
             },
                 'field' => 'report', 'as' => 'report'
             ],
@@ -287,14 +287,48 @@ class DataTableController extends Controller
             ['db' => 'email', 'dt' => 'email', 'field' => 'email'],
             ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at'],
             ['db' => 'success', 'dt' => 'status', 'formatter' => function ($d, $row) {
-                return $row['success'] == 1 ? 'отправлено':'не отправлено';
+                return $row['success'] == 1 ? 'отправлено' : 'не отправлено';
             }, 'field' => 'status', 'as' => 'status'],
             ['db' => 'readMail', 'dt' => 'readMail', 'formatter' => function ($d, $row) {
-                return $row['success'] == 1 ? 'прочитано':'не прочитано';
+                return $row['success'] == 1 ? 'прочитано' : 'не прочитано';
             }, 'field' => 'readMail'],
             ['db' => 'errorMsg', 'dt' => 'errorMsg', 'field' => 'errorMsg'],
         ];
 
         return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns));
+    }
+
+    /**
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
+    public function getRedirectLog($request, $response)
+    {
+        $table = 'redirect_log';
+        $primaryKey = 'id';
+        $groupBy = 'url';
+        $extraSelect = 'count(email) as num';
+
+        $columns = [
+            ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
+            ['db' => 'url', 'dt' => 'url', 'field' => 'url'],
+         //   ['db' => 'count(email)', 'dt' => 'email', 'field' => 'email', 'as' => 'count'],
+            ['db' => 'email', 'dt' => 'num', 'formatter' => function ($d, $row) {
+                return $row['num'];}, 'field' => 'num'],
+
+            ['db' => 'id', 'dt' => 'report', 'formatter' => function ($d, $row) {
+                return '<a href="' . $this->router->pathFor('admin.redirect_log.report', ['id' => $d]) . '">скачать</a>';
+            },
+                'field' => 'report', 'as' => 'report'
+            ],
+        ];
+
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, null, null, $groupBy, null, $extraSelect));
+    }
+
+    public function getInfoRedirectLog()
+    {
+
     }
 }

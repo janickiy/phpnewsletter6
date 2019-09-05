@@ -181,7 +181,7 @@ class Ssp {
      *  @return array  Server-side processing response array
      *
      */
-    static function simple ( $request, $sql_details, $table, $primaryKey, $columns, $joinQuery = NULL, $extraWhere = '', $groupBy = '', $having = '')
+    static function simple ( $request, $sql_details, $table, $primaryKey, $columns, $joinQuery = NULL, $extraWhere = '', $groupBy = '', $having = '', $extraSelect = '')
     {
         $bindings = array();
         $db = SSP::sql_connect( $sql_details );
@@ -198,15 +198,17 @@ class Ssp {
         if($joinQuery){
             $col = SSP::pluck($columns, 'db', $joinQuery);
             $query =  "SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $col)."
+             " . ($extraSelect ? ' ,' . $extraSelect : '') . "
 			 $joinQuery
 			 $where
 			 $extraWhere
 			 $groupBy
        $having
 			 $order
-			 $limit";
+			 $limit"; // $extraSelect ? ' ,' . $extraSelect : ''
         }else{
-            $query =  "SELECT SQL_CALC_FOUND_ROWS `".implode("`, `", SSP::pluck($columns, 'db'))."`
+            $query =  "SELECT SQL_CALC_FOUND_ROWS `".implode("`, `", SSP::pluck($columns, 'db'))."`  
+             " . ($extraSelect ? ' ,' . $extraSelect : '') . "
 			 FROM `$table`
 			 $where
 			 $extraWhere

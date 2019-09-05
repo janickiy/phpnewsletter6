@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Сен 02 2019 г., 04:26
+-- Время создания: Сен 05 2019 г., 03:19
 -- Версия сервера: 10.1.36-MariaDB
 -- Версия PHP: 7.2.10
 
@@ -165,9 +165,22 @@ INSERT INTO `ready_sent` (`id`, `subscriberId`, `email`, `templateId`, `template
 CREATE TABLE `redirect_log` (
   `id` int(11) NOT NULL,
   `url` varchar(255) NOT NULL,
-  `time` timestamp NULL DEFAULT NULL,
-  `email` varchar(255) NOT NULL
+  `email` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `redirect_log`
+--
+
+INSERT INTO `redirect_log` (`id`, `url`, `email`, `created_at`, `updated_at`) VALUES
+(1, 'wer.ru', 'weqr@wrwe.ru', '2019-09-04 21:00:00', '2019-09-04 21:00:00'),
+(2, 'wer.ru', 'bererw@242r.ru', NULL, NULL),
+(3, 'wer2.ru', 'aetgfd@wrewe.ti', NULL, NULL),
+(4, 'ter.ru', 'dfsr@werew.ru', '2019-09-04 21:00:00', NULL),
+(5, 'ter.ru', 'eqweqw@rwerw.ru', '2019-09-10 21:00:00', NULL),
+(6, 'ter.ru', 'qewrr21@Q3.TRU', '2019-09-03 21:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -240,7 +253,7 @@ CREATE TABLE `sessions` (
 INSERT INTO `sessions` (`id`, `userId`, `token`, `expiry`, `created_at`, `updated_at`) VALUES
 (1, 1, '412ff5af8c0d9a71d46ae64a333fa324', '2020-08-20 10:35:46', '2019-08-21 10:35:46', '2019-08-21 10:35:46'),
 (2, 1, '019cd7bffad653427315717c83367bce', '2020-08-20 10:42:41', '2019-08-21 10:42:41', '2019-08-21 10:42:41'),
-(3, 1, '17b9ecdc7e1146e8838fcbbb8a198690', '2020-08-22 00:05:11', '2019-08-23 00:05:12', '2019-08-23 00:05:12');
+(4, 1, '1fae3f940c8c45046a439aef4d1e2546', '2020-09-03 20:15:34', '2019-09-04 20:15:36', '2019-09-04 20:15:36');
 
 -- --------------------------------------------------------
 
@@ -468,7 +481,9 @@ ALTER TABLE `ready_sent`
 -- Индексы таблицы `redirect_log`
 --
 ALTER TABLE `redirect_log`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `email` (`email`),
+  ADD KEY `url` (`url`);
 
 --
 -- Индексы таблицы `schedule`
@@ -566,7 +581,7 @@ ALTER TABLE `ready_sent`
 -- AUTO_INCREMENT для таблицы `redirect_log`
 --
 ALTER TABLE `redirect_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT для таблицы `schedule`
@@ -578,7 +593,7 @@ ALTER TABLE `schedule`
 -- AUTO_INCREMENT для таблицы `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `settings`

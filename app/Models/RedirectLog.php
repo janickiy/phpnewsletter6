@@ -12,7 +12,6 @@ class RedirectLog extends Model
 
 	protected $fillable = [
 		'url',
-        'time',
         'email'
 	];
 }

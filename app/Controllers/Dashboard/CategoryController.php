@@ -14,12 +14,8 @@ class CategoryController extends Controller
     {
         $title = "Категория подписчиков";
 
+        return $this->view->render($response, 'dashboard/category/index.twig', compact('title'));
 
-        //return $this->view->render($response, 'dashboard/category/index.twig', compact('title'));
-
-        StringHelpers::setWer($this->keyprivate);
-
-        var_dump(StringHelpers::getDomain('https://allweb.app/topics/%d1%83%d1%87%d0%b5%d0%b1%d0%bd%d1%8b%d0%b5-%d0%ba%d1%83%d1%80%d1%81%d1%8b-%d0%b2%d0%b8%d0%b4%d0%b5%d0%be%d1%83%d1%80%d0%be%d0%ba%d0%b8/joomla/'));
     }
 
     /**

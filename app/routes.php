@@ -31,14 +31,9 @@ $app->group('', function () {
 $app->group('', function () use ($container) {
 
     $this->any('/ajax', 'AjaxController:action')->setName('admin.ajax.action');
-
-
     $this->get('/signout', 'AuthController:getSignOut')->setName('signout');
-
     $this->get('/auth/password/change', 'PasswordController:getChangePassword')->setName('auth.password.change')->add(new PermissionMiddleware($container, 'moderator'));
-
     $this->post('/auth/password/change', 'PasswordController:postChangePassword');
-
     $this->get('/', 'TemplateController:index')->setName('admin.main')->add(new PermissionMiddleware($container, 'moderator|editor'));
 
     $this->group('/template', function () use ($container) {
@@ -104,10 +99,16 @@ $app->group('', function () use ($container) {
 
     $this->group('/log', function () use ($container) {
         $this->get('/', 'LogController:index')->setName('admin.log.index')->add(new PermissionMiddleware($container, 'moderator|editor'));
-        $this->post('/clear', 'LogController:clear')->setName('admin.log.clear')->add(new PermissionMiddleware($container, 'moderator|editor'));
-        $this->get('/download/{id:[0-9]+}', 'LogController:download')->setName('admin.log.download')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/clear', 'LogController:clear')->setName('admin.log.clear')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/download/{id:[0-9]+}', 'LogController:download')->setName('admin.log.report')->add(new PermissionMiddleware($container, 'moderator|editor'));
         $this->get('/info/{id:[0-9]+}', 'LogController:info')->setName('admin.log.info')->add(new PermissionMiddleware($container, 'moderator|editor'));
+    });
 
+    $this->group('/redirect-log', function () use ($container) {
+        $this->get('/', 'RedirectLogController:index')->setName('admin.redirect_log.index')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/clear', 'RedirectLogController:clear')->setName('admin.redirect_log.clear')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/download/{id:[0-9]+}', 'RedirectLogController:download')->setName('admin.redirect_log.report')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/info/{id:[0-9]+}', 'RedirectLogController:info')->setName('admin.redirect_log.info')->add(new PermissionMiddleware($container, 'moderator|editor'));
     });
 
     $this->group('/settings', function () use ($container) {
@@ -123,10 +124,9 @@ $app->group('', function () use ($container) {
         $this->get('/users', 'DataTableController:getUsers')->setName('admin.datatable.users');
         $this->get('/smtp', 'DataTableController:getSmtp')->setName('admin.datatable.smtp');
         $this->get('/log', 'DataTableController:getLog')->setName('admin.datatable.log');
-
-
-        $this->get('/info_log/{id:[0-9]+}', 'DataTableController:getInfoLog')->setName('admin.datatable.info_log');
-
+        $this->get('/info-log/{id:[0-9]+}', 'DataTableController:getInfoLog')->setName('admin.datatable.info_log');
+        $this->get('/redirect-log', 'DataTableController:getRedirectLog')->setName('admin.datatable.redirect_log');
+        $this->get('/info-redirect-log/{id:[0-9]+}', 'DataTableController:getInfoRedirectLog')->setName('admin.datatable.info_redirect_log');
     });
 
 })->add(new AuthMiddleware($container));

@@ -2,11 +2,8 @@
 
 namespace App\Controllers\Dashboard;
 
-use App\Models\Log;
 use App\Controllers\Controller;
 use App\Models\ReadySent;
-use Respect\Validation\Validator as v;
-
 
 class LogController extends Controller
 {
@@ -31,9 +28,9 @@ class LogController extends Controller
    {
        ReadySent::truncate();
 
-       $this->flash->addMessage('success', 'Данные успешно удалены');
+       $this->flash->addMessage('success', 'Журнал очищен');
 
-       return $response->withRedirect($this->router->pathFor('admin.subscribers.index'));
+       return $response->withRedirect($this->router->pathFor('admin.log.index'));
    }
 
    public function download($request,$response)
