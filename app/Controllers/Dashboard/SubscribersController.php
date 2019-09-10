@@ -49,7 +49,7 @@ class SubscribersController extends Controller
     public function store($request, $response)
     {
         $validation = $this->validator->validate($request, [
-            'email' => ['rules' => v::email()->notEmpty(), 'messages' => ['email' => 'Адрес электроной почты указан не верно', 'notEmpty' => 'Это поле обязательно для заполнения']],
+            'email' => ['rules' => v::email()->notEmpty(), 'messages' => ['email' => 'Адрес электронной почты указан не верно', 'notEmpty' => 'Это поле обязательно для заполнения']],
         ]);
 
         if (!$validation->isValid()) {
@@ -59,7 +59,7 @@ class SubscribersController extends Controller
         }
 
         if (Subscribers::where('email', 'like', $request->getParam('email'))->first()) {
-            $_SESSION['errors'] = ['email' => ['unique' => 'Адрес электроной почты уже есть в базе данных! Укажите другой']];
+            $_SESSION['errors'] = ['email' => ['unique' => 'Адрес электронной почты уже есть в базе данных! Укажите другой']];
 
             return $response->withRedirect($this->router->pathFor('admin.subscribers.create'));
         }
@@ -112,7 +112,7 @@ class SubscribersController extends Controller
     public function update($request, $response)
     {
         $validation = $this->validator->validate($request, [
-            'email' => ['rules' => v::email()->notEmpty(), 'messages' => ['email' => 'Адрес электроной почты указан не верно', 'notEmpty' => 'Это поле обязательно для заполнения']],
+            'email' => ['rules' => v::email()->notEmpty(), 'messages' => ['email' => 'Адрес электронной почты указан неверно', 'notEmpty' => 'Это поле обязательно для заполнения']],
         ]);
 
         if (!$validation->isValid()) {
@@ -331,7 +331,7 @@ class SubscribersController extends Controller
             $filename = 'emailexport' . date("d_m_Y") . '.xlsx';
             $oSpreadsheet_Out = new Spreadsheet();
 
-            $oSpreadsheet_Out->getProperties()->setCreator('Maarten Balliauw')
+            $oSpreadsheet_Out->getProperties()->setCreator('Alexander Yanitsky')
                 ->setLastModifiedBy('PHP Newsletter')
                 ->setTitle('Office 2007 XLSX Document')
                 ->setSubject('Office 2007 XLSX Document')
