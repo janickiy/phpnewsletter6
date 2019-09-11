@@ -21,4 +21,12 @@ class ReadySent extends Model
         'date',
         'scheduleId',
 	];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function template()
+    {
+        return $this->belongsTo(Schedule::class, 'scheduleId','id');
+    }
 }

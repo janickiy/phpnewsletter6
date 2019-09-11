@@ -73,6 +73,8 @@ return [
         'total' => 'Всего',
         'sent' => 'Отправлено',
         'spent_time' => 'Затраченное время',
+        'send_status_yes' => 'отправлено',
+        'send_status_no' => 'не отправлено',
     ],
     'msg' => [
         'are_you_sure' => 'Are you sure?',

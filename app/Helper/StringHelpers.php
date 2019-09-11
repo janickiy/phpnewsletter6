@@ -2,7 +2,7 @@
 
 namespace App\Helper;
 
-use \App\Models\Settings;
+use App\Models\Settings;
 use Symfony\Component\Translation\Loader\PhpFileLoader;
 use Symfony\Component\Translation\Translator;
 
