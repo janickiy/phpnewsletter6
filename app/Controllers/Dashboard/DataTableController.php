@@ -313,10 +313,10 @@ class DataTableController extends Controller
         $columns = [
             ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
             ['db' => 'url', 'dt' => 'url', 'field' => 'url'],
-         //   ['db' => 'count(email)', 'dt' => 'email', 'field' => 'email', 'as' => 'count'],
+            //   ['db' => 'count(email)', 'dt' => 'email', 'field' => 'email', 'as' => 'count'],
             ['db' => 'email', 'dt' => 'num', 'formatter' => function ($d, $row) {
-                return $row['num'];}, 'field' => 'num'],
-
+                return '<a href="' . $this->router->pathFor('admin.redirect_log.info', ['url' => $row['url']]) . '">' . $row['num'] . '</a>';
+            }, 'field' => 'num'],
             ['db' => 'id', 'dt' => 'report', 'formatter' => function ($d, $row) {
                 return '<a href="' . $this->router->pathFor('admin.redirect_log.report', ['id' => $d]) . '">скачать</a>';
             },
@@ -327,8 +327,24 @@ class DataTableController extends Controller
         return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, null, null, $groupBy, null, $extraSelect));
     }
 
-    public function getInfoRedirectLog()
+    /**
+     * @param $request
+     * @param $response
+     * @param $url
+     * @return mixed
+     */
+    public function getInfoRedirectLog($request, $response, $parametr)
     {
+        $table = 'redirect_log';
+        $primaryKey = 'id';
+        $where = "url='" . $parametr['url'] . "'";
 
+        $columns = [
+            ['db' => 'id', 'dt' => 'id', 'field' => 'id'],
+            ['db' => 'email', 'dt' => 'email', 'field' => 'email'],
+            ['db' => 'created_at', 'dt' => 'created_at', 'field' => 'created_at'],
+        ];
+
+        return $response->withJson(Ssp::simple($request->getParams(), $this->getDetails(), $table, $primaryKey, $columns, null, $where));
     }
 }

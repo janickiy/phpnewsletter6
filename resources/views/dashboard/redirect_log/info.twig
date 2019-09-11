@@ -79,14 +79,14 @@
                 'createdRow': function (row, data, dataIndex) {
                     $(row).attr('id', 'rowid_' + data['id']);
                 },
-                aaSorting: [[2, 'asc']],
+                aaSorting: [[1, 'asc']],
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '{{ path_for('admin.datatable.info_redirect_log', { 'id': id }) }}'
+                    url: '{{ path_for('admin.datatable.info_redirect_log', { 'url': url }) }}'
                 },
                 columns: [
-                    {data: 'url', name: 'url'},
+                    {data: 'id', name: 'id'},
                     {data: 'email', name: 'email'},
                     {data: 'created_at', name: 'created_at'},
                 ],

@@ -108,7 +108,7 @@ $app->group('', function () use ($container) {
         $this->get('/', 'RedirectLogController:index')->setName('admin.redirect_log.index')->add(new PermissionMiddleware($container, 'moderator|editor'));
         $this->get('/clear', 'RedirectLogController:clear')->setName('admin.redirect_log.clear')->add(new PermissionMiddleware($container, 'moderator|editor'));
         $this->get('/download/{id:[0-9]+}', 'RedirectLogController:download')->setName('admin.redirect_log.report')->add(new PermissionMiddleware($container, 'moderator|editor'));
-        $this->get('/info/{id:[0-9]+}', 'RedirectLogController:info')->setName('admin.redirect_log.info')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/info/{url}', 'RedirectLogController:info')->setName('admin.redirect_log.info')->add(new PermissionMiddleware($container, 'moderator|editor'));
     });
 
     $this->group('/settings', function () use ($container) {
@@ -126,10 +126,7 @@ $app->group('', function () use ($container) {
         $this->get('/log', 'DataTableController:getLog')->setName('admin.datatable.log');
         $this->get('/info-log/{id:[0-9]+}', 'DataTableController:getInfoLog')->setName('admin.datatable.info_log');
         $this->get('/redirect-log', 'DataTableController:getRedirectLog')->setName('admin.datatable.redirect_log');
-        $this->get('/info-redirect-log/{id:[0-9]+}', 'DataTableController:getInfoRedirectLog')->setName('admin.datatable.info_redirect_log');
+        $this->get('/info-redirect-log/{url}', 'DataTableController:getInfoRedirectLog')->setName('admin.datatable.info_redirect_log');
     });
 
 })->add(new AuthMiddleware($container));
-
-
-

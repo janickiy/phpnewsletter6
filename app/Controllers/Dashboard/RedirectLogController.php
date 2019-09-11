@@ -33,14 +33,24 @@ class RedirectLogController extends Controller
        return $response->withRedirect($this->router->pathFor('admin.redirect_log.index'));
    }
 
-   public function download($request,$response)
+   public function download($request, $response, $parametr)
    {
 
    }
 
+    /**
+     * @param $request
+     * @param $response
+     * @param $parametr
+     * @return mixed
+     */
     public function info($request,$response,$parametr)
     {
         $title =  "Статистика переходов по ссылкам";
+
+        $url = $parametr['url'];
+
+        return $this->view->render($response, 'dashboard/redirect_log/info.twig', compact('title', 'url'));
     }
 	
 }
