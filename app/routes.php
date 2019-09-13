@@ -107,7 +107,7 @@ $app->group('', function () use ($container) {
     $this->group('/redirect-log', function () use ($container) {
         $this->get('/', 'RedirectLogController:index')->setName('admin.redirect_log.index')->add(new PermissionMiddleware($container, 'moderator|editor'));
         $this->get('/clear', 'RedirectLogController:clear')->setName('admin.redirect_log.clear')->add(new PermissionMiddleware($container, 'moderator|editor'));
-        $this->get('/download/{id:[0-9]+}', 'RedirectLogController:download')->setName('admin.redirect_log.report')->add(new PermissionMiddleware($container, 'moderator|editor'));
+        $this->get('/download/{url}', 'RedirectLogController:download')->setName('admin.redirect_log.report')->add(new PermissionMiddleware($container, 'moderator|editor'));
         $this->get('/info/{url}', 'RedirectLogController:info')->setName('admin.redirect_log.info')->add(new PermissionMiddleware($container, 'moderator|editor'));
     });
 

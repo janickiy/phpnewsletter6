@@ -318,7 +318,7 @@ class DataTableController extends Controller
                 return '<a href="' . $this->router->pathFor('admin.redirect_log.info', ['url' => $row['url']]) . '">' . $row['num'] . '</a>';
             }, 'field' => 'num'],
             ['db' => 'id', 'dt' => 'report', 'formatter' => function ($d, $row) {
-                return '<a href="' . $this->router->pathFor('admin.redirect_log.report', ['id' => $d]) . '">скачать</a>';
+                return '<a href="' . $this->router->pathFor('admin.redirect_log.report', ['url' => $row['url']]) . '">скачать</a>';
             },
                 'field' => 'report', 'as' => 'report'
             ],

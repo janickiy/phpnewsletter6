@@ -75,6 +75,8 @@ return [
         'spent_time' => 'Затраченное время',
         'send_status_yes' => 'отправлено',
         'send_status_no' => 'не отправлено',
+        'log' => 'Журнал рассылки',
+        'redirect_log' => 'Статистика переходов по ссылкам',
     ],
     'msg' => [
         'are_you_sure' => 'Are you sure?',

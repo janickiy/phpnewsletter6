@@ -49,7 +49,7 @@ class LogController extends Controller
     public function download($request, $response, $parametr)
     {
         $ext = 'xlsx';
-        $filename = 'emailexport' . date("d_m_Y") . '.xlsx';
+        $filename = 'log' . date("d_m_Y") . '.xlsx';
         $oSpreadsheet_Out = new Spreadsheet();
 
         $readySent = ReadySent::where('scheduleId', $parametr['id'])->get();
@@ -71,11 +71,11 @@ class LogController extends Controller
 
         $oSpreadsheet_Out->getProperties()->setCreator('Alexander Yanitsky')
             ->setLastModifiedBy('PHP Newsletter')
-            ->setTitle(StringHelpers::trans('str.mailing_report'))
+            ->setTitle(StringHelpers::trans('str.log'))
             ->setSubject('Office 2007 XLSX Document')
             ->setDescription('Document for Office 2007 XLSX, generated using PHP classes.')
             ->setKeywords('office 2007 openxml php')
-            ->setCategory('Log export file');
+            ->setCategory('Log file');
 
         // Add some data
         $oSpreadsheet_Out->setActiveSheetIndex(0)
@@ -119,7 +119,7 @@ class LogController extends Controller
                 ->setCellValue('B' . $i, $row->email)
                 ->setCellValue('C' . $i, $row->created_at)
                 ->setCellValue('D' . $i, $row->success === 1 ? StringHelpers::trans('str.send_status_yes') : StringHelpers::trans('str.send_status_no')
-                    ->setCellValue('E' . $i, $row->readMail === 1 ? StringHelpers::trans('str.yes') : StringHelpers::trans('str.no')))
+                ->setCellValue('E' . $i, $row->readMail === 1 ? StringHelpers::trans('str.yes') : StringHelpers::trans('str.no')))
                 ->setCellValue('F' . $i, $row->errorMsg);
 
             $oSpreadsheet_Out->setActiveSheetIndex(0)->getStyle('D' . $i)->getAlignment()->applyFromArray(['horizontal' => Alignment::HORIZONTAL_CENTER]);
